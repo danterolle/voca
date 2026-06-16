@@ -8,6 +8,8 @@ import (
 	"strings"
 )
 
+const DefaultModel = "gemma4:e2b-it-qat"
+
 var Languages = map[string]string{
 	"auto": "Auto",
 	"en":   "English",

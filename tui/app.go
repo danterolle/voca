@@ -21,10 +21,7 @@ const (
 	focusInput
 )
 
-const (
-	debounceDuration = 500 * time.Millisecond
-	modelName        = "gemma4:e2b-it-qat"
-)
+const debounceDuration = 600 * time.Millisecond
 
 type (
 	debounceMsg struct {
@@ -248,7 +245,7 @@ func (m Model) retreatFocus() Model {
 
 func (m Model) doTranslate(text, source, target string) tea.Cmd {
 	return func() tea.Msg {
-		result, err := translate.Translate(text, source, target, modelName)
+		result, err := translate.Translate(text, source, target, translate.DefaultModel)
 		return translateResultMsg{text: text, result: result, err: err}
 	}
 }
