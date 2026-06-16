@@ -152,6 +152,8 @@ func (m Model) handleKey(msg tea.KeyMsg) (tea.Model, tea.Cmd) {
 			} else if m.focused == focusTgtLang && m.tgtIdx < len(m.langCodes)-1 {
 				m.tgtIdx++
 			}
+		case "ctrl+c", "esc":
+			return m, tea.Quit
 		}
 		return m, nil
 	}
@@ -180,6 +182,8 @@ func (m Model) handleKey(msg tea.KeyMsg) (tea.Model, tea.Cmd) {
 			m.status = "Languages swapped."
 		}
 		return m, nil
+	case "ctrl+c", "esc":
+		return m, tea.Quit
 	}
 
 	var cmd tea.Cmd
@@ -284,7 +288,7 @@ func (m Model) View() string {
 	b.WriteString("\n")
 	b.WriteString(m.status)
 	b.WriteString("  ")
-	b.WriteString(helpStyle.Render("ctrl+y:copy  ctrl+l:clear  ctrl+t:swap  tab:next"))
+	b.WriteString(helpStyle.Render("ctrl+y:copy  ctrl+l:clear  ctrl+t:swap  ctrl+c:quit  tab:next"))
 
 	return b.String()
 }
