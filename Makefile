@@ -9,7 +9,7 @@ run: build
 	@if pgrep -q ollama; then \
 		./$(BINARY); \
 	else \
-		ollama serve & \
+		ollama serve >/dev/null 2>&1 & \
 		sleep 2; \
 		./$(BINARY); \
 		pkill ollama 2>/dev/null; \
