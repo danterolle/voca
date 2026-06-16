@@ -22,7 +22,7 @@ const (
 )
 
 const (
-	debounceDuration = 600 * time.Millisecond
+	debounceDuration = 500 * time.Millisecond
 	modelName        = "gemma4:e2b-it-qat"
 )
 
@@ -31,6 +31,7 @@ type (
 		seq int
 	}
 	translateResultMsg struct {
+		text   string
 		result string
 		err    error
 	}
@@ -51,6 +52,7 @@ type Model struct {
 	width        int
 	height       int
 	translateSeq int
+	leadingDone  bool
 }
 
 var (
@@ -107,12 +109,20 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		if msg.seq != m.translateSeq {
 			return m, nil
 		}
+		m.leadingDone = false
+		text := m.pendingText()
+		if text == "" || m.output == text {
+			return m, nil
+		}
 		src := m.langCodes[m.srcIdx]
 		tgt := m.langCodes[m.tgtIdx]
 		m.status = fmt.Sprintf("Translating... (%s -> %s)", m.langNames[src], m.langNames[tgt])
-		return m, m.doTranslate(m.pendingText(), src, tgt)
+		return m, m.doTranslate(text, src, tgt)
 
 	case translateResultMsg:
+		if msg.text != m.textarea.Value() {
+			return m, nil
+		}
 		if msg.err != nil {
 			m.status = fmt.Sprintf("Error: %v", msg.err)
 		} else {
@@ -174,6 +184,7 @@ func (m Model) handleKey(msg tea.KeyMsg) (tea.Model, tea.Cmd) {
 		m.textarea.Reset()
 		m.output = ""
 		m.translateSeq++
+		m.leadingDone = false
 		m.status = "Cleared."
 		return m, nil
 	case "ctrl+t":
@@ -195,6 +206,14 @@ func (m Model) handleKey(msg tea.KeyMsg) (tea.Model, tea.Cmd) {
 		cmd = tea.Batch(cmd, tea.Tick(debounceDuration, func(t time.Time) tea.Msg {
 			return debounceMsg{seq: seq}
 		}))
+		if !m.leadingDone {
+			m.leadingDone = true
+			text := m.textarea.Value()
+			src := m.langCodes[m.srcIdx]
+			tgt := m.langCodes[m.tgtIdx]
+			m.status = fmt.Sprintf("Translating... (%s -> %s)", m.langNames[src], m.langNames[tgt])
+			cmd = tea.Batch(cmd, m.doTranslate(text, src, tgt))
+		}
 	}
 	return m, cmd
 }
@@ -230,7 +249,7 @@ func (m Model) retreatFocus() Model {
 func (m Model) doTranslate(text, source, target string) tea.Cmd {
 	return func() tea.Msg {
 		result, err := translate.Translate(text, source, target, modelName)
-		return translateResultMsg{result: result, err: err}
+		return translateResultMsg{text: text, result: result, err: err}
 	}
 }
 
