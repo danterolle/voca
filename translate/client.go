@@ -25,10 +25,11 @@ type chatResponse struct {
 }
 
 func buildPrompt(text, source, target string) string {
+	src := Languages[source]
 	if source == "auto" {
-		return fmt.Sprintf("[%s]\n%s\n[%s]", Languages[target], text, Languages[target])
+		src = "Auto detect"
 	}
-	return fmt.Sprintf("[%s]\n%s\n[%s]", Languages[source], text, Languages[target])
+	return fmt.Sprintf("Translate from %s to %s:\n\n%s", src, Languages[target], text)
 }
 
 func Translate(text, source, target, model string) (string, error) {
@@ -42,7 +43,7 @@ func Translate(text, source, target, model string) (string, error) {
 	body := chatRequest{
 		Model: model,
 		Messages: []message{
-			{Role: "system", Content: "Translate the text between the markers. Output ONLY the translation. No greetings, no explanations, no metadata, no commentary."},
+			{Role: "system", Content: "You are a translator. Translate the user's text accurately. Preserve meaning, tone, and sentence structure. Output only the translation — no greetings, explanations, or commentary."},
 			{Role: "user", Content: buildPrompt(text, source, target)},
 		},
 		Stream: false,
