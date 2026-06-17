@@ -19,7 +19,6 @@ Run on Apple M2 (16 GB RAM) with Ollama. Times are per-sentence averages across 
 | Llama 3.2 3B | 3B | 2.0 GB | ~1.1s | Decent for EU langs, degrades elsewhere |
 | Gemma 3 1B | 1B | 815 MB | ~0.8s | Surprisingly good for 1B, covers all 14 langs |
 | LFM 2.5 1.2B | 1.2B | 1.2 GB | ~0.7s | Ultra-light, only ~8 usable langs |
-| Qwen3 4B | 4B | 2.5 GB | — | Returns empty — thinking model, unusable for translation |
 
 ## Gemma 4 E2B QAT — default
 
@@ -40,7 +39,7 @@ Run on Apple M2 (16 GB RAM) with Ollama. Times are per-sentence averages across 
 | tr | 10.9s | Bu akşam saat yedi için iki kişilik bir masa ayırtmak istiyorum, tercihen bahçeyi gören pencerenin yakınında olsun. • Konferans; yapay zeka, makine öğrenimi ve farklı ülkelerdeki veri gizliliği düzenlemeleri gibi konuları kapsayacaktır. • Müzenin yeni sergisi, Rönesans sanatçılarından iki yüzün üzerindeki resim ve heykel eserlerini barındırıyor ve tüm dünyadan ziyaretçileri çekiyor. |
 | hi | 9.8s | मैं आज शाम सात बजे दो लोगों के लिए एक टेबल बुक करना चाहूँगा/चाहूँगी, अधिमानतः बगीचे के दृश्य वाली खिड़की के पास। • सम्मेलन कृत्रिम बुद्धिमत्ता, मशीन लर्निंग और विभिन्न देशों में डेटा गोपनीयता नियमों जैसे विषयों को कवर करेगा। • संग्रहालय की नई प्रदर्शनी में पुनर्जागरण कलाकारों की दो सौ से अधिक पेंटिंग और मूर्तियाँ शामिल हैं, जो दुनिया भर के आगंतुकों को आकर्षित कर रही हैं। |
 
-**Average: ~10s** — best quality by far. Flawless grammar, natural phrasing, no meta-commentary. 2 empty outputs (PL S1, ZH S1).
+**Average: ~10s**
 
 ## Phi-4 Mini 3.8B
 
@@ -61,7 +60,7 @@ Run on Apple M2 (16 GB RAM) with Ollama. Times are per-sentence averages across 
 | tr | 1.4s | İkiz için saat yediği bu akşamı bir masa rezervasyonu yapmamı isterim, mümkünse bahçeyi manzarası olan pencere kenarında. • Konferans, yapay zeka, makine öğrenimi ve farklı ülkelerdeki veri gizliliği düzenlemeleri gibi konuları kapsayacak. • Muzeyin yeni sergisi iki yüzden fazla ressamın Rönesans sanat eserleri ve heykellerini içeriyor, dünyanın dört bir yanından ziyaretçileri çekiyor. |
 | hi | 1.4s | मैं इस शाम सात बजे के लिए दो लोगों के साथ एक टेबल बुक करना चाहता हूँ, संभवतः दीवार के पास से एक गार्डन की ओर मुड़कर। • टेक्नोलॉजी सम्मेलन विभिन्न देशों के डेटा सुरक्षा नियमों पर विषयों जैसे कि एआई, मशीन लर्निंग और डेटा सुरक्षा कानूनों को शामिल करेगा। • म्यूज़ियम के नए प्रदर्शित करने वाले संग्रह में renaissance कलाकारों से over 200 चित्र और मूर्तियाँ शामिल हैं, जो दुनिया भर से आगंतुक आकर्षित करते हैं। |
 
-**Average: ~1.3s** — significantly better quality on real-world sentences than the previous benchmark run. Minor issues: code-switching in ES, gender errors, Arabic "eighty" instead of "two hundred".
+**Average: ~1.3s**
 
 ## Ministral 3B
 
@@ -82,7 +81,7 @@ Run on Apple M2 (16 GB RAM) with Ollama. Times are per-sentence averages across 
 | tr | 1.4s | Bu akşam yedi saatta iki kişilik bir masaya ihtiyacım var. Mümkünse pencere yakınında, bahçeye bakacak bir yerde olmasını istiyorum. • Konferansın farklı ülkelerdeki makine öğrenimi, yapay zekâ ve verilerle ilgili gizlilik düzenlemeleri gibi konuları kapsayacağı belirtilmiştir. • Yeni sergisi, Rönesans sanatçılarından yüzlerce ressam ve heykel ile dünyanın her yerinden ziyaretçileri çekiyor. |
 | hi | 1.5s | अगले रात सात बजे दोनो के लिए एक टेबल बुक करना चाहिये। पसंदीदा स्थान खिड़की के पास, गार्डन की दिशा में देखने वाला। • कांग्रेस में कृत्रिम बुद्धिमत्ता, मशीन लर्निंग और विभिन्न देशों में डेटा गोपनीयता नियमों पर चर्चा की जाएगी। • मuseum का नया प्रदर्शन रenaissance कलाकारों के दो सौ से अधिक चित्रों और मूर्तियों को प्रदर्शित करता है, जो दुनिया भर के पर्यटकों को आकर्षित करता है। |
 
-**Average: ~1.2s** — much better than the earlier benchmark. Main drawback: meta-commentary (notes like *"Adjusted for conciseness"*) appears in ~30% of outputs. Some code-switching (English words mixed in) and minor spelling issues.
+**Average: ~1.2s**
 
 ## Gemma 3 1B
 
@@ -103,4 +102,4 @@ Run on Apple M2 (16 GB RAM) with Ollama. Times are per-sentence averages across 
 | tr | 884ms | Lütfen iki için bu akşam saat 17:00'da bir masaya rezervasyon yapın, bahçeye bakacak bir pencere yakınında olmasını istiyorum. • Konferans, yapay zeka, makine öğrenimi ve veri gizliliği düzenlemeleri gibi farklı ülkelerde farklı konuları kapsayacak. • Müze'nin yeni sergisi, 200 yağmalık ve heykeltıraş sanatçılardan oluşan överen yüzlerce tuval ve heykelden oluşmaktadır ve dünya çapındaki ziyaretçileri cezbedmektedir. |
 | hi | 752ms | मैं शाम को दो लोगों के लिए टेबल बुक करना चाहता हूँ, जो सात बजे पर करीब खिड़की से बगीचे का दृश्य प्रस्तुत करे। • सम्मेलन आर्टिफिशियल इंटेलिजेंस, मशीन लर्निंग और डेटा गोपनीयता नियमों को विभिन्न देशों में अलग-अलग विषयों पर कवर करेगा। • लम्बे रंग और मूर्तियों की एक नई प्रदर्शनी संग्रहालय में है, जो रिनेंटाल्ड कलाकारों से आने वाले सभी दुनिया भर के आगंतुकों को आकर्षित करती हैं। |
 
-**Average: ~0.8s** — impressive for 815 MB. Covers all 14 languages where LFM 1.2B failed. Main issues: time expression errors ("half past seven" for "seven o'clock"), gender agreement errors in Romance languages, Renaissance/"近世" confusion, some Asian details lost.
+**Average: ~0.8s**
