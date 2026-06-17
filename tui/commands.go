@@ -11,7 +11,7 @@ import (
 
 func (m Model) doTranslate(text, source, target string) tea.Cmd {
 	return func() tea.Msg {
-		result, err := translate.Translate(text, source, target, translate.DefaultModel)
+		result, err := translate.Translate(text, source, target, m.ModelName)
 		return translateResultMsg{text: text, result: result, err: err}
 	}
 }

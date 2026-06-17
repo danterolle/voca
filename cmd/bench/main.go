@@ -1,6 +1,7 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"time"
 
@@ -8,6 +9,8 @@ import (
 )
 
 func main() {
+	model := flag.String("model", translate.DefaultModel, "Ollama model")
+	flag.Parse()
 	targets := []struct {
 		code string
 		name string
@@ -32,7 +35,7 @@ func main() {
 
 	for _, tgt := range targets {
 		start := time.Now()
-		result, err := translate.Translate(text, "en", tgt.code, translate.DefaultModel)
+		result, err := translate.Translate(text, "en", tgt.code, *model)
 		elapsed := time.Since(start)
 		if err != nil {
 			fmt.Printf("[%-4s %-10s] ERROR: %v\n", tgt.code, tgt.name, err)

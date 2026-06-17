@@ -35,6 +35,7 @@ type Model struct {
 	langNames map[string]string
 	srcIdx    int
 	tgtIdx    int
+	ModelName string
 
 	textarea textarea.Model
 	output   string
@@ -48,7 +49,7 @@ type Model struct {
 	leadingDone  bool
 }
 
-func InitialModel() Model {
+func InitialModel(model string) Model {
 	ta := textarea.New()
 	ta.Placeholder = "Type text to translate..."
 	ta.Prompt = ""
@@ -60,6 +61,7 @@ func InitialModel() Model {
 		"ro", "hu", "vi", "th", "hi"}
 
 	return Model{
+		ModelName: model,
 		langCodes: codes,
 		langNames: translate.Languages,
 		srcIdx:    0,

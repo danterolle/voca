@@ -8,7 +8,7 @@ build:
 	go build $(LDFLAGS) -o $(BINARY) .
 
 run: build
-	./$(BINARY)
+	./$(BINARY) $(ARGS)
 
 stop:
 	-pkill -f "$(BINARY)" 2>/dev/null; pkill ollama 2>/dev/null; echo "Stopped."

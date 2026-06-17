@@ -3,6 +3,7 @@ package main
 import (
 	"bufio"
 	"encoding/json"
+	"flag"
 	"fmt"
 	"net/http"
 	"os"
@@ -18,6 +19,9 @@ import (
 var Version string
 
 func main() {
+	model := flag.String("model", translate.DefaultModel, "Ollama model to use for translation")
+	flag.Parse()
+
 	startedOllama := false
 
 	printBanner()
@@ -43,9 +47,9 @@ func main() {
 		fmt.Printf("online\n")
 	}
 
-	if !modelExists() {
-		fmt.Printf("  ◆ Pulling %s...\n", translate.DefaultModel)
-		if err := pullModel(); err != nil {
+	if !modelExists(*model) {
+		fmt.Printf("  ◆ Pulling %s...\n", *model)
+		if err := pullModel(*model); err != nil {
 			fmt.Printf("  ✖ Pull failed: %v\n", err)
 			if startedOllama {
 				pkill("ollama")
@@ -59,7 +63,7 @@ func main() {
 	time.Sleep(800 * time.Millisecond)
 	fmt.Printf("\n")
 
-	p := tea.NewProgram(tui.InitialModel(), tea.WithAltScreen())
+	p := tea.NewProgram(tui.InitialModel(*model), tea.WithAltScreen())
 	if _, err := p.Run(); err != nil {
 		fmt.Fprintf(os.Stderr, "  ✖ Error: %v\n", err)
 	}
@@ -104,7 +108,7 @@ func waitForOllama(seconds int) bool {
 	return false
 }
 
-func modelExists() bool {
+func modelExists(model string) bool {
 	resp, err := http.Get("http://localhost:11434/api/tags")
 	if err != nil {
 		return false
@@ -117,15 +121,15 @@ func modelExists() bool {
 	}
 	json.NewDecoder(resp.Body).Decode(&tags)
 	for _, m := range tags.Models {
-		if m.Name == translate.DefaultModel || strings.HasPrefix(m.Name, translate.DefaultModel+":") {
+		if m.Name == model || strings.HasPrefix(m.Name, model+":") {
 			return true
 		}
 	}
 	return false
 }
 
-func pullModel() error {
-	body := map[string]any{"name": translate.DefaultModel, "stream": true}
+func pullModel(model string) error {
+	body := map[string]any{"name": model, "stream": true}
 	var buf strings.Builder
 	json.NewEncoder(&buf).Encode(body)
 
