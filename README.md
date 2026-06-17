@@ -6,7 +6,7 @@
 
 Local-first translation tool for desktop and developer workflows. Translate text, files, docs, and structured content using local LLMs.
 
-**Why VOCA?** Every translation stays on your machine. No data sent to Google, DeepL or whatever. Designed for the terminal, so you can make it scriptable, pipeable, and integrable into your existing workflow. Replaces manual copy-pasting to DeepL/Google Translate when working on a computer.
+**Why VOCA?** Every translation stays on your machine. No data sent to Google, DeepL or $whatever. Designed for desktop and terminal, **not** for mobile. You can script it, pipe it and integrate it into your development workflow. Replaces manual copy-pasting to DeepL/Google Translate when working on text, documentation, code or sensitive documents.
 
 ---
 
@@ -28,8 +28,8 @@ make build
 ## Quick start
 
 ```bash
-voca                                           # TUI mode
-voca translate --from it --to en  "Ciao mondo" # one-shot from stdin
+voca                                          # TUI mode
+voca translate --from it --to en "Ciao mondo" # one-shot from stdin
 ```
 
 ## TUI mode
