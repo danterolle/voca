@@ -52,8 +52,8 @@ func main() {
 		fmt.Printf("  ◆ Pulling %s...\n", *model)
 		if err := pullModel(*model); err != nil {
 			fmt.Printf("  ✖ Pull failed: %v\n", err)
-			if startedOllama {
-				pkill("ollama")
+			if startedOllama && ollamaCmd != nil {
+				ollamaCmd.Process.Kill()
 			}
 			os.Exit(1)
 		}
