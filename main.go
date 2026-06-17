@@ -179,9 +179,22 @@ func printBanner() {
 			fmt.Printf("%s%s%s\n", gradient[len(gradient)-1], line, reset)
 		}
 	}
-	if Version != "" {
-		fmt.Printf("\033[1;38;5;203m                    %s%s\n", Version, reset)
+	ver := Version
+	if ver == "" {
+		ver = gitVersion()
+	}
+	if ver != "" {
+		fmt.Printf("\033[1;38;5;203m                    %s%s\n", ver, reset)
 	}
 	fmt.Printf("       \033[38;5;203mVersatile Offline Communication Assistant%s\n", reset)
 	fmt.Println()
+}
+
+func gitVersion() string {
+	cmd := exec.Command("git", "describe", "--tags", "--always", "--dirty")
+	out, err := cmd.Output()
+	if err != nil {
+		return ""
+	}
+	return strings.TrimSpace(string(out))
 }
