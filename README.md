@@ -11,6 +11,7 @@ Local-first translation tool for desktop and developer workflows. Translate text
 - Clipboard copy, language swap, clear input
 - Auto-manages Ollama lifecycle (start, pull, stop)
 - Drop-in model switching via `--model`
+- One-shot CLI mode for scripts, pipes, and files
 
 ## Quick start
 
@@ -47,6 +48,31 @@ make build-windows      # cross-compile for Windows
 make build-darwin       # cross-compile for macOS
 make run ARGS="--model phi4-mini:latest"
 make stop               # kill ollama
+```
+
+## CLI mode (one-shot)
+
+Translate directly from the command line. Useful for scripts, pipes, and file processing.
+
+```bash
+# Translate a string
+voca translate --from en --to it "Hello world"
+
+# Pipe from stdin
+echo "Hello world" | voca translate --from en --to it
+
+# Translate a file
+voca translate --from auto --to en ./document.md
+
+# Choose a model
+voca translate --model phi4-mini:latest --from fr --to en "Bonjour le monde"
+```
+
+**Flags:**
+```
+--from    Source language code (default: auto)
+--to      Target language code (default: en)
+--model   Ollama model (default: gemma4:e2b-it-qat)
 ```
 
 ## Supported languages
