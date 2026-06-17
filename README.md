@@ -1,29 +1,69 @@
 # VOCA
 
-Local-first translation tool for desktop and developer workflows. Translate text, files, docs, and structured content using local LLMs. Replaces manual copy-pasting to DeepL / Google Translate when working on a computer.
+[![Go Version](https://img.shields.io/badge/Go-1.26-00ADD8?logo=go)](https://go.dev)
+[![License](https://img.shields.io/badge/license-Apache%202.0-blue)](LICENSE)
+[![Go Report Card](https://goreportcard.com/badge/github.com/danterolle/voca)](https://goreportcard.com/report/github.com/danterolle/voca)
 
-## Features
+---
 
-- Everything runs on your machine — zero data leaves
-- Translate as you type (600ms debounce)
-- 25 source/target languages (auto-detect supported)
-- Cross-platform: macOS, Windows, Linux
-- Clipboard copy, language swap, clear input
-- Auto-manages Ollama lifecycle (start, pull, stop)
-- Drop-in model switching via `--model`
-- One-shot CLI mode for scripts, pipes, and files
+Local-first translation tool for desktop and developer workflows. Translate text, files, docs, and structured content using local LLMs.
+
+**Why VOCA?** Every translation stays on your machine. No data sent to Google, DeepL or whatever. Designed for the terminal, so you can make it scriptable, pipeable, and integrable into your existing workflow. Replaces manual copy-pasting to DeepL/Google Translate when working on a computer.
+
+---
+
+## Table of Contents
+
+- [Installation](#installation)
+- [Quick start](#quick-start)
+- [TUI mode](#tui-mode)
+- [CLI mode](#cli-mode-one-shot)
+- [Benchmarks](#benchmarks)
+
+---
+
+## Installation
+
+```bash
+# Install from source
+go install github.com/danterolle/voca@latest
+git clone https://github.com/danterolle/voca
+cd voca
+make build
+```
+
+**Prerequisites:** [Ollama](https://ollama.com) with at least one model pulled (e.g. `ollama pull gemma3:1b`).
+
+**Makefile:**
+```bash
+make build              # build for current OS
+make build-linux        # cross-compile for Linux
+make build-windows      # cross-compile for Windows
+make build-darwin       # cross-compile for macOS
+make run ARGS="--model phi4-mini:latest"
+make stop               # kill ollama
+```
+
+---
 
 ## Quick start
 
 ```bash
-# Run with default model (gemma4:e2b-it-qat)
-go run .
+# Launch the terminal UI
+voca
 
-# Use a specific model
-go run . --model phi4-mini:latest
+# Run a one-shot translation
+voca translate --from en --to it "Hello world"
+
+# Use a different model
+voca --model phi4-mini:latest
 ```
 
-## Usage
+---
+
+## TUI mode
+
+Interactive terminal interface with auto-translate as you type.
 
 **Flags:**
 ```
@@ -40,19 +80,11 @@ go run . --model phi4-mini:latest
 | `Ctrl+T` | Swap source/target languages |
 | `Ctrl+C` / `Esc` | Quit |
 
-**Makefile:**
-```bash
-make build              # build for current OS
-make build-linux        # cross-compile for Linux
-make build-windows      # cross-compile for Windows
-make build-darwin       # cross-compile for macOS
-make run ARGS="--model phi4-mini:latest"
-make stop               # kill ollama
-```
+---
 
 ## CLI mode (one-shot)
 
-Translate directly from the command line. Useful for scripts, pipes, and file processing.
+Translate directly from the command line in one shot combo:
 
 ```bash
 # Translate a string
@@ -75,12 +107,14 @@ voca translate --model phi4-mini:latest --from fr --to en "Bonjour le monde"
 --model   Ollama model (default: gemma4:e2b-it-qat)
 ```
 
-## Supported languages
-
-Auto, English, Italian, French, German, Spanish, Portuguese, Dutch, Polish, Russian, Japanese, Chinese, Korean, Arabic, Turkish, Czech, Swedish, Danish, Finnish, Greek, Romanian, Hungarian, Vietnamese, Thai, Hindi.
-
-> The app provides 25 language labels, but actual translation quality depends on the model. Smaller models may only handle European languages well or produce nonsense on some targets. See [BENCHMARKS.md](BENCHMARKS.md) for per-model language coverage.
+---
 
 ## Benchmarks
 
 See [BENCHMARKS.md](BENCHMARKS.md) for multi-sentence translation quality and speed benchmarks across 6 models and 14 languages.
+
+---
+
+## License
+
+Apache 2.0 — see [LICENSE](LICENSE).
