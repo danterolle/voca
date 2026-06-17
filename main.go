@@ -15,6 +15,8 @@ import (
 	"github.com/danterolle/voca/tui"
 )
 
+var Version = "dev"
+
 func main() {
 	startedOllama := false
 
