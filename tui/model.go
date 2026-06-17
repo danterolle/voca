@@ -31,11 +31,11 @@ type (
 )
 
 type Model struct {
+	core      *translate.Core
 	langCodes []string
 	langNames map[string]string
 	srcIdx    int
 	tgtIdx    int
-	ModelName string
 
 	textarea textarea.Model
 	output   string
@@ -49,21 +49,25 @@ type Model struct {
 	leadingDone  bool
 }
 
-func InitialModel(model string) Model {
+func newModel(core *translate.Core) Model {
 	ta := textarea.New()
 	ta.Placeholder = "Type text to translate..."
 	ta.Prompt = ""
 	ta.CharLimit = 0
 	ta.Focus()
 
-	codes := []string{"auto", "en", "it", "fr", "de", "es", "pt", "nl", "pl",
-		"ru", "ja", "zh", "ko", "ar", "tr", "cs", "sv", "da", "fi", "el",
-		"ro", "hu", "vi", "th", "hi"}
+	langs := core.Languages.List()
+	codes := make([]string, len(langs))
+	names := make(map[string]string, len(langs))
+	for i, l := range langs {
+		codes[i] = l.Code
+		names[l.Code] = l.Name
+	}
 
 	return Model{
-		ModelName: model,
+		core:      core,
 		langCodes: codes,
-		langNames: translate.Languages,
+		langNames: names,
 		srcIdx:    0,
 		tgtIdx:    1,
 		textarea:  ta,

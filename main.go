@@ -2,6 +2,7 @@ package main
 
 import (
 	"bufio"
+	"context"
 	"encoding/json"
 	"flag"
 	"fmt"
@@ -11,7 +12,6 @@ import (
 	"strings"
 	"time"
 
-	tea "github.com/charmbracelet/bubbletea"
 	"github.com/danterolle/voca/translate"
 	"github.com/danterolle/voca/tui"
 )
@@ -64,8 +64,15 @@ func main() {
 	time.Sleep(800 * time.Millisecond)
 	fmt.Printf("\n")
 
-	p := tea.NewProgram(tui.InitialModel(*model), tea.WithAltScreen())
-	if _, err := p.Run(); err != nil {
+	core := translate.NewCore(
+		translate.NewOllamaBackend("http://localhost:11434", *model, translate.NewDefaultPrompt()),
+		translate.NewDefaultPrompt(),
+		translate.NewStaticLanguages(),
+		*model,
+	)
+
+	ui := tui.NewBubbleTeaUI()
+	if err := ui.Run(context.Background(), core); err != nil {
 		fmt.Fprintf(os.Stderr, "  ✖ Error: %v\n", err)
 	}
 

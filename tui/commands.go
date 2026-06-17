@@ -1,19 +1,18 @@
 package tui
 
 import (
+	"context"
 	"fmt"
 	"os/exec"
 	"runtime"
 	"strings"
 
 	tea "github.com/charmbracelet/bubbletea"
-
-	"github.com/danterolle/voca/translate"
 )
 
 func (m Model) doTranslate(text, source, target string) tea.Cmd {
 	return func() tea.Msg {
-		result, err := translate.Translate(text, source, target, m.ModelName)
+		result, err := m.core.Backend.Translate(context.Background(), text, source, target)
 		return translateResultMsg{text: text, result: result, err: err}
 	}
 }

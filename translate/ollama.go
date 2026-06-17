@@ -9,6 +9,22 @@ import (
 	"strings"
 )
 
+type message struct {
+	Role    string `json:"role"`
+	Content string `json:"content"`
+}
+
+type chatRequest struct {
+	Model    string         `json:"model"`
+	Messages []message      `json:"messages"`
+	Stream   bool           `json:"stream"`
+	Options  map[string]any `json:"options"`
+}
+
+type chatResponse struct {
+	Message message `json:"message"`
+}
+
 type OllamaBackend struct {
 	BaseURL string
 	Model   string

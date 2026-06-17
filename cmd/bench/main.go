@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"flag"
 	"fmt"
 	"os"
@@ -39,6 +40,8 @@ func main() {
 	model := flag.String("model", translate.DefaultModel, "Ollama model")
 	flag.Parse()
 
+	backend := translate.NewOllamaBackend("http://localhost:11434", *model, translate.NewDefaultPrompt())
+
 	totalStart := time.Now()
 	totalSentences := len(sentences)
 	langTimes := make(map[string][]time.Duration)
@@ -47,7 +50,7 @@ func main() {
 		fmt.Fprintf(os.Stderr, "\n=== Sentence %d/%d: %q ===\n", si+1, totalSentences, ellipsis(text, 60))
 		for _, tgt := range targets {
 			start := time.Now()
-			result, err := translate.Translate(text, "en", tgt.code, *model)
+			result, err := backend.Translate(context.Background(), text, "en", tgt.code)
 			elapsed := time.Since(start)
 			langTimes[tgt.code] = append(langTimes[tgt.code], elapsed)
 			if err != nil {
