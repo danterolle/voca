@@ -26,9 +26,9 @@ type chatResponse struct {
 
 func buildPrompt(text, source, target string) string {
 	if source == "auto" {
-		return fmt.Sprintf("You are a professional translator. Translate the following text into %s.\nText:\n%s\n\nTranslation:", Languages[target], text)
+		return fmt.Sprintf("[%s]\n%s\n[%s]", Languages[target], text, Languages[target])
 	}
-	return fmt.Sprintf("You are a professional translator. Translate the following text from %s to %s.\nText:\n%s\n\nTranslation:", Languages[source], Languages[target], text)
+	return fmt.Sprintf("[%s]\n%s\n[%s]", Languages[source], text, Languages[target])
 }
 
 func Translate(text, source, target, model string) (string, error) {
@@ -42,14 +42,14 @@ func Translate(text, source, target, model string) (string, error) {
 	body := chatRequest{
 		Model: model,
 		Messages: []message{
-			{Role: "system", Content: "You are a translator. Translate the text provided by the user into the requested language. Output ONLY the translation, no explanations or extra text."},
+			{Role: "system", Content: "Translate the text between the markers. Output ONLY the translation. No greetings, no explanations, no metadata, no commentary."},
 			{Role: "user", Content: buildPrompt(text, source, target)},
 		},
 		Stream: false,
 		Options: map[string]any{
-			"temperature": 0.1,
-			"num_predict": 1024,
-			"top_p":       0.9,
+			"temperature": 0.0,
+			"num_predict": 512,
+			"top_p":       1.0,
 		},
 	}
 
