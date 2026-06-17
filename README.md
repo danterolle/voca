@@ -1,25 +1,58 @@
-# voca
+# VOCA
 
-**V**ersatile **O**ffline **C**ommunication **A**ssistant — real-time translation TUI powered by local Ollama models.
+100% local TUI translator.
+
+## Features
+
+- Everything runs on your machine — zero data leaves
+- Translate as you type (600ms debounce)
+- 25 source/target languages (auto-detect supported)
+- Cross-platform: macOS, Windows, Linux
+- Clipboard copy, language swap, clear input
+- Auto-manages Ollama lifecycle (start, pull, stop)
+- Drop-in model switching via `--model`
+
+## Quick start
 
 ```bash
-go run . --model llama3.2:3b
+# Run with default model (gemma4:e2b-it-qat)
+go run .
+
+# Use a specific model
+go run . --model phi4-mini:latest
 ```
 
-The binary manages the full Ollama lifecycle on its own: starts the server if offline, pulls the model if missing, and cleans up on exit.
+## Usage
+
+**Flags:**
+```
+--model   Ollama model to use (default: gemma4:e2b-it-qat)
+```
+
+**Keyboard:**
+| Key | Action |
+|-----|--------|
+| `Tab` / `Shift+Tab` | Cycle focus (source → target → input) |
+| `←` `→` | Change language when focused |
+| `Ctrl+Y` | Copy translation to clipboard |
+| `Ctrl+L` | Clear input and output |
+| `Ctrl+T` | Swap source/target languages |
+| `Ctrl+C` / `Esc` | Quit |
+
+**Makefile:**
+```bash
+make build              # build for current OS
+make build-linux        # cross-compile for Linux
+make build-windows      # cross-compile for Windows
+make build-darwin       # cross-compile for macOS
+make run ARGS="--model phi4-mini:latest"
+make stop               # kill ollama
+```
+
+## Supported languages
+
+Auto, English, Italian, French, German, Spanish, Portuguese, Dutch, Polish, Russian, Japanese, Chinese, Korean, Arabic, Turkish, Czech, Swedish, Danish, Finnish, Greek, Romanian, Hungarian, Vietnamese, Thai, Hindi.
 
 ## Benchmarks
 
-See [BENCHMARKS.md](BENCHMARKS.md) for detailed multi-sentence translation benchmarks across 6 models and 14 languages.
-
-## Model selection
-
-```bash
-go run .
-
-# Fast, good for European languages
-go run . --model llama3.2:3b
-
-# Use a specific model
-go run . --model <model-name>
-```
+See [BENCHMARKS.md](BENCHMARKS.md) for multi-sentence translation quality and speed benchmarks across 6 models and 14 languages.
