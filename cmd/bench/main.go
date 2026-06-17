@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/danterolle/voca/translate"
+	"github.com/danterolle/voca/translate/ollama"
 )
 
 var sentences = []string{
@@ -40,7 +41,7 @@ func main() {
 	model := flag.String("model", translate.DefaultModel, "Ollama model")
 	flag.Parse()
 
-	backend := translate.NewOllamaBackend("http://localhost:11434", *model, translate.NewDefaultPrompt())
+	backend := ollama.NewBackend("http://localhost:11434", *model, translate.NewDefaultPrompt())
 
 	totalStart := time.Now()
 	totalSentences := len(sentences)

@@ -1,4 +1,4 @@
-package translate
+package ollama
 
 import (
 	"bytes"
@@ -7,6 +7,8 @@ import (
 	"fmt"
 	"net/http"
 	"strings"
+
+	"github.com/danterolle/voca/translate"
 )
 
 type message struct {
@@ -25,21 +27,21 @@ type chatResponse struct {
 	Message message `json:"message"`
 }
 
-type OllamaBackend struct {
+type Backend struct {
 	BaseURL string
 	Model   string
-	Prompt  PromptBuilder
+	Prompt  translate.PromptBuilder
 }
 
-func NewOllamaBackend(baseURL, model string, prompt PromptBuilder) *OllamaBackend {
-	return &OllamaBackend{
+func NewBackend(baseURL, model string, prompt translate.PromptBuilder) *Backend {
+	return &Backend{
 		BaseURL: baseURL,
 		Model:   model,
 		Prompt:  prompt,
 	}
 }
 
-func (b *OllamaBackend) Translate(ctx context.Context, text, source, target string) (string, error) {
+func (b *Backend) Translate(ctx context.Context, text, source, target string) (string, error) {
 	if strings.TrimSpace(text) == "" {
 		return "", nil
 	}

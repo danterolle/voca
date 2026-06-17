@@ -87,6 +87,3 @@ func TestMockBackend_CustomFunc(t *testing.T) {
 	}
 }
 
-func TestOllamaBackend_ImplementsBackend(t *testing.T) {
-	var _ Backend = (*OllamaBackend)(nil)
-}

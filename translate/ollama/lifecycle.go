@@ -1,4 +1,4 @@
-package translate
+package ollama
 
 import (
 	"bufio"
@@ -9,7 +9,7 @@ import (
 	"time"
 )
 
-func OllamaReachable() bool {
+func Reachable() bool {
 	client := http.Client{Timeout: 2 * time.Second}
 	resp, err := client.Get("http://localhost:11434/api/tags")
 	if err != nil {
@@ -19,9 +19,9 @@ func OllamaReachable() bool {
 	return true
 }
 
-func WaitForOllama(seconds int) bool {
+func WaitForReady(seconds int) bool {
 	for i := 0; i < seconds; i++ {
-		if OllamaReachable() {
+		if Reachable() {
 			return true
 		}
 		time.Sleep(time.Second)
@@ -73,10 +73,10 @@ func PullModel(model string) error {
 		}
 		if s.Total > 0 {
 			pct := float64(s.Completed) / float64(s.Total) * 100
-			bar := ProgressBar(pct, 30)
+			bar := progressBar(pct, 30)
 			fmt.Printf("\r     %s  %.0f%%", bar, pct)
 		} else if s.Status == "success" {
-			fmt.Printf("\r     %s  100%%\n", ProgressBar(100, 30))
+			fmt.Printf("\r     %s  100%%\n", progressBar(100, 30))
 		} else if strings.Contains(s.Status, "pulling") {
 			parts := strings.SplitN(s.Status, " ", 2)
 			if len(parts) == 2 {
@@ -97,7 +97,7 @@ func PullModel(model string) error {
 	return scanner.Err()
 }
 
-func ProgressBar(pct float64, width int) string {
+func progressBar(pct float64, width int) string {
 	filled := int(pct * float64(width) / 100)
 	if filled > width {
 		filled = width

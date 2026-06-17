@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"github.com/danterolle/voca/translate"
+	"github.com/danterolle/voca/translate/ollama"
 	"github.com/danterolle/voca/tui"
 )
 
@@ -28,7 +29,7 @@ func main() {
 		os.Exit(1)
 	}
 
-	if !translate.OllamaReachable() {
+	if !ollama.Reachable() {
 		fmt.Printf("  ◆ Starting Ollama... ")
 		ollamaCmd = exec.Command("ollama", "serve")
 		if err := ollamaCmd.Start(); err != nil {
@@ -36,7 +37,7 @@ func main() {
 			os.Exit(1)
 		}
 		startedOllama = true
-		if !translate.WaitForOllama(30) {
+		if !ollama.WaitForReady(30) {
 			fmt.Printf("timeout waiting for Ollama to start\n")
 			ollamaCmd.Process.Kill()
 			os.Exit(1)
@@ -44,9 +45,9 @@ func main() {
 		fmt.Printf("online\n")
 	}
 
-	if !translate.ModelExists(*model) {
+	if !ollama.ModelExists(*model) {
 		fmt.Printf("  ◆ Pulling %s...\n", *model)
-		if err := translate.PullModel(*model); err != nil {
+		if err := ollama.PullModel(*model); err != nil {
 			fmt.Printf("  ✖ Pull failed: %v\n", err)
 			if startedOllama && ollamaCmd != nil {
 				ollamaCmd.Process.Kill()
@@ -61,7 +62,7 @@ func main() {
 	fmt.Printf("\n")
 
 	core := translate.NewCore(
-		translate.NewOllamaBackend("http://localhost:11434", *model, translate.NewDefaultPrompt()),
+		ollama.NewBackend("http://localhost:11434", *model, translate.NewDefaultPrompt()),
 		translate.NewDefaultPrompt(),
 		translate.NewStaticLanguages(),
 		*model,
