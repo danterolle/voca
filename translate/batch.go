@@ -4,17 +4,29 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"strings"
 )
 
-func TranslateJSON(ctx context.Context, core *Core, input []byte, from, to string) ([]byte, error) {
-	var data any
-	if err := json.Unmarshal(input, &data); err != nil {
-		return nil, fmt.Errorf("invalid JSON: %w", err)
+func Batch(ctx context.Context, core *Core, input []byte, from, to string) ([]byte, error) {
+	if json.Valid(input) {
+		var data any
+		if err := json.Unmarshal(input, &data); err != nil {
+			return nil, fmt.Errorf("invalid JSON: %w", err)
+		}
+		translateValue(ctx, core, &data, from, to)
+		return json.MarshalIndent(data, "", "  ")
 	}
 
-	translateValue(ctx, core, &data, from, to)
+	text := strings.TrimSpace(string(input))
+	if text == "" {
+		return nil, fmt.Errorf("empty input")
+	}
 
-	return json.MarshalIndent(data, "", "  ")
+	result, err := core.Backend.Translate(ctx, text, from, to)
+	if err != nil {
+		return nil, err
+	}
+	return []byte(result), nil
 }
 
 func translateValue(ctx context.Context, core *Core, val *any, from, to string) {

@@ -40,7 +40,7 @@ func printUsage() {
 	fmt.Println("Usage:")
 	fmt.Println("  voca                   Start the terminal UI (default)")
 	fmt.Println("  voca translate [flags] <text|file>   One-shot translation")
-	fmt.Println("  voca batch [flags] <file.json>       Batch translate JSON values")
+	fmt.Println("  voca batch [flags] <file|stdin>              Batch translate JSON or text")
 	fmt.Println()
 	fmt.Println("Flags:")
 	fmt.Println("  -h, --help            Show this help message")
@@ -189,19 +189,21 @@ func runBatch(args []string) {
 
 	if *h || *help {
 		printBanner()
-		fmt.Println("Usage: voca batch [flags] [file.json]")
+		fmt.Println("Usage: voca batch [flags] [file]")
 		fmt.Println()
 		fs.PrintDefaults()
 		fmt.Println()
 		fmt.Println("Examples:")
 		fmt.Println(`  voca batch --from en --to it < locales/en.json`)
 		fmt.Println(`  voca batch --from en --to it locales/en.json`)
+		fmt.Println(`  voca batch --from en --to fr README.md`)
+		fmt.Println(`  echo "Hello world" | voca batch --from en --to it`)
 		os.Exit(0)
 	}
 
 	input, err := readStdinOrFile(fs.Args())
 	if err != nil || len(input) == 0 {
-		fmt.Fprintf(os.Stderr, "Usage: voca batch --from <lang> --to <lang> [file.json]\n")
+		fmt.Fprintf(os.Stderr, "Usage: voca batch --from <lang> --to <lang> [file]\n")
 		fs.PrintDefaults()
 		os.Exit(1)
 	}
@@ -210,7 +212,7 @@ func runBatch(args []string) {
 	core := newCore(*model)
 	ctx := context.Background()
 
-	output, err := translate.TranslateJSON(ctx, core, input, *from, *to)
+	output, err := translate.Batch(ctx, core, input, *from, *to)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "  ✖ Error: %v\n", err)
 		if started && ollamaCmd != nil {
