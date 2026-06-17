@@ -59,17 +59,24 @@ func newModel(core *translate.Core) Model {
 	langs := core.Languages.List()
 	codes := make([]string, len(langs))
 	names := make(map[string]string, len(langs))
+	srcIdx, tgtIdx := 0, 1
 	for i, l := range langs {
 		codes[i] = l.Code
 		names[l.Code] = l.Name
+		if l.Code == "auto" {
+			srcIdx = i
+		}
+		if l.Code == "en" {
+			tgtIdx = i
+		}
 	}
 
 	return Model{
 		core:      core,
 		langCodes: codes,
 		langNames: names,
-		srcIdx:    0,
-		tgtIdx:    1,
+		srcIdx:    srcIdx,
+		tgtIdx:    tgtIdx,
 		textarea:  ta,
 		focused:   focusInput,
 		status:    "Ready. Select languages and start typing.",

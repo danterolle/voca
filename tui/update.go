@@ -106,7 +106,7 @@ func (m Model) handleKey(msg tea.KeyMsg) (tea.Model, tea.Cmd) {
 		m.status = "Cleared."
 		return m, nil
 	case "ctrl+t":
-		if m.srcIdx != 0 {
+		if m.langCodes[m.srcIdx] != "auto" {
 			m.srcIdx, m.tgtIdx = m.tgtIdx, m.srcIdx
 			m.status = "Languages swapped."
 		}
