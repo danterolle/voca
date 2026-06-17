@@ -10,6 +10,16 @@ Local-first translation tool for desktop and developer workflows. Translate text
 
 ---
 
+## Table of Contents
+
+- [Installation](#installation)
+- [Quick start](#quick-start)
+- [TUI mode](#tui-mode)
+- [CLI mode](#cli-mode-one-shot)
+- [Batch mode](#batch-mode)
+- [Benchmarks](#benchmarks)
+- [License](#license)
+
 ## Installation
 
 **Prerequisites:** [Ollama](https://ollama.com) with at least one model pulled (e.g. `ollama pull gemma3:1b`).
