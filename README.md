@@ -12,7 +12,7 @@ The binary manages the full Ollama lifecycle on its own: starts the server if of
 
 Source text: "The quick brown fox jumps over the lazy dog. This sentence contains every letter of the English alphabet."
 
-### Gemma 4 E2B QAT (4.6B) — default
+### Gemma 4 E2B QAT — default
 
 | Lang | Time | Output |
 |------|------|--------|
@@ -54,6 +54,79 @@ Source text: "The quick brown fox jumps over the lazy dog. This sentence contain
 
 **Average: ~1.1s** — very fast, quality degrades on non-European languages.
 
+### Phi-4 Mini 3.8B
+
+| Lang | Time | Output |
+|------|------|--------|
+| it | 2.4s | Il veloce renato marrone salta sopra il cane pigro. Questa frase contiene ogni lettera dell'alfabeto inglese. |
+| fr | 1.0s | Le renard brun rapide saute par-dessus le chien paresseux. Cette phrase contient chaque lettre de l'alphabet français. |
+| de | 1.0s | Der schnelle braune Fuchs springt über den faulen Hund. Diese Aussage enthält jeden Buchstaben des englischen Alphabets. |
+| es | 1.1s | El rápido zorro marrón salta sobre el perro perezoso. Esta frase contiene cada letra del alfabeto inglés. |
+| pt | 1.2s | O rápido zorro marrón salta sobre el perro perezoso. Esta frase contiene cada letra del alfabeto inglés. |
+| nl | 1.0s | De snelle bruine vos springt over de slappe hond. Deze zin bevat alle letters van het Engelse alfabet. |
+| pl | 1.3s | Zawodny rudy lis skacze przez laźki psa. Ta zdanie zawiera każde literko angielskiego alfabetu. |
+| ru | 1.4s | Крекша коричневый лис перепрыгивает через ленивую собаку. |
+| ja | 1.6s | 速い茶色のキツネが怠け者の犬を飛び越えます。この文は英語アルファベットのすべての文字を含んでいます。 |
+| zh | 1.0s | 快速的棕色狐狸跳过懒狗。这句话包含了英语字母表中的每一个字母。 |
+| ko | 1.3s | 빠른 갈색 여우가 게으른 개를 뛰어넘는다. 이 문장은 영어 알파벳의 모든 글자를 포함하고 있다. |
+| ar | 1.3s | الزرافة البرية السريعة الزرقاء تسبح فوق الكلب الكسول. |
+| tr | 1.2s | Çok hızlı koyu kurt atlar ve yavaş köpekten geçer. |
+| hi | 1.4s | जल्दी भुने कुत्ते ने आलसी बिल्ली को पार किया। |
+
+**Average: ~1.3s** — fast as llama3.2, but quality degrades on non-European languages (Arabic, Hindi get wrong nouns).
+
+### Nemotron 3 Nano 4B
+
+| Lang | Time | Output |
+|------|------|--------|
+| it | 13.3s | Il veloce castano marrone salta sopra il cane pigro. Questa frase contiene ogni lettera dell'alfabeto inglese. |
+| fr | 9.1s | Le rapide renard brun saute par-dessus le chien paresseux. Cette phrase contient toutes les lettres de l'alphabet anglais. |
+| de | 8.3s | Der schnelle braune Fuchs springt über den faulen Hund. Dieser Satz enthält alle Buchstaben des englischen Alphabets. |
+| es | 9.8s | El rápido zorro marrón salta sobre el perro perezoso. Esta oración contiene todas las letras del alfabeto inglés. |
+| pt | 10.3s | O rabo rápido salta sobre o cão preguiçoso. Esta frase contém todas as letras do alfabeto inglês. |
+| nl | 11.4s | De snelle bruine vos springt over de luipe hond. Deze zin bevat elke letter van het Engelse alfabet. |
+| pl | 14.2s | Szybki brązowy lis przeskakuje nad leniwym psem. To zdanie zawiera wszystkie litery alfabetu angielskiego. |
+| ru | 12.2s | Быстрая коричневая лиса прыгает над ленивым собакой. |
+| ja | 14.2s | 素早い茶色の狐が怠け者の犬を飛び越える。この文には英語アルファベットのすべての文字が含まれている。 |
+| zh | 8.9s | 快速的棕色狐狸跳过懒惰的狗。这句话包含了英语字母的全部字符。 |
+| ko | 10.1s | 빠른 갈색 여우가 지저귀한 개를 뛰어넘는다. 이 문장은 영어 알파벳의 모든 글자를 포함한다. |
+| ar | 8.6s | الذئب البني السريع يقفز فوق الكلب الكسول. هذه الجملة تحتوي على كل حرف من حروف اللغة الإنجليزية. |
+| tr | 16.9s | Kısa mavi kedi, yorgulayıcı koşuyor. Bu cümle, İngilizce alfabesinin her harfi içerir. |
+| hi | 12.8s | तेज़ नरम बैंगल फोक ने लाजी कुकी को पार कर रहा है। |
+
+**Average: ~11.4s** — quality close to Gemma 4.
+
+### LFM 2.5 1.2B
+
+| Lang | Time | Output |
+|------|------|--------|
+| it | 10.1s | Il veloce volpe marrone salta sopra il cane pigro. Questa frase contiene ogni lettera dell'alfabeto inglese. |
+| fr | 0.5s | Le rapide renard brun saute par-dessus le chien paresseux. Cette phrase contient chaque lettre de l'alphabet anglais. |
+| de | 0.6s | Die schnelle braune Fuchs springt über den faulen Hund. Dieser Satz enthält jedes Buchstaben des englischen Alphabets. |
+| es | 0.5s | El rápido zorro marrón salta sobre el perro perezoso. Esta frase contiene cada letra del inglés. |
+| pt | 0.7s | A raposa rápida salta sobre o cão preguiçoso. Esta frase contém todas as letras do alfabeto inglês. |
+| nl | 0.7s | De snelle bruine zeehond springt over de laaih hond. |
+| pl | 0.7s | Szybki pies zimny wskakuje nad lazującego psa. |
+| ru | 0.7s | Скороковый медведий оскользнуется над лениным собаку. |
+| ja | 0.3s | この文には英語のすべての文字が含まれています。 |
+| zh | 0.4s | 这句话包含了英文字母的每一个字符。 |
+| ko | 0.7s | 이 빠른 갈색 여우가 게으른 개 위를 뛰어넘습니다. 이 문장은 영문 알파벳의 모든 글자를 포함하고 있습니다. |
+| ar | 0.8s | الثعلب الأسود السري يجتاز الكلب النائم. الجملة تحتوي على كل حرف من حروف الأبجدية الإنجليزية. |
+| tr | 1.0s | Kısa bir kızıl gürüş koyduğu gözlemleniz. |
+| hi | 1.8s | ते सुप्य भारी खरगोल को ऊपर चम्मच जाता है। |
+
+**Average: ~1.4s** (cold start IT: 10s, excluding it: ~0.7s) — fastest and lightest (1.2 GB). Limited to 8 official languages, produces nonsense on unsupported ones.
+
+## Comparison
+
+| Model | Params | Size | Avg time | Best for |
+|-------|--------|------|----------|----------|
+| Gemma 4 E2B QAT | 4.6B | 4.3 GB | ~11.2s | Best quality on all 25 languages |
+| Nemotron 3 Nano 4B | 30B MoE (3.5B active) | 2.8 GB | ~11.4s | Good quality, large context (256K) |
+| Phi-4 Mini | 3.8B | 2.5 GB | ~1.3s | Fast, good for European langs |
+| Llama 3.2 3B | 3B | 2.0 GB | ~1.1s | Fastest, decent for EU langs |
+| LFM 2.5 1.2B | 1.2B | 1.2 GB | ~0.7s | Ultra-light, only 8 langs |
+
 ## Model selection
 
 ```bash
@@ -61,4 +134,7 @@ go run .
 
 # Fast, good for European languages
 go run . --model llama3.2:3b
+
+# Use a specific model
+go run . --model <model-name>
 ```
