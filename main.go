@@ -15,7 +15,7 @@ import (
 	"github.com/danterolle/voca/tui"
 )
 
-var Version = "dev"
+var Version string
 
 func main() {
 	startedOllama := false
@@ -77,7 +77,9 @@ func printBanner() {
 	fmt.Println("  ╚██╗ ██╔╝██║   ██║██║     ██╔══██║")
 	fmt.Println("   ╚████╔╝ ╚██████╔╝╚██████╗██║  ██║")
 	fmt.Println("    ╚═══╝   ╚═════╝  ╚═════╝╚═╝  ╚═╝")
-	fmt.Printf("                    %s\n", Version)
+	if Version != "" {
+		fmt.Printf("                    %s\n", Version)
+	}
 	fmt.Println()
 }
 
