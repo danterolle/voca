@@ -23,13 +23,14 @@ Or build from source:
 ```bash
 git clone https://github.com/danterolle/voca && cd voca
 make build
+make run ARGS="--model phi4-mini:latest"  # build + run with version tag
 ```
 
 ## Quick start
 
 ```bash
 voca                                          # TUI mode
-voca translate --from it --to en "Ciao mondo" # one-shot from stdin
+voca translate --from it --to en "Ciao mondo" # one-shot translation
 ```
 
 ## TUI mode

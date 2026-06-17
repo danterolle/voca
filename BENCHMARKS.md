@@ -12,7 +12,7 @@ Run on Apple M2 (16 GB RAM) with Ollama. Times are per-sentence averages across 
 
 | Model | Params | Size | Avg time | Quality |
 |-------|--------|------|----------|---------|
-| Gemma 4 E2B QAT | 4.6B | 4.3 GB | ~10s | Best — flawless grammar across all 25 langs |
+| Gemma 4 E2B QAT | 4.6B | 4.3 GB | ~10s | Best — flawless grammar across all 14 langs |
 | Nemotron 3 Nano 4B | 30B MoE (3.5B active) | 2.8 GB | ~11s | Good quality, large context (256K) |
 | Ministral 3B | 3.85B | 3.0 GB | ~1.2s | Decent on real text, meta-commentary issue |
 | Phi-4 Mini | 3.8B | 2.5 GB | ~1.3s | Good for EU langs, minor errors on others |
@@ -61,7 +61,7 @@ Run on Apple M2 (16 GB RAM) with Ollama. Times are per-sentence averages across 
 | tr | 1.4s | İkiz için saat yediği bu akşamı bir masa rezervasyonu yapmamı isterim, mümkünse bahçeyi manzarası olan pencere kenarında. • Konferans, yapay zeka, makine öğrenimi ve farklı ülkelerdeki veri gizliliği düzenlemeleri gibi konuları kapsayacak. • Muzeyin yeni sergisi iki yüzden fazla ressamın Rönesans sanat eserleri ve heykellerini içeriyor, dünyanın dört bir yanından ziyaretçileri çekiyor. |
 | hi | 1.4s | मैं इस शाम सात बजे के लिए दो लोगों के साथ एक टेबल बुक करना चाहता हूँ, संभवतः दीवार के पास से एक गार्डन की ओर मुड़कर। • टेक्नोलॉजी सम्मेलन विभिन्न देशों के डेटा सुरक्षा नियमों पर विषयों जैसे कि एआई, मशीन लर्निंग और डेटा सुरक्षा कानूनों को शामिल करेगा। • म्यूज़ियम के नए प्रदर्शित करने वाले संग्रह में renaissance कलाकारों से over 200 चित्र और मूर्तियाँ शामिल हैं, जो दुनिया भर से आगंतुक आकर्षित करते हैं। |
 
-**Average: ~1.3s** — significantly better quality on real-world sentences than the pangram benchmark. Minor issues: code-switching in ES, gender errors, Arabic "eighty" instead of "two hundred".
+**Average: ~1.3s** — significantly better quality on real-world sentences than the previous benchmark run. Minor issues: code-switching in ES, gender errors, Arabic "eighty" instead of "two hundred".
 
 ## Ministral 3B
 
@@ -82,7 +82,7 @@ Run on Apple M2 (16 GB RAM) with Ollama. Times are per-sentence averages across 
 | tr | 1.4s | Bu akşam yedi saatta iki kişilik bir masaya ihtiyacım var. Mümkünse pencere yakınında, bahçeye bakacak bir yerde olmasını istiyorum. • Konferansın farklı ülkelerdeki makine öğrenimi, yapay zekâ ve verilerle ilgili gizlilik düzenlemeleri gibi konuları kapsayacağı belirtilmiştir. • Yeni sergisi, Rönesans sanatçılarından yüzlerce ressam ve heykel ile dünyanın her yerinden ziyaretçileri çekiyor. |
 | hi | 1.5s | अगले रात सात बजे दोनो के लिए एक टेबल बुक करना चाहिये। पसंदीदा स्थान खिड़की के पास, गार्डन की दिशा में देखने वाला। • कांग्रेस में कृत्रिम बुद्धिमत्ता, मशीन लर्निंग और विभिन्न देशों में डेटा गोपनीयता नियमों पर चर्चा की जाएगी। • मuseum का नया प्रदर्शन रenaissance कलाकारों के दो सौ से अधिक चित्रों और मूर्तियों को प्रदर्शित करता है, जो दुनिया भर के पर्यटकों को आकर्षित करता है। |
 
-**Average: ~1.2s** — Much better than the pangram test. Main drawback: meta-commentary (notes like *"Adjusted for conciseness"*) appears in ~30% of outputs. Some code-switching (English words mixed in) and minor spelling issues.
+**Average: ~1.2s** — much better than the earlier benchmark. Main drawback: meta-commentary (notes like *"Adjusted for conciseness"*) appears in ~30% of outputs. Some code-switching (English words mixed in) and minor spelling issues.
 
 ## Gemma 3 1B
 
