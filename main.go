@@ -18,11 +18,34 @@ import (
 var Version string
 
 func main() {
-	if len(os.Args) > 1 && os.Args[1] == "translate" {
-		runTranslate(os.Args[2:])
-		return
+	if len(os.Args) > 1 {
+		if os.Args[1] == "translate" {
+			runTranslate(os.Args[2:])
+			return
+		}
+		if os.Args[1] == "-h" || os.Args[1] == "--help" {
+			printUsage()
+			return
+		}
 	}
 	runTUI()
+}
+
+func printUsage() {
+	printBanner()
+	fmt.Println("Usage:")
+	fmt.Println("  voca                   Start the terminal UI (default)")
+	fmt.Println("  voca translate [flags] <text|file>   One-shot translation")
+	fmt.Println()
+	fmt.Println("Flags:")
+	fmt.Println("  -h, --help            Show this help message")
+	fmt.Println()
+	fmt.Println("Translate subcommand flags:")
+	fs := flag.NewFlagSet("translate", flag.ExitOnError)
+	fs.String("from", "auto", "source language code")
+	fs.String("to", "en", "target language code")
+	fs.String("model", translate.DefaultModel, "Ollama model")
+	fs.PrintDefaults()
 }
 
 func setupOllama(model string) (*exec.Cmd, bool) {
@@ -81,7 +104,21 @@ func runTranslate(args []string) {
 	from := fs.String("from", "auto", "source language code")
 	to := fs.String("to", "en", "target language code")
 	model := fs.String("model", translate.DefaultModel, "Ollama model")
+	h := fs.Bool("h", false, "show help")
+	help := fs.Bool("help", false, "show help")
 	fs.Parse(args)
+
+	if *h || *help {
+		printBanner()
+		fmt.Println("Usage: voca translate [flags] <text|file>")
+		fmt.Println()
+		fs.PrintDefaults()
+		fmt.Println()
+		fmt.Println("Examples:")
+		fmt.Println(`  voca translate --from it --to en "Ciao mondo!"`)
+		fmt.Println("  voca translate --from en --to fr < README.md")
+		os.Exit(0)
+	}
 
 	text := readInput(fs.Args())
 	if text == "" {
