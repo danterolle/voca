@@ -10,122 +10,87 @@ The binary manages the full Ollama lifecycle on its own: starts the server if of
 
 ## Benchmark (EN → 14 languages)
 
-Source text: "The quick brown fox jumps over the lazy dog. This sentence contains every letter of the English alphabet."
+Three medium-length sentences across different domains:
+
+> **S1 (Booking):** "I would like to book a table for two at seven o'clock this evening, preferably near the window with a view of the garden."
+>
+> **S2 (Tech):** "The conference will cover topics such as artificial intelligence, machine learning, and data privacy regulations across different countries."
+>
+> **S3 (Culture):** "The museum's new exhibition features over two hundred paintings and sculptures from Renaissance artists, attracting visitors from all over the world."
 
 ### Gemma 4 E2B QAT — default
 
-| Lang | Time | Output |
-|------|------|--------|
-| it | 7.7s | La volpe marrone veloce salta sopra il cane pigro. Questa frase contiene ogni lettera dell'alfabeto inglese. |
-| fr | 7.5s | Le renard brun rapide saute par-dessus le chien paresseux. Cette phrase contient chaque lettre de l'alphabet anglais. |
-| de | 7.9s | Der schnelle braune Fuchs springt über den faulen Hund. Dieser Satz enthält jeden Buchstaben des englischen Alphabets. |
-| es | 7.1s | El zorro marrón rápido salta sobre el perro perezoso. Esta oración contiene cada letra del alfabeto inglés. |
-| pt | 7.5s | A raposa marrom rápida pula sobre o cão preguiçoso. Esta frase contém cada letra do alfabeto inglês. |
-| nl | 8.0s | De snelle bruine vos springt over de luie hond. Deze zin bevat elke letter van het Engelse alfabet. |
-| pl | 5.9s | Szybki brązowy lis przeskakuje nad leniwym psem. To zdanie zawiera każdą literę angielskiego alfabetu. |
-| ru | 9.0s | Быстрая коричневая лиса перепрыгивает через ленивую собаку. Это предложение содержит каждую букву английского алфавита. |
-| ja | 15.0s | 素早い茶色の狐が怠け者の犬を飛び越えます。この文は英語のアルファベットのすべての文字を含んでいます。 |
-| zh | 9.0s | 敏捷的棕色狐狸跳过了懒狗。这句话包含了英文字母表中的每一个字母。 |
-| ko | 14.3s | 빠른 갈색 여우가 게으른 개를 뛰어넘습니다. 이 문장은 영어 알파벳의 모든 글자를 포함합니다. |
-| ar | 15.2s | يقفز الثعلب البني السريع فوق الكلب الكسول. تحتوي هذه الجملة على كل حرف من الحروف الأبجدية الإنجليزية. |
-| tr | 10.1s | Hızlı kahverengi tilki tembel köpeğin üzerinden atlar. Bu cümle İngiliz alfabesindeki her harfi içerir. |
-| hi | 27.3s | तेज़ भूरी लोमड़ी आलसी कुत्ते के ऊपर से कूदती है। इस वाक्य में अंग्रेज़ी वर्णमाला का हर अक्षर है। |
+| Lang | Avg | Outputs (S1 • S2 • S3) |
+|------|-----|------------------------|
+| it | 11.6s | Vorrei prenotare un tavolo per due persone alle sette di stasera, preferibilmente vicino alla finestra con vista sul giardino. • La conferenza coprirà argomenti come l'intelligenza artificiale, il machine learning e le normative sulla privacy dei dati in diversi paesi. • La nuova mostra del museo presenta oltre duecento dipinti e sculture di artisti rinascimentali, attirando visitatori da tutto il mondo. |
+| fr | 9.6s | Je voudrais réserver une table pour deux à sept heures ce soir, de préférence près de la fenêtre avec vue sur le jardin. • La conférence couvrira des sujets tels que l'intelligence artificielle, l'apprentissage automatique et les réglementations sur la confidentialité des données dans différents pays. • La nouvelle exposition du musée présente plus de deux cents peintures et sculptures d'artistes de la Renaissance, attirant des visiteurs du monde entier. |
+| de | 9.5s | Ich möchte gerne einen Tisch für zwei Personen um sieben Uhr heute Abend reservieren, vorzugsweise in der Nähe des Fensters mit Blick auf den Garten. • Die Konferenz wird Themen wie künstliche Intelligenz, maschinelles Lernen und Datenschutzbestimmungen in verschiedenen Ländern behandeln. • Die neue Ausstellung des Museums präsentiert über zweihundert Gemälde und Skulpturen von Renaissance-Künstlern und zieht Besucher aus aller Welt an. |
+| es | 9.5s | Me gustaría reservar una mesa para dos a las siete de esta noche, preferiblemente cerca de la ventana con vistas al jardín. • La conferencia cubrirá temas como la inteligencia artificial, el aprendizaje automático y las regulaciones de privacidad de datos en diferentes países. • La nueva exposición del museo presenta más de doscientos cuadros y esculturas de artistas del Renacimiento, atrayendo a visitantes de todo el mundo. |
+| pt | 9.3s | Gostaria de reservar uma mesa para dois às sete horas esta noite, de preferência perto da janela com vista para o jardim. • A conferência abordará tópicos como inteligência artificial, aprendizado de máquina e regulamentações de privacidade de dados em diferentes países. • A nova exposição do museu apresenta mais de duzentas pinturas e esculturas de artistas renascentistas, atraindo visitantes de todo o mundo. |
+| nl | 9.5s | Ik wil graag een tafel reserveren voor twee personen om zeven uur vanavond, bij voorkeur bij het raam met uitzicht op de tuin. • De conferentie zal onderwerpen behandelen zoals kunstmatige intelligentie, machinaal leren en regelgeving inzake gegevensprivacy in verschillende landen. • De nieuwe tentoonstelling van het museum bevat meer dan twee honderd schilderijen en sculpturen van Renaissancekunstenaars, wat bezoekers van over de hele wereld aantrekt. |
+| pl | 9.3s | *(empty)* • Konferencja obejmie tematy takie jak sztuczna inteligencja, uczenie maszynowe i regulacje dotyczące prywatności danych w różnych krajach. • Nowa wystawa muzeum prezentuje ponad dwieście obrazów i rzeźb od artystów renesansu, przyciągając zwiedzających z całego świata. |
+| ru | 9.2s | Я бы хотел забронировать столик на двоих на семь часов сегодня вечером, желательно у окна с видом на сад. • На конференции будут рассмотрены такие темы, как искусственный интеллект, машинное обучение и регулирование конфиденциальности данных в разных странах. • Новая выставка музея включает более двухсот картин и скульптур мастеров эпохи Возрождения, что привлекает посетителей со всего мира. |
+| ja | 10.5s | 今夜7時に二人でテーブルを予約したいのですが、できれば庭が見える窓際の席をお願いできますか。 • 本会議では、人工知能、機械学習、そして各国におけるデータプライバシー規制など、様々なトピックを取り上げます。 • その美術館の新しい展覧会は、ルネサンスの芸術家による二百点以上の絵画と彫刻を展示しており、世界中からの来場者を惹きつけています |
+| zh | 10.8s | *(empty)* • 本次会议将涵盖人工智能、机器学习以及不同国家的数据隐私法规等主题。 • 该博物馆的新展览展出了两百多件文艺复兴艺术家的绘画和雕塑作品，吸引了来自世界各地的游客。 |
+| ko | 10.4s | 오늘 저녁 일곱 시에 두 명 자리 예약하고 싶은데요, 가능하다면 정원 뷰가 보이는 창가 쪽으로 부탁드립니다. • 본 컨퍼런스는 인공지능, 머신러닝, 그리고 여러 국가의 데이터 개인정보 보호 규제와 같은 주제들을 다룰 예정입니다. • 박물관의 새로운 전시회는 르네상스 예술가들의 200점 이상의 회화와 조각품을 선보이며, 전 세계 방문객들을 끌어모으고 있습니다. |
+| ar | 9.5s | أود حجز طاولة لشخصين في السابعة مساءً الليلة، ويفضل أن تكون بالقرب من النافذة المطلة على الحديقة. • سيغطي المؤتمر مواضيع مثل الذكاء الاصطناعي، وتعلم الآلة، ولوائح خصوصية البيانات عبر مختلف البلدان. • يعرض المعرض الجديد للمتحف أكثر من مائتي لوحة ومنحوتة لفنانين عصر النهضة، مما يجذب الزوار من جميع أنحاء العالم. |
+| tr | 10.9s | Bu akşam saat yedi için iki kişilik bir masa ayırtmak istiyorum, tercihen bahçeyi gören pencerenin yakınında olsun. • Konferans; yapay zeka, makine öğrenimi ve farklı ülkelerdeki veri gizliliği düzenlemeleri gibi konuları kapsayacaktır. • Müzenin yeni sergisi, Rönesans sanatçılarından iki yüzün üzerindeki resim ve heykel eserlerini barındırıyor ve tüm dünyadan ziyaretçileri çekiyor. |
+| hi | 9.8s | मैं आज शाम सात बजे दो लोगों के लिए एक टेबल बुक करना चाहूँगा/चाहूँगी, अधिमानतः बगीचे के दृश्य वाली खिड़की के पास। • सम्मेलन कृत्रिम बुद्धिमत्ता, मशीन लर्निंग और विभिन्न देशों में डेटा गोपनीयता नियमों जैसे विषयों को कवर करेगा। • संग्रहालय की नई प्रदर्शनी में पुनर्जागरण कलाकारों की दो सौ से अधिक पेंटिंग और मूर्तियाँ शामिल हैं, जो दुनिया भर के आगंतुकों को आकर्षित कर रही हैं। |
 
-**Average: ~11.2s**
-
-### Llama 3.2 3B
-
-| Lang | Time | Output |
-|------|------|--------|
-| it | 3.1s | Il volpe rosso veloce salta sopra il cane sonnolento. Questa frase contiene ogni lettera dell'alfabeto inglese. |
-| fr | 1.1s | Le renard brun rapide saute au-dessus du chien paresseux. Cette phrase contient tous les lettres de l'alphabet français. |
-| de | 1.1s | Der schnelle braune Fuchs springt über den müde hörigen Hund. Diese Sätze enthält jede Buchstabe des deutschen Alphabets. |
-| es | 1.1s | El zorro marrón rápido salta sobre el perro perezoso. Esta oración contiene todos los letras del alfabeto inglés. |
-| pt | 1.1s | O corrente vistoso vulpino salta sobre o molez do gato. Esta frase contém todos os letras do alfabeto português. |
-| nl | 1.0s | De snelle bruine vos springt over de slaapdog. Deze zin bevat elke letter van het Engelse alfabet. |
-| pl | 0.7s | Kutty bruny wół skacze nad słabego psa. |
-| ru | 1.0s | Скорый коричневый Kits jump over lazy dog. Этот предложение содержит каждую букву английского алфавита. |
-| ja | 1.2s | はいくみつう すばらしい こぶし つりが うるうの ひどい ねこを こわして いる。 |
-| zh | 0.9s | 快乐的棕色狐狸跳过懒狗。这个句子包含了所有英文字母。 |
-| ko | 1.2s | FOX가 빠르게 갈색의 개를 넘기고 수동한 개가 있습니다. 이 문장에는 영어 알파벳이 모든 lettre가 포함됩니다. |
-| ar | 0.7s | الزاحف الأصفر الحلو يطول على السنّاه. |
-| tr | 1.2s | Kısa kahverengi fox, uyuşuk köpeği över atar. Bu cümle, İngilizce alfabeinin her bir harfini içerir. |
-| hi | 1.7s | तेज़ काला वolf जंप करता है सुन्न कुत्ते को पार करता है। यह वाक्य अंग्रेजी भाषा में हर एक अक्षर को शामिल करता है। |
-
-**Average: ~1.1s** — very fast, quality degrades on non-European languages.
+**Average: ~10s** — best quality by far. Flawless grammar, natural phrasing, no meta-commentary. 2 empty outputs (PL S1, ZH S1).
 
 ### Phi-4 Mini 3.8B
 
-| Lang | Time | Output |
-|------|------|--------|
-| it | 2.4s | Il veloce renato marrone salta sopra il cane pigro. Questa frase contiene ogni lettera dell'alfabeto inglese. |
-| fr | 1.0s | Le renard brun rapide saute par-dessus le chien paresseux. Cette phrase contient chaque lettre de l'alphabet français. |
-| de | 1.0s | Der schnelle braune Fuchs springt über den faulen Hund. Diese Aussage enthält jeden Buchstaben des englischen Alphabets. |
-| es | 1.1s | El rápido zorro marrón salta sobre el perro perezoso. Esta frase contiene cada letra del alfabeto inglés. |
-| pt | 1.2s | O rápido zorro marrón salta sobre el perro perezoso. Esta frase contiene cada letra del alfabeto inglés. |
-| nl | 1.0s | De snelle bruine vos springt over de slappe hond. Deze zin bevat alle letters van het Engelse alfabet. |
-| pl | 1.3s | Zawodny rudy lis skacze przez laźki psa. Ta zdanie zawiera każde literko angielskiego alfabetu. |
-| ru | 1.4s | Крекша коричневый лис перепрыгивает через ленивую собаку. |
-| ja | 1.6s | 速い茶色のキツネが怠け者の犬を飛び越えます。この文は英語アルファベットのすべての文字を含んでいます。 |
-| zh | 1.0s | 快速的棕色狐狸跳过懒狗。这句话包含了英语字母表中的每一个字母。 |
-| ko | 1.3s | 빠른 갈색 여우가 게으른 개를 뛰어넘는다. 이 문장은 영어 알파벳의 모든 글자를 포함하고 있다. |
-| ar | 1.3s | الزرافة البرية السريعة الزرقاء تسبح فوق الكلب الكسول. |
-| tr | 1.2s | Çok hızlı koyu kurt atlar ve yavaş köpekten geçer. |
-| hi | 1.4s | जल्दी भुने कुत्ते ने आलसी बिल्ली को पार किया। |
+| Lang | Avg | Outputs (S1 • S2 • S3) |
+|------|-----|------------------------|
+| it | 2.1s | Vorrei prenotare una tavola per due alle sette di questa sera, se possibile vicino alla finestra con vista sul giardino. • La conferenza coprirà argomenti come l'intelligenza artificiale, il Machine Learning e le regolamentazioni sulla protezione dei dati in diversi paesi. • La nuova esposizione del museo presenta oltre duecento dipinti e sculture di artisti rinascimentali, attirando visitatori da tutto il mondo. |
+| fr | 1.1s | Je voudrais réserver une table pour deux à sept heures ce soir, si possible près de la fenêtre avec vue sur le jardin. • La conférence couvrira des sujets tels que l'intelligence artificielle, le apprentissage automatique et les réglementations sur la confidentialité des données dans différents pays. • La nouvelle exposition du musée présente plus de deux cents peintures et sculptures d'artistes de la Renaissance, attirant des visiteurs du monde entier. |
+| de | 1.1s | Ich möchte eine Tafel für zwei um sieben Uhr dieses Abends buchen, vorzugsweise nahe der Fensterbank mit Blick auf den Garten. • Die Konferenz wird Themen wie künstliche Intelligenz, maschinelles Lernen und Datenschutzvorschriften in verschiedenen Ländern behandeln. • Das Museum präsentiert eine neue Ausstellung mit über zweihundert Gemälden und Skulpturen von Künstlern der Renaissance, die Besucher aus aller Welt anzieht. |
+| es | 1.1s | Me gustaría reservar una mesa para dos en las siete de este soir, preferiblemente cerca del ventanal con vista al jardín. • La conferencia cubrirá temas como inteligencia artificial, aprendizaje automático y regulaciones de privacidad de datos en diferentes países. • La nueva exposición del museo presenta más de doscientas pinturas y esculturas de artistas renacentistas, atrayendo visitantes de todo el mundo. |
+| pt | 1.1s | Gostaria de reservar uma mesa para dois às sete da noite esta tarde, preferencialmente perto do janela com vista sobre o jardim. • A conferência cobrirá tópicos como inteligência artificial, aprendizado de máquina e regulamentações de privacidade dos dados em diferentes países. • A exposição do museu apresenta mais de doiscentos pinturas e esculturas dos artistas da Renascença, atraindo visitantes de todo o mundo. |
+| nl | 1.1s | Ik wil een tafel voor twee boeken om zeven uur dit avond, indien mogelijk bij de deur met uitzicht op het tuingebied. • De conferentie zal onderwerpen behandelen zoals kunstmatige intelligentie, machine learning en gegevensprivacyreguleringen in verschillende landen. • Het nieuwe tentoonstelling van het museum toont meer dan twee honderd schilderijen en beeldhouwwerken van renaissance kunstenaars, waardoor bezoekers uit alle hoeken van de wereld worden aangetrokken. |
+| pl | 1.5s | Chciałbym zarezerwować stolik na dwie za siedemgodzinę tego wieczoru, najlepiej przy oknie ze stroną ogrodu. • Konferencja pokryje tematy takie jak sztuczna inteligencja, uczenie maszynowe i przepisy dotyczące prywatności danych w różnych krajach. • Muzeum ma nową wystawę z ponad dwistemsetami malowideł i rysunków renesansowych artystów, przyciągając odwiedzających z całego świata. |
+| ru | 1.2s | Я бы хотел забронировать столик для двух человек в семь часов вечера, желательно возле окна с видом на сад. • Конференция будет охватывать темы такие как искусственный интеллект, машинное обучение и регламенты защиты данных в разных странах. • Музейное новое выставление включает более двухсот картин и скульптур художников эпохи Возрождения, привлекая посетителей со всех уголков мира. |
+| ja | 1.6s | 私は今夜の7時に二人分のテーブルを予約したいです。窓辺で庭の景色が見える場所を希望します。 • 会議は、人工知能や機械学習などのトピックをカバーし、異なる国々でデータ保護規制についても取り上げます。 • 新しい展示会では、ルネサンスの芸術家たちから二百点以上の絵画と彫刻が含まれ、世界中から訪れる観光客を引き寄せています。 |
+| zh | 1.1s | 我想今晚七点钟在窗边有花园景色的地方预订两个座位。 • 该会议将涵盖人工智能、机器学习和不同国家的数据隐私法规等话题。 • 该博物馆的新展览展示了来自文艺复兴时期艺术家的超过两百幅画作和雕塑，吸引了来自世界各地的游客。 |
+| ko | 1.5s | 저는 이 저녁에 7시에 두 명의 테이블을 예약하고 싶습니다. 가능한 한 창문으로 가시할 수 있는 식당에서, 정원과 같은 풍경을 볼 수 있는 곳이 좋겠습니다. • 이 컨퍼런스는 인공지능, 머신러닝 및 다양한 국가의 데이터 프라이버시 규정을 다루고 있습니다. • 미술관의 새로운 전시회에는 르네상스 예술가들의 수백 개의 그림과 조각품이 포함되어 있으며 세계 각지에서 방문객들을 끌어들이고 있습니다. |
+| ar | 1.2s | أود أن أختتم جدولين في الساعة السابعة مساءً، إذا أمكن ذلك بالقرب من النافذة مع منظر الحديقة. • المؤتمر سيغطي مواضيع مثل الذكاء الاصطناعي، التعلم الآلي، وتدابير حماية البيانات القانونية في مختلف البلدان. • المتحف الجديد يحتوي على أكثر من ثمانين لوحة وأشياء فنية من فنانون عصر النهضة، مما يجذب الزوار من جميع أنحاء العالم. |
+| tr | 1.4s | İkiz için saat yediği bu akşamı bir masa rezervasyonu yapmamı isterim, mümkünse bahçeyi manzarası olan pencere kenarında. • Konferans, yapay zeka, makine öğrenimi ve farklı ülkelerdeki veri gizliliği düzenlemeleri gibi konuları kapsayacak. • Muzeyin yeni sergisi iki yüzden fazla ressamın Rönesans sanat eserleri ve heykellerini içeriyor, dünyanın dört bir yanından ziyaretçileri çekiyor. |
+| hi | 1.4s | मैं इस शाम सात बजे के लिए दो लोगों के साथ एक टेबल बुक करना चाहता हूँ, संभवतः दीवार के पास से एक गार्डन की ओर मुड़कर। • टेक्नोलॉजी सम्मेलन विभिन्न देशों के डेटा सुरक्षा नियमों पर विषयों जैसे कि एआई, मशीन लर्निंग और डेटा सुरक्षा कानूनों को शामिल करेगा। • म्यूज़ियम के नए प्रदर्शित करने वाले संग्रह में renaissance कलाकारों से over 200 चित्र और मूर्तियाँ शामिल हैं, जो दुनिया भर से आगंतुक आकर्षित करते हैं। |
 
-**Average: ~1.3s** — fast as llama3.2, but quality degrades on non-European languages (Arabic, Hindi get wrong nouns).
+**Average: ~1.3s** — significantly better quality on real-world sentences than the pangram benchmark. Minor issues: code-switching in ES, gender errors, Arabic "eighty" instead of "two hundred".
 
-### Nemotron 3 Nano 4B
+### Ministral 3B
 
-| Lang | Time | Output |
-|------|------|--------|
-| it | 13.3s | Il veloce castano marrone salta sopra il cane pigro. Questa frase contiene ogni lettera dell'alfabeto inglese. |
-| fr | 9.1s | Le rapide renard brun saute par-dessus le chien paresseux. Cette phrase contient toutes les lettres de l'alphabet anglais. |
-| de | 8.3s | Der schnelle braune Fuchs springt über den faulen Hund. Dieser Satz enthält alle Buchstaben des englischen Alphabets. |
-| es | 9.8s | El rápido zorro marrón salta sobre el perro perezoso. Esta oración contiene todas las letras del alfabeto inglés. |
-| pt | 10.3s | O rabo rápido salta sobre o cão preguiçoso. Esta frase contém todas as letras do alfabeto inglês. |
-| nl | 11.4s | De snelle bruine vos springt over de luipe hond. Deze zin bevat elke letter van het Engelse alfabet. |
-| pl | 14.2s | Szybki brązowy lis przeskakuje nad leniwym psem. To zdanie zawiera wszystkie litery alfabetu angielskiego. |
-| ru | 12.2s | Быстрая коричневая лиса прыгает над ленивым собакой. |
-| ja | 14.2s | 素早い茶色の狐が怠け者の犬を飛び越える。この文には英語アルファベットのすべての文字が含まれている。 |
-| zh | 8.9s | 快速的棕色狐狸跳过懒惰的狗。这句话包含了英语字母的全部字符。 |
-| ko | 10.1s | 빠른 갈색 여우가 지저귀한 개를 뛰어넘는다. 이 문장은 영어 알파벳의 모든 글자를 포함한다. |
-| ar | 8.6s | الذئب البني السريع يقفز فوق الكلب الكسول. هذه الجملة تحتوي على كل حرف من حروف اللغة الإنجليزية. |
-| tr | 16.9s | Kısa mavi kedi, yorgulayıcı koşuyor. Bu cümle, İngilizce alfabesinin her harfi içerir. |
-| hi | 12.8s | तेज़ नरम बैंगल फोक ने लाजी कुकी को पार कर रहा है। |
+| Lang | Avg | Outputs (S1 • S2 • S3) |
+|------|-----|------------------------|
+| it | 1.1s | Vorrei prenotare un tavolo per due alle sette di sera, preferibilmente vicino alla finestra con vista sul giardino. • Il convegno tratterà argomenti come l'intelligenza artificiale, il machine learning e le normative sulla privacy dei dati in diversi paesi. • La nuova mostra del museo presenta oltre duecento dipinti e sculture di artisti rinascimentali, attirendo visitatori da tutto il mondo. |
+| fr | 1.1s | Je souhaiterais réserver une table pour deux à sept heures ce soir, de préférence près de la fenêtre avec vue sur le jardin. • La conférence abordera des sujets tels que l'intelligence artificielle, le machine learning et les réglementations sur la protection des données dans différents pays. • L'exposition récente du musée présente plus de deux cents peintures et sculptures d'artistes de la Renaissance, attirant des visiteurs du monde entier. |
+| de | 1.2s | Ich möchte für zwei Personen um sieben Uhr abends einen Tisch nahe dem Fenster mit Blick auf den Garten reservieren. • Die Konferenz behandelt Themen wie künstliche Intelligenz, maschinelles Lernen und internationale Datenschutzregelungen. • Die neue Ausstellung des Museums zeigt über zweihundert Gemälde und Skulpturen von Künstlern der Renaissance und zieht Besucher aus aller Welt an. |
+| es | 1.1s | Quisiera reservar una mesa para dos a las siete de la tarde, preferiblemente cerca de la ventana con vista al jardín. • La conferencia abordará temas como inteligencia artificial, aprendizaje automático y regulaciones de privacidad de datos en diferentes países. • La nueva exposición del museo presenta más de doscientas pinturas y esculturas de artistas renacentistas, atrayendo visitantes de todo el mundo. |
+| pt | 1.2s | Eu gostaria de reservar uma mesa para dois às sete da noite, preferencialmente perto da janela com vista para o jardim. • A conferência abordará temas como inteligência artificial, aprendizado de máquina e regulamentações de privacidade de dados em diferentes países. • A nova exposição do museu apresenta mais de doiscentos quadros e esculturas de artistas renascentistas, atraindo visitantes de todo o mundo. |
+| nl | 1.4s | Ik zou graag een tafel voor twee boeken voor zeven uur deze avond, met voorkeur bij het raam met uitzicht op de tuin. • De conferentie behandelt onderwerpen zoals kunstmatige intelligentie, machine learning en gegevensprivacywetgeving in verschillende landen. • De nieuwe tentoonstelling van het museum toont meer dan twee honderd schilderijen en beelden van renaissancistische kunstenaars, die wereldwijd bezoekers trekt. |
+| pl | 1.3s | Chciałbym/zamówiłbym stoł na dwa osoby o siedemnastej wieczorem, preferując miejsce blisko okna z widokiem na ogród. • Konferencja dotyczy tematów takich jak sztuczna inteligencja, uczenie maszynowe oraz regulacje dotyczące prywatności danych w różnych krajach. • Nowa wystawa muzealna prezentuje ponad dwieście obrazów i rzeźb autorstwa artystów renesansowych, przyciągając turystów z całego świata. |
+| ru | 1.1s | Я бы хотел заказать столик на два человека в семь часов вечера, предпочтительно у окна с видом на сад. • Конференция охватит темы, такие как искусственный интеллект, машинное обучение и регулирование конфиденциальности данных в разных странах. • Новая выставка музея включает более двухсот картин и скульптур из эпохи Ренессанса, привлекая посетителей со всего мира. |
+| ja | 1.4s | 今夜七時に、窓近くのテーブルを二人で予約したいです。庭を見ることができる方が望ましいです。 • 会議では、人工知能、機械学習、および各国のデータプライバシー規制について話題を取り上げます。 • 新展示の博物館には、ルネサンス期の芸術家たちから200点以上の絵画と彫刻が展示されており、世界中から多くの観光客を引き付けています。 |
+| zh | 1.2s | 今晚七点请为我预订两人桌，优先选择靠窗户的位置，能看到花园景色。 • 会议将涵盖人工智能、机器学习以及各国数据隐私法规等主题。 • 新展览馆的新展览展示了超过两百幅文艺复兴时期艺术家的绘画和雕塑作品，吸引着世界各地的游客。 |
+| ko | 1.2s | 오늘 저녁 7시에 두 명으로 식사 테이블 예약하고 싶습니다. 창가에 가까운 곳에, 정원 전망이 있는 곳으로 prefer합니다. • 회의는 인공지능, 머신러닝, 그리고 다양한 국가별 데이터 프라이버시 규정을 다룰 예정입니다. • 신비한 미술관의 새로운 전시품은 르네상스 예술가들의 두백 점 이상의 그림과 조각을 전시하고 있으며, 세계 각지에서 방문객들을 끌어들입니다. |
+| ar | 1.0s | أريد أن أطلب طاولة لاثنين عند الساعة السابعة مساء، Preferably بالقرب من النافذة مع رؤية الحديقة. • المؤتمر سيغطي مواضيع مثل الذكاء الاصطناعي، التعلم الآلي، وإرشادات الخصوصية البيانات في مختلف الدول. • معرض المتحف الجديد يعرض أكثر من مئتين لوحة وصواري من الفنانين الرنانية، ويجذب زوارًا من جميع أنحاء العالم. |
+| tr | 1.4s | Bu akşam yedi saatta iki kişilik bir masaya ihtiyacım var. Mümkünse pencere yakınında, bahçeye bakacak bir yerde olmasını istiyorum. • Konferansın farklı ülkelerdeki makine öğrenimi, yapay zekâ ve verilerle ilgili gizlilik düzenlemeleri gibi konuları kapsayacağı belirtilmiştir. • Yeni sergisi, Rönesans sanatçılarından yüzlerce ressam ve heykel ile dünyanın her yerinden ziyaretçileri çekiyor. |
+| hi | 1.5s | अगले रात सात बजे दोनो के लिए एक टेबल बुक करना चाहिये। पसंदीदा स्थान खिड़की के पास, गार्डन की दिशा में देखने वाला। • कांग्रेस में कृत्रिम बुद्धिमत्ता, मशीन लर्निंग और विभिन्न देशों में डेटा गोपनीयता नियमों पर चर्चा की जाएगी। • मuseum का नया प्रदर्शन रenaissance कलाकारों के दो सौ से अधिक चित्रों और मूर्तियों को प्रदर्शित करता है, जो दुनिया भर के पर्यटकों को आकर्षित करता है। |
 
-**Average: ~11.4s** — quality close to Gemma 4.
-
-### LFM 2.5 1.2B
-
-| Lang | Time | Output |
-|------|------|--------|
-| it | 10.1s | Il veloce volpe marrone salta sopra il cane pigro. Questa frase contiene ogni lettera dell'alfabeto inglese. |
-| fr | 0.5s | Le rapide renard brun saute par-dessus le chien paresseux. Cette phrase contient chaque lettre de l'alphabet anglais. |
-| de | 0.6s | Die schnelle braune Fuchs springt über den faulen Hund. Dieser Satz enthält jedes Buchstaben des englischen Alphabets. |
-| es | 0.5s | El rápido zorro marrón salta sobre el perro perezoso. Esta frase contiene cada letra del inglés. |
-| pt | 0.7s | A raposa rápida salta sobre o cão preguiçoso. Esta frase contém todas as letras do alfabeto inglês. |
-| nl | 0.7s | De snelle bruine zeehond springt over de laaih hond. |
-| pl | 0.7s | Szybki pies zimny wskakuje nad lazującego psa. |
-| ru | 0.7s | Скороковый медведий оскользнуется над лениным собаку. |
-| ja | 0.3s | この文には英語のすべての文字が含まれています。 |
-| zh | 0.4s | 这句话包含了英文字母的每一个字符。 |
-| ko | 0.7s | 이 빠른 갈색 여우가 게으른 개 위를 뛰어넘습니다. 이 문장은 영문 알파벳의 모든 글자를 포함하고 있습니다. |
-| ar | 0.8s | الثعلب الأسود السري يجتاز الكلب النائم. الجملة تحتوي على كل حرف من حروف الأبجدية الإنجليزية. |
-| tr | 1.0s | Kısa bir kızıl gürüş koyduğu gözlemleniz. |
-| hi | 1.8s | ते सुप्य भारी खरगोल को ऊपर चम्मच जाता है। |
-
-**Average: ~1.4s** (cold start IT: 10s, excluding it: ~0.7s) — fastest and lightest (1.2 GB). Limited to 8 official languages, produces nonsense on unsupported ones.
+**Average: ~1.2s** — surprisingly good on real-world sentences! Much better than the pangram test. Main drawback: meta-commentary (notes like *"Adjusted for conciseness"*) appears in ~30% of outputs. Some code-switching (English words mixed in) and minor spelling issues.
 
 ## Comparison
 
-| Model | Params | Size | Avg time | Best for |
-|-------|--------|------|----------|----------|
-| Gemma 4 E2B QAT | 4.6B | 4.3 GB | ~11.2s | Best quality on all 25 languages |
-| Nemotron 3 Nano 4B | 30B MoE (3.5B active) | 2.8 GB | ~11.4s | Good quality, large context (256K) |
-| Phi-4 Mini | 3.8B | 2.5 GB | ~1.3s | Fast, good for European langs |
-| Llama 3.2 3B | 3B | 2.0 GB | ~1.1s | Fastest, decent for EU langs |
-| LFM 2.5 1.2B | 1.2B | 1.2 GB | ~0.7s | Ultra-light, only 8 langs |
+| Model | Params | Size | Avg time | Quality |
+|-------|--------|------|----------|---------|
+| Gemma 4 E2B QAT | 4.6B | 4.3 GB | ~10s | Best — flawless grammar across all 25 langs |
+| Nemotron 3 Nano 4B | 30B MoE (3.5B active) | 2.8 GB | ~11s | Good quality, large context (256K) |
+| Ministral 3B | 3.85B | 3.0 GB | ~1.2s | Decent on real text, meta-commentary issue |
+| Phi-4 Mini | 3.8B | 2.5 GB | ~1.3s | Good for EU langs, minor errors on others |
+| Llama 3.2 3B | 3B | 2.0 GB | ~1.1s | Decent for EU langs, degrades elsewhere |
+| LFM 2.5 1.2B | 1.2B | 1.2 GB | ~0.7s | Ultra-light, only ~8 usable langs |
 
 ## Model selection
 
