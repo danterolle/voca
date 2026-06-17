@@ -23,6 +23,7 @@ func main() {
 	flag.Parse()
 
 	startedOllama := false
+	var ollamaCmd *exec.Cmd
 
 	printBanner()
 
@@ -33,15 +34,15 @@ func main() {
 
 	if !ollamaReachable() {
 		fmt.Printf("  ◆ Starting Ollama... ")
-		cmd := exec.Command("ollama", "serve")
-		if err := cmd.Start(); err != nil {
+		ollamaCmd = exec.Command("ollama", "serve")
+		if err := ollamaCmd.Start(); err != nil {
 			fmt.Printf("\n  ✖ Failed to start Ollama: %v\n", err)
 			os.Exit(1)
 		}
 		startedOllama = true
 		if !waitForOllama(30) {
 			fmt.Printf("timeout waiting for Ollama to start\n")
-			cmd.Process.Kill()
+			ollamaCmd.Process.Kill()
 			os.Exit(1)
 		}
 		fmt.Printf("online\n")
@@ -68,8 +69,8 @@ func main() {
 		fmt.Fprintf(os.Stderr, "  ✖ Error: %v\n", err)
 	}
 
-	if startedOllama {
-		pkill("ollama")
+	if startedOllama && ollamaCmd != nil {
+		ollamaCmd.Process.Kill()
 	}
 }
 
@@ -185,6 +186,4 @@ func progressBar(pct float64, width int) string {
 	return bar
 }
 
-func pkill(name string) {
-	exec.Command("pkill", "-f", name).Run()
-}
+
