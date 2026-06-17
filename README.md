@@ -61,6 +61,7 @@ Interactive terminal interface with auto-translate as you type.
 **Flags:**
 ```
 --model   Ollama model to use (default: gemma4:e2b-it-qat)
+-h, --help   Show usage
 ```
 
 **Keyboard:**
@@ -99,6 +100,7 @@ voca translate --from it --to en test_data/malavoglia.md
 --from    Source language code (default: auto)
 --to      Target language code (default: en)
 --model   Ollama model (default: gemma4:e2b-it-qat)
+-h, --help   Show usage with examples
 ```
 
 ## Benchmarks
