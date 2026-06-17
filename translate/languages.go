@@ -4,7 +4,7 @@ import "sort"
 
 const DefaultModel = "gemma4:e2b-it-qat"
 
-var Languages = map[string]string{
+var languages = map[string]string{
 	"auto": "Auto",
 	"en":   "English",
 	"it":   "Italian",
@@ -32,35 +32,27 @@ var Languages = map[string]string{
 	"hi":   "Hindi",
 }
 
-type StaticLanguages struct {
+type staticLanguages struct {
 	codes []string
 	names map[string]string
 }
 
-func NewStaticLanguages() *StaticLanguages {
-	codes := make([]string, 0, len(Languages))
-	for code := range Languages {
+func NewStaticLanguages() *staticLanguages {
+	codes := make([]string, 0, len(languages))
+	for code := range languages {
 		codes = append(codes, code)
 	}
 	sort.Strings(codes)
-	return &StaticLanguages{
+	return &staticLanguages{
 		codes: codes,
-		names: Languages,
+		names: languages,
 	}
 }
 
-func (s *StaticLanguages) List() []Language {
+func (s *staticLanguages) List() []Language {
 	result := make([]Language, len(s.codes))
 	for i, code := range s.codes {
 		result[i] = Language{Code: code, Name: s.names[code]}
 	}
 	return result
-}
-
-func (s *StaticLanguages) Lookup(code string) (Language, bool) {
-	name, ok := s.names[code]
-	if !ok {
-		return Language{}, false
-	}
-	return Language{Code: code, Name: name}, true
 }

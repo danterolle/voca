@@ -2,20 +2,20 @@ package translate
 
 import "fmt"
 
-type DefaultPrompt struct{}
+type defaultPrompt struct{}
 
-func NewDefaultPrompt() *DefaultPrompt {
-	return &DefaultPrompt{}
+func NewDefaultPrompt() *defaultPrompt {
+	return &defaultPrompt{}
 }
 
-func (p *DefaultPrompt) System() string {
+func (p *defaultPrompt) System() string {
 	return "You are a translator. Translate the user's text accurately. Preserve meaning, tone, and sentence structure. Output only the translation — no greetings, explanations, or commentary."
 }
 
-func (p *DefaultPrompt) Translate(text, source, target string) string {
-	src := Languages[source]
+func (p *defaultPrompt) Translate(text, source, target string) string {
+	src := languages[source]
 	if source == "auto" {
 		src = "Auto detect"
 	}
-	return fmt.Sprintf("Translate from %s to %s:\n\n%s", src, Languages[target], text)
+	return fmt.Sprintf("Translate from %s to %s:\n\n%s", src, languages[target], text)
 }

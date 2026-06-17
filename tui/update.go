@@ -12,7 +12,6 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	case tea.WindowSizeMsg:
 		m.ready = true
 		m.width = msg.Width
-		m.height = msg.Height
 		contentH := msg.Height - 6
 		if contentH < 4 {
 			contentH = 4

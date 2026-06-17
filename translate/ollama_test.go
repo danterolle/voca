@@ -10,11 +10,11 @@ func TestMockBackend_ImplementsBackend(t *testing.T) {
 }
 
 func TestDefaultPrompt_ImplementsPromptBuilder(t *testing.T) {
-	var _ PromptBuilder = (*DefaultPrompt)(nil)
+	var _ PromptBuilder = (*defaultPrompt)(nil)
 }
 
 func TestStaticLanguages_ImplementsLanguageProvider(t *testing.T) {
-	var _ LanguageProvider = (*StaticLanguages)(nil)
+	var _ LanguageProvider = (*staticLanguages)(nil)
 }
 
 func TestMockBackend_Translate(t *testing.T) {
@@ -55,21 +55,6 @@ func TestStaticLanguages_List(t *testing.T) {
 	}
 	if langs[0].Code != "ar" {
 		t.Fatalf("first language should be 'ar' (sorted), got %q", langs[0].Code)
-	}
-}
-
-func TestStaticLanguages_Lookup(t *testing.T) {
-	l := NewStaticLanguages()
-	lang, ok := l.Lookup("it")
-	if !ok {
-		t.Fatal("expected 'it' to be found")
-	}
-	if lang.Name != "Italian" {
-		t.Fatalf("expected 'Italian', got %q", lang.Name)
-	}
-	_, ok = l.Lookup("xx")
-	if ok {
-		t.Fatal("expected 'xx' to not be found")
 	}
 }
 

@@ -8,10 +8,6 @@ import (
 	"github.com/danterolle/voca/translate"
 )
 
-type UI interface {
-	Run(ctx context.Context, core *translate.Core) error
-}
-
 type BubbleTeaUI struct{}
 
 func NewBubbleTeaUI() *BubbleTeaUI {

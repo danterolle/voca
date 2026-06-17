@@ -18,5 +18,4 @@ type Language struct {
 
 type LanguageProvider interface {
 	List() []Language
-	Lookup(code string) (Language, bool)
 }

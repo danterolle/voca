@@ -44,7 +44,6 @@ type Model struct {
 	status       string
 	ready        bool
 	width        int
-	height       int
 	translateSeq int
 	leadingDone  bool
 }
