@@ -54,7 +54,9 @@ func ModelExists(model string) bool {
 func PullModel(model string) error {
 	body := map[string]any{"name": model, "stream": true}
 	var buf strings.Builder
-	json.NewEncoder(&buf).Encode(body)
+	if err := json.NewEncoder(&buf).Encode(body); err != nil {
+		return fmt.Errorf("ollama pull: encode body: %w", err)
+	}
 
 	resp, err := http.Post("http://localhost:11434/api/pull", "application/json", strings.NewReader(buf.String()))
 	if err != nil {
