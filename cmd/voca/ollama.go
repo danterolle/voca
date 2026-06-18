@@ -2,35 +2,28 @@ package main
 
 import (
 	"fmt"
-	"os"
 	"os/exec"
 
 	"github.com/danterolle/voca/translate/ollama"
 )
 
-func setupOllama(model string) (*exec.Cmd, bool) {
+func setupOllama(model string) (cmd *exec.Cmd, started bool, err error) {
 	if _, err := exec.LookPath("ollama"); err != nil {
-		fmt.Fprintf(os.Stderr, "ollama not found. Install it from https://ollama.com\n")
-		os.Exit(1)
+		return nil, false, fmt.Errorf("ollama not found — install from https://ollama.com")
 	}
-
-	started := false
-	var cmd *exec.Cmd
 
 	if !ollama.Reachable() {
 		fmt.Printf("  ◆ Starting Ollama... ")
 		cmd = exec.Command("ollama", "serve")
 		if err := cmd.Start(); err != nil {
-			fmt.Fprintf(os.Stderr, "\n  ✖ Failed to start Ollama: %v\n", err)
-			os.Exit(1)
+			return nil, false, fmt.Errorf("failed to start Ollama: %w", err)
 		}
 		started = true
 		if !ollama.WaitForReady(30) {
-			fmt.Fprintf(os.Stderr, "  ✖ timeout waiting for Ollama to start\n")
-			if cmd != nil {
+			if cmd.Process != nil {
 				_ = cmd.Process.Kill()
 			}
-			os.Exit(1)
+			return nil, started, fmt.Errorf("timeout waiting for Ollama to start")
 		}
 		fmt.Printf("online\n")
 	}
@@ -38,14 +31,13 @@ func setupOllama(model string) (*exec.Cmd, bool) {
 	if !ollama.ModelExists(model) {
 		fmt.Printf("  ◆ Pulling %s...\n", model)
 		if err := ollama.PullModel(model); err != nil {
-			fmt.Fprintf(os.Stderr, "  ✖ Pull failed: %v\n", err)
 			if started && cmd != nil {
 				_ = cmd.Process.Kill()
 			}
-			os.Exit(1)
+			return nil, started, fmt.Errorf("pull failed: %w", err)
 		}
 		fmt.Printf("  ◆ Model ready\n")
 	}
 
-	return cmd, started
+	return cmd, started, nil
 }

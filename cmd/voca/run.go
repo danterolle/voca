@@ -73,7 +73,10 @@ func newCore(cfg *config.Config, model string) (*translate.Core, error) {
 
 func setupRun(cfg *config.Config, model string) (*translate.Core, func()) {
 	printBanner()
-	ollamaCmd, started := setupOllama(model)
+	ollamaCmd, started, err := setupOllama(model)
+	if err != nil {
+		fatal(err)
+	}
 
 	var cleanup func()
 	if started && ollamaCmd != nil {
