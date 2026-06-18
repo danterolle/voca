@@ -13,9 +13,9 @@ import (
 	"github.com/danterolle/voca/tui"
 )
 
-func newCore(cfg *config.Config) *translate.Core {
+func newCore(cfg *config.Config, model string) *translate.Core {
 	prompt := translate.NewDefaultPrompt()
-	backend := ollama.NewBackend(cfg.Backend.BaseURL, cfg.Backend.Model, prompt)
+	backend := ollama.NewBackend(cfg.Backend.BaseURL, model, prompt)
 	if np, ok := cfg.Backend.Options["num_predict"]; ok {
 		switch v := np.(type) {
 		case int:
@@ -28,7 +28,7 @@ func newCore(cfg *config.Config) *translate.Core {
 		backend,
 		prompt,
 		translate.NewStaticLanguages(),
-		cfg.Backend.Model,
+		model,
 	)
 }
 
@@ -74,7 +74,7 @@ func runTranslate(cfg *config.Config, args []string) {
 		defer ollamaCmd.Process.Kill()
 	}
 
-	core := newCore(cfg)
+	core := newCore(cfg, model)
 	ui := tui.NewCLIUI(from, to, text)
 	if err := ui.Run(context.Background(), core); err != nil {
 		fmt.Fprintf(os.Stderr, "  ✖ Error: %v\n", err)
@@ -125,7 +125,7 @@ func runBatch(cfg *config.Config, args []string) {
 	if started && ollamaCmd != nil {
 		defer ollamaCmd.Process.Kill()
 	}
-	core := newCore(cfg)
+	core := newCore(cfg, model)
 	ctx := context.Background()
 
 	output, err := translate.Batch(ctx, core, input, from, to)
@@ -153,7 +153,7 @@ func runTUI(cfg *config.Config) {
 	time.Sleep(800 * time.Millisecond)
 	fmt.Printf("\n")
 
-	root := newCore(cfg)
+	root := newCore(cfg, model)
 	ui := tui.NewBubbleTeaUI()
 	if err := ui.Run(context.Background(), root); err != nil {
 		fmt.Fprintf(os.Stderr, "  ✖ Error: %v\n", err)
