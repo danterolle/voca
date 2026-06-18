@@ -79,43 +79,51 @@ func processNode(ctx context.Context, core *Core, val *any, from, to string, wg 
 		translateString(ctx, core, val, from, to, errCh, cancel)
 
 	case map[string]any:
-		type entry struct {
-			key string
-			val any
-		}
-		entries := make([]entry, 0, len(v))
-		for k, child := range v {
-			entries = append(entries, entry{k, child})
-		}
-		var mu sync.Mutex
-		for _, e := range entries {
-			wg.Add(1)
-			go func() {
-				defer wg.Done()
-				childCopy := e.val
-				processNode(ctx, core, &childCopy, from, to, wg, errCh, cancel)
-				if ctx.Err() != nil {
-					return
-				}
-				mu.Lock()
-				v[e.key] = childCopy
-				mu.Unlock()
-			}()
-		}
+		processMapNode(ctx, core, v, from, to, wg, errCh, cancel)
 
 	case []any:
-		for i, child := range v {
-			wg.Add(1)
-			go func() {
-				defer wg.Done()
-				childCopy := child
-				processNode(ctx, core, &childCopy, from, to, wg, errCh, cancel)
-				if ctx.Err() != nil {
-					return
-				}
-				v[i] = childCopy
-			}()
-		}
+		processSliceNode(ctx, core, v, from, to, wg, errCh, cancel)
+	}
+}
+
+func processMapNode(ctx context.Context, core *Core, v map[string]any, from, to string, wg *sync.WaitGroup, errCh chan error, cancel context.CancelFunc) {
+	type entry struct {
+		key string
+		val any
+	}
+	entries := make([]entry, 0, len(v))
+	for k, child := range v {
+		entries = append(entries, entry{k, child})
+	}
+	var mu sync.Mutex
+	for _, e := range entries {
+		wg.Add(1)
+		go func() {
+			defer wg.Done()
+			childCopy := e.val
+			processNode(ctx, core, &childCopy, from, to, wg, errCh, cancel)
+			if ctx.Err() != nil {
+				return
+			}
+			mu.Lock()
+			v[e.key] = childCopy
+			mu.Unlock()
+		}()
+	}
+}
+
+func processSliceNode(ctx context.Context, core *Core, v []any, from, to string, wg *sync.WaitGroup, errCh chan error, cancel context.CancelFunc) {
+	for i, child := range v {
+		wg.Add(1)
+		go func() {
+			defer wg.Done()
+			childCopy := child
+			processNode(ctx, core, &childCopy, from, to, wg, errCh, cancel)
+			if ctx.Err() != nil {
+				return
+			}
+			v[i] = childCopy
+		}()
 	}
 }
 
