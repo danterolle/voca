@@ -33,10 +33,6 @@ func RunBatch(cfg *config.Config, args []string) {
 		fs.PrintDefaults()
 		os.Exit(1)
 	}
-	if len(input) == 0 {
-		fmt.Fprintf(os.Stderr, "  ✖ Error: empty input\n")
-		os.Exit(1)
-	}
 
 	core, cleanup := setupRun(cfg, model)
 	defer cleanup()
