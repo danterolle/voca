@@ -62,29 +62,44 @@ func (m Model) pendingText() string {
 
 func (m Model) handleKey(msg tea.KeyMsg) (tea.Model, tea.Cmd) {
 	if m.focused == focusSrcLang || m.focused == focusTgtLang {
-		switch msg.String() {
-		case "tab":
-			return m.advanceFocus(), nil
-		case "shift+tab":
-			return m.retreatFocus(), nil
-		case "up":
-			if m.focused == focusSrcLang && m.srcIdx > 0 {
-				m.srcIdx--
-			} else if m.focused == focusTgtLang && m.tgtIdx > 0 {
-				m.tgtIdx--
-			}
-		case "down":
-			if m.focused == focusSrcLang && m.srcIdx < len(m.langCodes)-1 {
-				m.srcIdx++
-			} else if m.focused == focusTgtLang && m.tgtIdx < len(m.langCodes)-1 {
-				m.tgtIdx++
-			}
-		case "ctrl+c", "esc":
-			return m, tea.Quit
-		}
-		return m, nil
+		return m.handleLangKey(msg)
 	}
+	return m.handleInputKey(msg)
+}
 
+func (m Model) handleLangKey(msg tea.KeyMsg) (tea.Model, tea.Cmd) {
+	switch msg.String() {
+	case "tab":
+		return m.advanceFocus(), nil
+	case "shift+tab":
+		return m.retreatFocus(), nil
+	case "up":
+		return m.adjustLangIndex(-1), nil
+	case "down":
+		return m.adjustLangIndex(1), nil
+	case "ctrl+c", "esc":
+		return m, tea.Quit
+	}
+	return m, nil
+}
+
+func (m Model) adjustLangIndex(delta int) Model {
+	switch m.focused {
+	case focusSrcLang:
+		idx := m.srcIdx + delta
+		if idx >= 0 && idx < len(m.langCodes) {
+			m.srcIdx = idx
+		}
+	case focusTgtLang:
+		idx := m.tgtIdx + delta
+		if idx >= 0 && idx < len(m.langCodes) {
+			m.tgtIdx = idx
+		}
+	}
+	return m
+}
+
+func (m Model) handleInputKey(msg tea.KeyMsg) (tea.Model, tea.Cmd) {
 	switch msg.String() {
 	case "tab":
 		return m.advanceFocus(), nil
