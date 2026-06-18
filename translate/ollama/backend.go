@@ -29,7 +29,7 @@ type chatResponse struct {
 	Message message `json:"message"`
 }
 
-const DefaultNumPredict = 2048
+const defaultNumPredict = 2048
 
 type Backend struct {
 	BaseURL     string
@@ -46,7 +46,7 @@ func NewBackend(baseURL, model string, prompt translate.PromptBuilder) *Backend 
 		BaseURL:     baseURL,
 		Model:       model,
 		Prompt:      prompt,
-		NumPredict:  DefaultNumPredict,
+		NumPredict:  defaultNumPredict,
 		Temperature: 0.0,
 		TopP:        1.0,
 		Client: &http.Client{
