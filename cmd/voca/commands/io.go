@@ -16,18 +16,11 @@ func ReadInput(args []string) (string, error) {
 		return strings.TrimSpace(string(data)), nil
 	}
 
-	stat, err := os.Stdin.Stat()
-	if err != nil {
+	data, err := readStdin()
+	if err != nil || data == nil {
 		return "", nil
 	}
-	if (stat.Mode() & os.ModeCharDevice) == 0 {
-		data, err := io.ReadAll(os.Stdin)
-		if err != nil {
-			return "", nil
-		}
-		return strings.TrimSpace(string(data)), nil
-	}
-	return "", nil
+	return strings.TrimSpace(string(data)), nil
 }
 
 func ReadStdinOrFile(args []string) ([]byte, error) {
@@ -39,16 +32,23 @@ func ReadStdinOrFile(args []string) ([]byte, error) {
 		return os.ReadFile(path)
 	}
 
-	stat, err := os.Stdin.Stat()
+	data, err := readStdin()
 	if err != nil {
 		return nil, fmt.Errorf("stdin not available: %w", err)
 	}
-	if (stat.Mode() & os.ModeCharDevice) != 0 {
+	if data == nil {
 		return nil, fmt.Errorf("no input file specified and stdin is a terminal")
 	}
-	data, err := io.ReadAll(os.Stdin)
-	if err != nil {
-		return nil, fmt.Errorf("read stdin: %w", err)
-	}
 	return data, nil
+}
+
+func readStdin() ([]byte, error) {
+	stat, err := os.Stdin.Stat()
+	if err != nil {
+		return nil, err
+	}
+	if (stat.Mode() & os.ModeCharDevice) != 0 {
+		return nil, nil // terminal, no piped data
+	}
+	return io.ReadAll(os.Stdin)
 }
