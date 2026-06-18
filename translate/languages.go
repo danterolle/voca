@@ -2,8 +2,6 @@ package translate
 
 import "sort"
 
-const DefaultModel = "gemma4:e2b-it-qat"
-
 var languages = map[string]string{
 	"auto": "Auto",
 	"en":   "English",

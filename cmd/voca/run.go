@@ -24,12 +24,7 @@ func newCore(cfg *config.Config, model string) *translate.Core {
 			backend.NumPredict = int(v)
 		}
 	}
-	return translate.NewCore(
-		backend,
-		prompt,
-		translate.NewStaticLanguages(),
-		model,
-	)
+	return translate.NewCore(backend, translate.NewStaticLanguages())
 }
 
 func runTranslate(cfg *config.Config, args []string) {

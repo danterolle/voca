@@ -7,6 +7,7 @@ import (
 	"os"
 	"time"
 
+	"github.com/danterolle/voca/config"
 	"github.com/danterolle/voca/translate"
 	"github.com/danterolle/voca/translate/ollama"
 )
@@ -38,7 +39,7 @@ var targets = []struct {
 }
 
 func main() {
-	model := flag.String("model", translate.DefaultModel, "Ollama model")
+	model := flag.String("model", config.DefaultModel, "Ollama model")
 	flag.Parse()
 
 	backend := ollama.NewBackend("http://localhost:11434", *model, translate.NewDefaultPrompt())
