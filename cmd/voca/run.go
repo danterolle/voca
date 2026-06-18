@@ -51,19 +51,15 @@ func runTranslate(args []string) {
 
 	printBanner()
 	ollamaCmd, started := setupOllama(*model)
+	if started && ollamaCmd != nil {
+		defer ollamaCmd.Process.Kill()
+	}
 
 	core := newCore(*model)
 	ui := tui.NewCLIUI(*from, *to, text)
 	if err := ui.Run(context.Background(), core); err != nil {
 		fmt.Fprintf(os.Stderr, "  ✖ Error: %v\n", err)
-		if started && ollamaCmd != nil {
-			ollamaCmd.Process.Kill()
-		}
 		os.Exit(1)
-	}
-
-	if started && ollamaCmd != nil {
-		ollamaCmd.Process.Kill()
 	}
 }
 
@@ -98,24 +94,20 @@ func runBatch(args []string) {
 	}
 
 	ollamaCmd, started := setupOllama(*model)
+	if started && ollamaCmd != nil {
+		defer ollamaCmd.Process.Kill()
+	}
 	core := newCore(*model)
 	ctx := context.Background()
 
 	output, err := translate.Batch(ctx, core, input, *from, *to)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "  ✖ Error: %v\n", err)
-		if started && ollamaCmd != nil {
-			ollamaCmd.Process.Kill()
-		}
 		os.Exit(1)
 	}
 
 	os.Stdout.Write(output)
 	fmt.Println()
-
-	if started && ollamaCmd != nil {
-		ollamaCmd.Process.Kill()
-	}
 }
 
 func runTUI() {
@@ -124,6 +116,9 @@ func runTUI() {
 
 	printBanner()
 	ollamaCmd, started := setupOllama(*model)
+	if started && ollamaCmd != nil {
+		defer ollamaCmd.Process.Kill()
+	}
 
 	fmt.Printf("\n  Starting terminal interface...")
 	time.Sleep(800 * time.Millisecond)
@@ -133,9 +128,5 @@ func runTUI() {
 	ui := tui.NewBubbleTeaUI()
 	if err := ui.Run(context.Background(), core); err != nil {
 		fmt.Fprintf(os.Stderr, "  ✖ Error: %v\n", err)
-	}
-
-	if started && ollamaCmd != nil {
-		ollamaCmd.Process.Kill()
 	}
 }
