@@ -41,9 +41,13 @@ func NewStaticLanguages() *staticLanguages {
 		codes = append(codes, code)
 	}
 	sort.Strings(codes)
+	names := make(map[string]string, len(languages))
+	for k, v := range languages {
+		names[k] = v
+	}
 	return &staticLanguages{
 		codes: codes,
-		names: languages,
+		names: names,
 	}
 }
 
