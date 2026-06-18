@@ -11,7 +11,25 @@ func (m Model) View() string {
 	}
 
 	var b strings.Builder
+	b.WriteString(m.headerView())
+	b.WriteString("\n\n")
 
+	if m.focused == focusSrcLang || m.focused == focusTgtLang {
+		b.WriteString(m.languageListView())
+	} else {
+		b.WriteString(inputStyle.Render("Input"))
+		b.WriteString("\n")
+		b.WriteString(m.textarea.View())
+		b.WriteString("\n\n")
+		b.WriteString(m.outputView())
+	}
+
+	b.WriteString(m.statusView())
+	return b.String()
+}
+
+func (m Model) headerView() string {
+	var b strings.Builder
 	srcName := m.langNames[m.langCodes[m.srcIdx]]
 	tgtName := m.langNames[m.langCodes[m.tgtIdx]]
 
@@ -32,33 +50,30 @@ func (m Model) View() string {
 	} else {
 		b.WriteString(fmt.Sprintf("To: %s", tgtName))
 	}
-	b.WriteString("\n\n")
+	return b.String()
+}
 
-	if m.focused == focusSrcLang || m.focused == focusTgtLang {
-		b.WriteString(m.languageListView())
+func (m Model) outputView() string {
+	var b strings.Builder
+	b.WriteString(outputStyle.Render("Output"))
+	b.WriteString("\n")
+	if m.output != "" {
+		b.WriteString(wrap(m.output, m.width-4))
+		b.WriteString("\n")
 	} else {
-		b.WriteString(inputStyle.Render("Input"))
+		b.WriteString(subtleStyle.Render("Translation will appear here..."))
 		b.WriteString("\n")
-		b.WriteString(m.textarea.View())
-		b.WriteString("\n\n")
-
-		b.WriteString(outputStyle.Render("Output"))
-		b.WriteString("\n")
-		if m.output != "" {
-			b.WriteString(wrap(m.output, m.width-4))
-			b.WriteString("\n")
-		} else {
-			b.WriteString(subtleStyle.Render("Translation will appear here..."))
-			b.WriteString("\n")
-		}
 	}
+	return b.String()
+}
 
+func (m Model) statusView() string {
+	var b strings.Builder
 	b.WriteString(strings.Repeat("─", max(m.width-2, 0)))
 	b.WriteString("\n")
 	b.WriteString(m.status)
 	b.WriteString("  ")
 	b.WriteString(helpStyle.Render("ctrl+y:copy  ctrl+l:clear  ctrl+t:swap  ctrl+c:quit  tab:next"))
-
 	return b.String()
 }
 

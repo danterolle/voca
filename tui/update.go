@@ -10,50 +10,63 @@ import (
 func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
 	case tea.WindowSizeMsg:
-		m.ready = true
-		m.width = msg.Width
-		contentH := msg.Height - 6
-		if contentH < 4 {
-			contentH = 4
-		}
-		m.textarea.SetWidth(msg.Width - 4)
-		m.textarea.SetHeight(contentH / 2)
+		return m.handleWindowSize(msg)
 
 	case tea.KeyMsg:
 		return m.handleKey(msg)
 
 	case debounceMsg:
-		if msg.seq != m.translateSeq {
-			return m, nil
-		}
-		m.leadingDone = false
-		text := m.pendingText()
-		if text == "" || m.output == text {
-			return m, nil
-		}
-		src := m.langCodes[m.srcIdx]
-		tgt := m.langCodes[m.tgtIdx]
-		m.status = fmt.Sprintf("Translating... (%s -> %s)", m.langNames[src], m.langNames[tgt])
-		return m, m.doTranslate(text, src, tgt)
+		return m.handleDebounce(msg)
 
 	case translateResultMsg:
-		if msg.text != m.textarea.Value() {
-			return m, nil
-		}
-		if msg.err != nil {
-			m.status = fmt.Sprintf("Error: %v", msg.err)
-		} else {
-			if msg.result != "" {
-				m.output = msg.result
-			}
-			m.status = "Ready."
-		}
-		return m, nil
+		return m.handleTranslateResult(msg)
 	}
 
 	var cmd tea.Cmd
 	m.textarea, cmd = m.textarea.Update(msg)
 	return m, cmd
+}
+
+func (m Model) handleWindowSize(msg tea.WindowSizeMsg) (Model, tea.Cmd) {
+	m.ready = true
+	m.width = msg.Width
+	contentH := msg.Height - 6
+	if contentH < 4 {
+		contentH = 4
+	}
+	m.textarea.SetWidth(msg.Width - 4)
+	m.textarea.SetHeight(contentH / 2)
+	return m, nil
+}
+
+func (m Model) handleDebounce(msg debounceMsg) (Model, tea.Cmd) {
+	if msg.seq != m.translateSeq {
+		return m, nil
+	}
+	m.leadingDone = false
+	text := m.pendingText()
+	if text == "" || m.output == text {
+		return m, nil
+	}
+	src := m.langCodes[m.srcIdx]
+	tgt := m.langCodes[m.tgtIdx]
+	m.status = fmt.Sprintf("Translating... (%s -> %s)", m.langNames[src], m.langNames[tgt])
+	return m, m.doTranslate(text, src, tgt)
+}
+
+func (m Model) handleTranslateResult(msg translateResultMsg) (Model, tea.Cmd) {
+	if msg.text != m.textarea.Value() {
+		return m, nil
+	}
+	if msg.err != nil {
+		m.status = fmt.Sprintf("Error: %v", msg.err)
+	} else {
+		if msg.result != "" {
+			m.output = msg.result
+		}
+		m.status = "Ready."
+	}
+	return m, nil
 }
 
 func (m Model) pendingText() string {
@@ -131,6 +144,10 @@ func (m Model) handleInputKey(msg tea.KeyMsg) (tea.Model, tea.Cmd) {
 		return m, tea.Quit
 	}
 
+	return m.handleTextChange(msg)
+}
+
+func (m Model) handleTextChange(msg tea.KeyMsg) (Model, tea.Cmd) {
 	var cmd tea.Cmd
 	before := m.textarea.Value()
 	m.textarea, cmd = m.textarea.Update(msg)
