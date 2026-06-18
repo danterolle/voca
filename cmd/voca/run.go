@@ -92,9 +92,14 @@ func runBatch(args []string) {
 	}
 
 	input, err := readStdinOrFile(fs.Args())
-	if err != nil || len(input) == 0 {
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "  ✖ Error: %v\n", err)
 		fmt.Fprintf(os.Stderr, "Usage: voca batch --from <lang> --to <lang> [file]\n")
 		fs.PrintDefaults()
+		os.Exit(1)
+	}
+	if len(input) == 0 {
+		fmt.Fprintf(os.Stderr, "  ✖ Error: empty input\n")
 		os.Exit(1)
 	}
 
