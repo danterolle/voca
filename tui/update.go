@@ -107,7 +107,9 @@ func (m Model) handleInputKey(msg tea.KeyMsg) (tea.Model, tea.Cmd) {
 		return m.retreatFocus(), nil
 	case "ctrl+y":
 		if m.output != "" {
-			if err := copyClipboard(m.output); err == nil {
+			if err := copyClipboard(m.output); err != nil {
+				m.status = fmt.Sprintf("Clipboard error: %v", err)
+			} else {
 				m.status = "Copied to clipboard!"
 			}
 		}
