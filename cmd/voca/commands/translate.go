@@ -1,4 +1,4 @@
-package main
+package commands
 
 import (
 	"context"
@@ -9,7 +9,7 @@ import (
 	"github.com/danterolle/voca/tui"
 )
 
-func runTranslate(cfg *config.Config, args []string) {
+func RunTranslate(cfg *config.Config, args []string) {
 	model, from, to, fs, h, help := parseTranslateFlags("translate", args, cfg.Backend.Model)
 
 	if *h || *help {
@@ -24,9 +24,9 @@ func runTranslate(cfg *config.Config, args []string) {
 		os.Exit(0)
 	}
 
-	text, err := readInput(fs.Args())
+	text, err := ReadInput(fs.Args())
 	if err != nil {
-		fatal(err)
+		Fatal(err)
 	}
 	if text == "" {
 		fmt.Fprintf(os.Stderr, "Usage: voca translate --from <lang> --to <lang> [text|file|stdin]\n")
@@ -38,6 +38,6 @@ func runTranslate(cfg *config.Config, args []string) {
 	defer cleanup()
 	ui := tui.NewCLIUI(from, to, text)
 	if err := ui.Run(context.Background(), core); err != nil {
-		fatal(err)
+		Fatal(err)
 	}
 }

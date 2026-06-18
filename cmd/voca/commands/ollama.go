@@ -1,4 +1,4 @@
-package main
+package commands
 
 import (
 	"fmt"
@@ -7,7 +7,7 @@ import (
 	"github.com/danterolle/voca/translate/ollama"
 )
 
-func setupOllama(model string) (cmd *exec.Cmd, started bool, err error) {
+func SetupOllama(model string) (cmd *exec.Cmd, started bool, err error) {
 	if _, err := exec.LookPath("ollama"); err != nil {
 		return nil, false, fmt.Errorf("ollama not found — install from https://ollama.com")
 	}

@@ -1,4 +1,4 @@
-package main
+package commands
 
 import (
 	"context"
@@ -9,7 +9,7 @@ import (
 	"github.com/danterolle/voca/translate"
 )
 
-func runBatch(cfg *config.Config, args []string) {
+func RunBatch(cfg *config.Config, args []string) {
 	model, from, to, fs, h, help := parseTranslateFlags("batch", args, cfg.Backend.Model)
 
 	if *h || *help {
@@ -26,7 +26,7 @@ func runBatch(cfg *config.Config, args []string) {
 		os.Exit(0)
 	}
 
-	input, err := readStdinOrFile(fs.Args())
+	input, err := ReadStdinOrFile(fs.Args())
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "  ✖ Error: %v\n", err)
 		fmt.Fprintf(os.Stderr, "Usage: voca batch --from <lang> --to <lang> [file]\n")
@@ -44,7 +44,7 @@ func runBatch(cfg *config.Config, args []string) {
 
 	output, err := translate.Batch(ctx, core, input, from, to)
 	if err != nil {
-		fatal(err)
+		Fatal(err)
 	}
 
 	os.Stdout.Write(output)

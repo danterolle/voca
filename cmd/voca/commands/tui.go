@@ -1,4 +1,4 @@
-package main
+package commands
 
 import (
 	"context"
@@ -11,7 +11,7 @@ import (
 	"github.com/danterolle/voca/tui"
 )
 
-func runTUI(cfg *config.Config, args []string) {
+func RunTUI(cfg *config.Config, args []string) {
 	model := cfg.Backend.Model
 	fs := flag.NewFlagSet("tui", flag.ExitOnError)
 	fs.StringVar(&model, "model", model, "translation model")
