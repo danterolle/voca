@@ -13,9 +13,10 @@ import (
 )
 
 func newCore(model string) *translate.Core {
+	prompt := translate.NewDefaultPrompt()
 	return translate.NewCore(
-		ollama.NewBackend("http://localhost:11434", model, translate.NewDefaultPrompt()),
-		translate.NewDefaultPrompt(),
+		ollama.NewBackend("http://localhost:11434", model, prompt),
+		prompt,
 		translate.NewStaticLanguages(),
 		model,
 	)
