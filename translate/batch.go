@@ -105,7 +105,6 @@ func processNode(ctx context.Context, core *Core, val *any, from, to string, wg 
 
 	case []any:
 		for i, child := range v {
-			i, child := i, child
 			wg.Add(1)
 			go func() {
 				defer wg.Done()
