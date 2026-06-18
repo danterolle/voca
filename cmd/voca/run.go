@@ -13,9 +13,17 @@ import (
 	"github.com/danterolle/voca/tui"
 )
 
-func newCore(cfg *config.Config, model string) *translate.Core {
+func newCore(cfg *config.Config, model string) (*translate.Core, error) {
 	prompt := translate.NewDefaultPrompt()
-	backend := ollama.NewBackend(cfg.Backend.BaseURL, model, prompt)
+
+	var backend *ollama.Backend
+	switch cfg.Backend.Type {
+	case "ollama":
+		backend = ollama.NewBackend(cfg.Backend.BaseURL, model, prompt)
+	default:
+		return nil, fmt.Errorf("unsupported backend type: %q", cfg.Backend.Type)
+	}
+
 	if np, ok := cfg.Backend.Options["num_predict"]; ok {
 		switch v := np.(type) {
 		case int:
@@ -32,7 +40,7 @@ func newCore(cfg *config.Config, model string) *translate.Core {
 			backend.Client.Timeout = time.Duration(v) * time.Second
 		}
 	}
-	return translate.NewCore(backend, translate.NewStaticLanguages())
+	return translate.NewCore(backend, translate.NewStaticLanguages()), nil
 }
 
 func runTranslate(cfg *config.Config, args []string) {
@@ -77,8 +85,12 @@ func runTranslate(cfg *config.Config, args []string) {
 		defer ollamaCmd.Process.Kill()
 	}
 
-	core := newCore(cfg, model)
-	ui := tui.NewCLIUI(from, to, text)
+	core, err := newCore(cfg, model)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "  ✖ Error: %v\n", err)
+		os.Exit(1)
+	}
+	var ui = tui.NewCLIUI(from, to, text)
 	if err := ui.Run(context.Background(), core); err != nil {
 		fmt.Fprintf(os.Stderr, "  ✖ Error: %v\n", err)
 		os.Exit(1)
@@ -128,7 +140,11 @@ func runBatch(cfg *config.Config, args []string) {
 	if started && ollamaCmd != nil {
 		defer ollamaCmd.Process.Kill()
 	}
-	core := newCore(cfg, model)
+	core, err := newCore(cfg, model)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "  ✖ Error: %v\n", err)
+		os.Exit(1)
+	}
 	ctx := context.Background()
 
 	output, err := translate.Batch(ctx, core, input, from, to)
@@ -156,7 +172,11 @@ func runTUI(cfg *config.Config) {
 	time.Sleep(800 * time.Millisecond)
 	fmt.Printf("\n")
 
-	root := newCore(cfg, model)
+	root, err := newCore(cfg, model)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "  ✖ Error: %v\n", err)
+		os.Exit(1)
+	}
 	ui := tui.NewBubbleTeaUI()
 	if err := ui.Run(context.Background(), root); err != nil {
 		fmt.Fprintf(os.Stderr, "  ✖ Error: %v\n", err)
