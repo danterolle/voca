@@ -13,7 +13,9 @@ func Batch(ctx context.Context, core *Core, input []byte, from, to string) ([]by
 		if err := json.Unmarshal(input, &data); err != nil {
 			return nil, fmt.Errorf("invalid JSON: %w", err)
 		}
-		translateValue(ctx, core, &data, from, to)
+		if err := translateValue(ctx, core, &data, from, to); err != nil {
+			return nil, err
+		}
 		return json.MarshalIndent(data, "", "  ")
 	}
 
@@ -29,27 +31,34 @@ func Batch(ctx context.Context, core *Core, input []byte, from, to string) ([]by
 	return []byte(result), nil
 }
 
-func translateValue(ctx context.Context, core *Core, val *any, from, to string) {
+func translateValue(ctx context.Context, core *Core, val *any, from, to string) error {
 	switch v := (*val).(type) {
 	case string:
 		if v == "" {
-			return
+			return nil
 		}
 		result, err := core.Backend.Translate(ctx, v, from, to)
-		if err == nil {
-			*val = result
+		if err != nil {
+			return err
 		}
+		*val = result
+		return nil
 	case map[string]any:
 		for k, child := range v {
 			childCopy := child
-			translateValue(ctx, core, &childCopy, from, to)
+			if err := translateValue(ctx, core, &childCopy, from, to); err != nil {
+				return err
+			}
 			v[k] = childCopy
 		}
 	case []any:
 		for i, child := range v {
 			childCopy := child
-			translateValue(ctx, core, &childCopy, from, to)
+			if err := translateValue(ctx, core, &childCopy, from, to); err != nil {
+				return err
+			}
 			v[i] = childCopy
 		}
 	}
+	return nil
 }
