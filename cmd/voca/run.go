@@ -72,8 +72,7 @@ func setupRun(cfg *config.Config) (*translate.Core, func()) {
 	core, err := newCore(cfg, model)
 	if err != nil {
 		cleanup()
-		fmt.Fprintf(os.Stderr, "  ✖ Error: %v\n", err)
-		os.Exit(1)
+		fatal(err)
 	}
 
 	return core, cleanup
@@ -106,8 +105,7 @@ func runTranslate(cfg *config.Config, args []string) {
 
 	text, err := readInput(fs.Args())
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "  ✖ Error: %v\n", err)
-		os.Exit(1)
+		fatal(err)
 	}
 	if text == "" {
 		fmt.Fprintf(os.Stderr, "Usage: voca translate --from <lang> --to <lang> [text|file|stdin]\n")
@@ -119,8 +117,7 @@ func runTranslate(cfg *config.Config, args []string) {
 	defer cleanup()
 	ui := tui.NewCLIUI(from, to, text)
 	if err := ui.Run(context.Background(), core); err != nil {
-		fmt.Fprintf(os.Stderr, "  ✖ Error: %v\n", err)
-		os.Exit(1)
+		fatal(err)
 	}
 }
 
@@ -169,8 +166,7 @@ func runBatch(cfg *config.Config, args []string) {
 
 	output, err := translate.Batch(ctx, core, input, from, to)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "  ✖ Error: %v\n", err)
-		os.Exit(1)
+		fatal(err)
 	}
 
 	os.Stdout.Write(output)

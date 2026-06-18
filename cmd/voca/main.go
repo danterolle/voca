@@ -11,12 +11,16 @@ import (
 
 var Version string
 
+func fatal(err error) {
+	fmt.Fprintf(os.Stderr, "  ✖ Error: %v\n", err)
+	os.Exit(1)
+}
+
 func main() {
 	cfgPath := extractConfig()
 	cfg, err := config.Load(cfgPath)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "  ✖ Error: %v\n", err)
-		os.Exit(1)
+		fatal(err)
 	}
 
 	if len(os.Args) > 1 {
