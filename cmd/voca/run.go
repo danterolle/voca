@@ -183,7 +183,7 @@ func runTUI(cfg *config.Config, args []string) {
 	defer cleanup()
 
 	fmt.Printf("\n  Starting terminal interface...")
-	time.Sleep(800 * time.Millisecond)
+	time.Sleep(800 * time.Millisecond) // let banner finish rendering before TUI takes over alternate screen
 	fmt.Printf("\n")
 
 	ui := tui.NewBubbleTeaUI()
