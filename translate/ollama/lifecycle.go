@@ -40,7 +40,9 @@ func ModelExists(model string) bool {
 			Name string `json:"name"`
 		} `json:"models"`
 	}
-	json.NewDecoder(resp.Body).Decode(&tags)
+	if err := json.NewDecoder(resp.Body).Decode(&tags); err != nil {
+		return false
+	}
 	for _, m := range tags.Models {
 		if m.Name == model || strings.HasPrefix(m.Name, model+":") {
 			return true
