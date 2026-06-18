@@ -43,7 +43,11 @@ func runTranslate(args []string) {
 		os.Exit(0)
 	}
 
-	text := readInput(fs.Args())
+	text, err := readInput(fs.Args())
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "  ✖ Error: %v\n", err)
+		os.Exit(1)
+	}
 	if text == "" {
 		fmt.Fprintf(os.Stderr, "Usage: voca translate --from <lang> --to <lang> [text|file|stdin]\n")
 		fs.PrintDefaults()
