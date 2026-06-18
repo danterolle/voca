@@ -1,0 +1,52 @@
+package main
+
+import (
+	"context"
+	"fmt"
+	"os"
+
+	"github.com/danterolle/voca/config"
+	"github.com/danterolle/voca/translate"
+)
+
+func runBatch(cfg *config.Config, args []string) {
+	model, from, to, fs, h, help := parseTranslateFlags("batch", args, cfg.Backend.Model)
+
+	if *h || *help {
+		printBanner()
+		fmt.Println("Usage: voca batch [flags] [file]")
+		fmt.Println()
+		fs.PrintDefaults()
+		fmt.Println()
+		fmt.Println("Examples:")
+		fmt.Println(`  voca batch --from en --to it < locales/en.json`)
+		fmt.Println(`  voca batch --from en --to it locales/en.json`)
+		fmt.Println(`  voca batch --from en --to fr README.md`)
+		fmt.Println(`  echo "Hello world" | voca batch --from en --to it`)
+		os.Exit(0)
+	}
+
+	input, err := readStdinOrFile(fs.Args())
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "  ✖ Error: %v\n", err)
+		fmt.Fprintf(os.Stderr, "Usage: voca batch --from <lang> --to <lang> [file]\n")
+		fs.PrintDefaults()
+		os.Exit(1)
+	}
+	if len(input) == 0 {
+		fmt.Fprintf(os.Stderr, "  ✖ Error: empty input\n")
+		os.Exit(1)
+	}
+
+	core, cleanup := setupRun(cfg, model)
+	defer cleanup()
+	ctx := context.Background()
+
+	output, err := translate.Batch(ctx, core, input, from, to)
+	if err != nil {
+		fatal(err)
+	}
+
+	os.Stdout.Write(output)
+	fmt.Println()
+}
