@@ -44,7 +44,7 @@ func (m Model) handleDebounce(msg debounceMsg) (Model, tea.Cmd) {
 		return m, nil
 	}
 	m.leadingDone = false
-	text := m.pendingText()
+		text := m.textarea.Value()
 	if text == "" || m.output == text {
 		return m, nil
 	}
@@ -67,10 +67,6 @@ func (m Model) handleTranslateResult(msg translateResultMsg) (Model, tea.Cmd) {
 		m.status = "Ready."
 	}
 	return m, nil
-}
-
-func (m Model) pendingText() string {
-	return m.textarea.Value()
 }
 
 func (m Model) handleKey(msg tea.KeyMsg) (tea.Model, tea.Cmd) {
