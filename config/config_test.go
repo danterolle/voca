@@ -37,12 +37,19 @@ func TestDefault_BackendOptions(t *testing.T) {
 }
 
 func TestLoad_FileNotFound(t *testing.T) {
-	cfg, err := Load("/nonexistent/path/config.yaml")
+	cfg, err := Load("")
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
 	if cfg.Backend.Model != DefaultModel {
 		t.Fatalf("expected defaults on missing file, got %s", cfg.Backend.Model)
+	}
+}
+
+func TestLoad_ExplicitFileNotFound(t *testing.T) {
+	_, err := Load("/nonexistent/path/config.yaml")
+	if err == nil {
+		t.Fatal("expected error for explicit nonexistent config file")
 	}
 }
 
@@ -62,6 +69,33 @@ func TestLoad_CustomFile(t *testing.T) {
 	}
 	if cfg.Backend.BaseURL != DefaultBaseURL {
 		t.Fatalf("expected default base_url %s, got %s", DefaultBaseURL, cfg.Backend.BaseURL)
+	}
+}
+
+func TestLoad_InvalidYAML(t *testing.T) {
+	dir := t.TempDir()
+	path := dir + "/bad.yaml"
+	if err := os.WriteFile(path, []byte("backend:\n  model: [invalid"), 0644); err != nil {
+		t.Fatal(err)
+	}
+	_, err := Load(path)
+	if err == nil {
+		t.Fatal("expected error for invalid YAML")
+	}
+}
+
+func TestLoad_EmptyFile(t *testing.T) {
+	dir := t.TempDir()
+	path := dir + "/empty.yaml"
+	if err := os.WriteFile(path, []byte{}, 0644); err != nil {
+		t.Fatal(err)
+	}
+	cfg, err := Load(path)
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+	if cfg.Backend.Model != DefaultModel {
+		t.Fatalf("expected defaults from empty file, got %s", cfg.Backend.Model)
 	}
 }
 

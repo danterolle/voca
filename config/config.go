@@ -42,13 +42,16 @@ func Default() *Config {
 func Load(cfgPath string) (*Config, error) {
 	cfg := Default()
 
-	paths := resolvePaths(cfgPath)
+	paths, explicit := resolvePaths(cfgPath)
 	for _, p := range paths {
 		if p == "" {
 			continue
 		}
 		data, err := os.ReadFile(p)
 		if err != nil {
+			if explicit && os.IsNotExist(err) {
+				return nil, fmt.Errorf("config: %s not found", p)
+			}
 			if os.IsNotExist(err) {
 				continue
 			}
@@ -63,16 +66,16 @@ func Load(cfgPath string) (*Config, error) {
 	return cfg, nil
 }
 
-func resolvePaths(cfgPath string) []string {
+func resolvePaths(cfgPath string) ([]string, bool) {
 	if cfgPath != "" {
-		return []string{cfgPath}
+		return []string{cfgPath}, true
 	}
 	if env := os.Getenv("VOCA_CONFIG"); env != "" {
-		return []string{env}
+		return []string{env}, true
 	}
 	home, err := os.UserHomeDir()
 	if err != nil {
-		return nil
+		return nil, true
 	}
-	return []string{filepath.Join(home, DefaultConfigDir, DefaultConfigFile)}
+	return []string{filepath.Join(home, DefaultConfigDir, DefaultConfigFile)}, false
 }
