@@ -153,7 +153,7 @@ Auto-detects JSON (preserves structure, translates values) vs plain text (transl
 
 ## Benchmarks
 
-See [BENCHMARKS.md](BENCHMARKS.md) for multi-sentence translation quality and speed benchmarks across 6 models and 14 languages.
+See [BENCHMARKS.md](docs/BENCHMARKS.md) for multi-sentence translation quality and speed benchmarks across 3 models and 24 languages.
 
 ## Technical documentation
 
