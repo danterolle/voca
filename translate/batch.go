@@ -14,7 +14,6 @@ type jsonTranslator struct {
 	core   *Core
 	from   string
 	to     string
-	wg     sync.WaitGroup
 	errCh  chan error
 	cancel context.CancelFunc
 	sem    chan struct{}
@@ -59,17 +58,6 @@ func translateJSON(ctx context.Context, core *Core, data *any, from, to string) 
 
 	t.processNode(ctx, data)
 
-	done := make(chan struct{})
-	go func() {
-		t.wg.Wait()
-		close(done)
-	}()
-
-	select {
-	case <-done:
-	case <-ctx.Done():
-	}
-
 	select {
 	case err := <-t.errCh:
 		return err
@@ -109,36 +97,62 @@ func (t *jsonTranslator) processMapNode(ctx context.Context, v map[string]any) {
 	for k, child := range v {
 		entries = append(entries, entry{k, child})
 	}
-	var mu sync.Mutex
+	if len(entries) == 0 {
+		return
+	}
+	ch := make(chan entry, len(entries))
 	for _, e := range entries {
-		t.wg.Add(1)
+		ch <- e
+	}
+	close(ch)
+
+	var mu sync.Mutex
+	var wg sync.WaitGroup
+	for i := 0; i < batchWorkers; i++ {
+		wg.Add(1)
 		go func() {
-			defer t.wg.Done()
-			childCopy := e.val
-			t.processNode(ctx, &childCopy)
-			if ctx.Err() != nil {
-				return
+			defer wg.Done()
+			for e := range ch {
+				childCopy := e.val
+				t.processNode(ctx, &childCopy)
+				if ctx.Err() != nil {
+					return
+				}
+				mu.Lock()
+				v[e.key] = childCopy
+				mu.Unlock()
 			}
-			mu.Lock()
-			v[e.key] = childCopy
-			mu.Unlock()
 		}()
 	}
+	wg.Wait()
 }
 
 func (t *jsonTranslator) processSliceNode(ctx context.Context, v []any) {
-	for i, child := range v {
-		t.wg.Add(1)
+	if len(v) == 0 {
+		return
+	}
+	ch := make(chan int, len(v))
+	for i := range v {
+		ch <- i
+	}
+	close(ch)
+
+	var wg sync.WaitGroup
+	for i := 0; i < batchWorkers; i++ {
+		wg.Add(1)
 		go func() {
-			defer t.wg.Done()
-			childCopy := child
-			t.processNode(ctx, &childCopy)
-			if ctx.Err() != nil {
-				return
+			defer wg.Done()
+			for idx := range ch {
+				childCopy := v[idx]
+				t.processNode(ctx, &childCopy)
+				if ctx.Err() != nil {
+					return
+				}
+				v[idx] = childCopy
 			}
-			v[i] = childCopy
 		}()
 	}
+	wg.Wait()
 }
 
 func (t *jsonTranslator) translateString(ctx context.Context, val *any) {
