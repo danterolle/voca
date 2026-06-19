@@ -1,6 +1,9 @@
 package commands
 
-import "fmt"
+import (
+	"fmt"
+	"os"
+)
 
 func printBanner() {
 	gradient := []string{
@@ -22,17 +25,17 @@ func printBanner() {
 		"    \\/   \\____/ \\_____/_/    \\_\\",
 	}
 
-	fmt.Println()
+	fmt.Fprintln(os.Stderr)
 	for i, line := range lines {
 		if i < len(gradient) {
-			fmt.Printf("%s%s%s\n", gradient[i], line, reset)
+			fmt.Fprintf(os.Stderr, "%s%s%s\n", gradient[i], line, reset)
 		} else {
-			fmt.Printf("%s%s%s\n", gradient[len(gradient)-1], line, reset)
+			fmt.Fprintf(os.Stderr, "%s%s%s\n", gradient[len(gradient)-1], line, reset)
 		}
 	}
 	if Version != "" {
-		fmt.Printf("\033[1;38;5;203m                    %s%s\n", Version, reset)
+		fmt.Fprintf(os.Stderr, "\033[1;38;5;203m                    %s%s\n", Version, reset)
 	}
-	fmt.Printf("       \033[38;5;203mVersatile Offline Communication Assistant%s\n", reset)
-	fmt.Println()
+	fmt.Fprintf(os.Stderr, "       \033[38;5;203mVersatile Offline Communication Assistant%s\n", reset)
+	fmt.Fprintln(os.Stderr)
 }

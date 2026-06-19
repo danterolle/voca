@@ -23,9 +23,9 @@ func RunTUI(cfg *config.Config, args []string) {
 	}
 	defer cleanup()
 
-	fmt.Printf("\n  Starting terminal interface...")
-	time.Sleep(800 * time.Millisecond) // let banner finish rendering before TUI takes over alternate screen
-	fmt.Printf("\n")
+	fmt.Fprintf(os.Stderr, "\n  Starting terminal interface...")
+	time.Sleep(800 * time.Millisecond)
+	fmt.Fprintf(os.Stderr, "\n")
 
 	if err := tui.RunBubbleTea(context.Background(), core.Backend, core.Languages); err != nil {
 		fmt.Fprintf(os.Stderr, "  ✖ Error: %v\n", err)
