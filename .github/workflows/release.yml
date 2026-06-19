@@ -26,6 +26,8 @@ jobs:
       - name: Update docs version
         run: |
           TAG="${GITHUB_REF#refs/tags/}"
+          git fetch origin main
+          git checkout main
           sed -i "s/v[0-9.]\+/$TAG/" docs/index.html
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
