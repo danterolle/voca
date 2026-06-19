@@ -4,9 +4,11 @@
 [![License](https://img.shields.io/badge/license-Apache%202.0-blue)](LICENSE)
 [![Go Report Card](https://goreportcard.com/badge/github.com/danterolle/voca)](https://goreportcard.com/report/github.com/danterolle/voca)
 
-An experimental, hackable local-first translation tool for desktop and developer workflows. Translate text, files, docs and structured content using local LLMs via [Ollama](https://ollama.com) or [llama.cpp](https://github.com/ggml-org/llama.cpp).
+A tool for producing local translation drafts using LLMs via [Ollama](https://ollama.com) or [llama.cpp](https://github.com/ggml-org/llama.cpp). Translate text, files, docs and structured content entirely on your machine.
 
-**Why VOCA?** Every translation stays on your machine. No data sent to Google, DeepL or $whatever. Designed for desktop use via terminal, **not** for mobile. You can script it, pipe it and integrate it into your development workflow if needed.
+**Why VOCA?** Every translation stays on your machine. No data sent to Google, DeepL or others. Designed for desktop use via terminal, **not** for mobile.
+
+Please note that translation quality depends on the model you choose and small models can really make mistakes so treat the output as a draft to review, *not as a guaranteed result*.
 
 This tool is also a way to learn: to see whether a small model (Gemma 1b/2b/4b/others) can handle some real translation work well enough to make me a little less dependent on big corporations. And maybe it'll be useful to others too, not just to people who call themselves programmers. Of course, you can use or download any template and use it solely for translation, and that would work just fine. This tool is designed specifically and solely to force the model to translate.
 
@@ -19,6 +21,7 @@ This tool is also a way to learn: to see whether a small model (Gemma 1b/2b/4b/o
 - **Three modes** — interactive TUI, one-shot CLI, and batch (JSON/text)
 - **Configurable** — model, temperature, top_p, num_predict, timeout per backend
 - **Scriptable** — pipe-friendly, CLI flags override config, could fits CI workflows
+- **Model-dependent quality** — output is a draft, not a guaranteed translation. Larger models produce better results. See [benchmarks](#benchmarks).
 
 ## Table of Contents
 
@@ -209,6 +212,8 @@ Auto-detects JSON (preserves structure, translates values) vs plain text (transl
 Language codes are validated the same way as CLI mode — invalid input produces a clear error before any translation call.
 
 ## Benchmarks
+
+Translation quality varies significantly by model. Small models (1B-4B) can produce fluent output but may make mistakes on complex sentences, rare languages or domain-specific terms. Always review LLM output before use.
 
 See [BENCHMARKS.md](docs/BENCHMARKS.md) for multi-sentence translation quality and speed benchmarks across 3 models and 24 languages.
 
