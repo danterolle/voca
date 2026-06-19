@@ -6,6 +6,7 @@ import (
 	"os"
 
 	"github.com/danterolle/voca/config"
+	"github.com/danterolle/voca/translate"
 )
 
 var Version string
@@ -26,6 +27,12 @@ func Run(cfg *config.Config, args []string) {
 				Fatal(err)
 			}
 			return
+		case "languages":
+			fmt.Println("Supported language codes:")
+			for _, l := range translate.NewStaticLanguages().List() {
+				fmt.Printf("  %-6s %s\n", l.Code, l.Name)
+			}
+			return
 		case "-h", "--help":
 			PrintUsage()
 			return
@@ -42,6 +49,7 @@ func PrintUsage() {
 	fmt.Println("  voca                                     Start the terminal UI")
 	fmt.Println("  voca translate [flags] <text|file>       One-shot translation")
 	fmt.Println("  voca batch     [flags] <file|stdin>      Batch translate JSON or text")
+	fmt.Println("  voca languages                           List supported language codes")
 	fmt.Println("  voca --help                              Show this help message")
 	fmt.Println()
 	fmt.Println("━━━ Global flags ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
@@ -67,6 +75,19 @@ func PrintUsage() {
 func Fatal(err error) {
 	fmt.Fprintf(os.Stderr, "  ✖ Error: %v\n", err)
 	os.Exit(1)
+}
+
+func validateLangs(from, to string) error {
+	if from != "auto" && !translate.IsValidLang(from) {
+		return fmt.Errorf("unsupported source language %q; %s", from, translate.ListSupported())
+	}
+	if !translate.IsValidLang(to) {
+		return fmt.Errorf("unsupported target language %q; %s", to, translate.ListSupported())
+	}
+	if to == "auto" {
+		return fmt.Errorf("target language cannot be %q; specify a concrete language", to)
+	}
+	return nil
 }
 
 func parseTranslateFlags(name string, args []string, defaultModel string) (model, from, to string, fs *flag.FlagSet, h, help *bool) {

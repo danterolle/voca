@@ -28,6 +28,10 @@ func RunBatch(cfg *config.Config, args []string) error {
 		os.Exit(0)
 	}
 
+	if err := validateLangs(from, to); err != nil {
+		return err
+	}
+
 	input, err := ReadStdinOrFile(fs.Args())
 	if err != nil || input == nil {
 		if err != nil {

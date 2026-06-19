@@ -1,6 +1,9 @@
 package translate
 
-import "sort"
+import (
+	"sort"
+	"strings"
+)
 
 var languages = map[string]string{
 	"auto": "Auto",
@@ -53,4 +56,21 @@ func (s *staticLanguages) List() []Language {
 		result[i] = Language{Code: code, Name: languages[code]}
 	}
 	return result
+}
+
+func IsValidLang(code string) bool {
+	_, ok := languages[code]
+	return ok
+}
+
+func ListSupported() string {
+	var b strings.Builder
+	b.WriteString("supported: ")
+	for i, code := range langCodes {
+		if i > 0 {
+			b.WriteString(", ")
+		}
+		b.WriteString(code)
+	}
+	return b.String()
 }

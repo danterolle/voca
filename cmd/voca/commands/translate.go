@@ -26,6 +26,10 @@ func RunTranslate(cfg *config.Config, args []string) error {
 		os.Exit(0)
 	}
 
+	if err := validateLangs(from, to); err != nil {
+		return err
+	}
+
 	text, err := ReadInput(fs.Args())
 	if err != nil {
 		return err
