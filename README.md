@@ -7,12 +7,12 @@
 Local-first translation tool for desktop and developer workflows. Translate text, files, docs and structured content using local LLMs via [Ollama](https://ollama.com) or [llama.cpp](https://github.com/ggml-org/llama.cpp).
 
 ```
-  ██╗   ██╗ ██████╗  ██████╗ █████╗ 
-  ██║   ██║██╔═══██╗██╔════╝██╔══██╗
-  ██║   ██║██║   ██║██║     ███████║
-  ╚██╗ ██╔╝██║   ██║██║     ██╔══██║
-   ╚████╔╝ ╚██████╔╝╚██████╗██║  ██║
-    ╚═══╝   ╚═════╝  ╚═════╝╚═╝  ╚═╝
+__      ______   _____          
+\ \    / / __ \ / ____|   /\    
+ \ \  / / |  | | |       /  \   
+  \ \/ /| |  | | |      / /\ \  
+   \  / | |__| | |____ / ____ \ 
+    \/   \____/ \_____/_/    \_\
 ```
 
 **Why VOCA?** Every translation stays on your machine. No data sent to Google, DeepL or $whatever. Designed for desktop use via terminal, **not** for mobile. You can script it, pipe it and integrate it into your development workflow if needed.
