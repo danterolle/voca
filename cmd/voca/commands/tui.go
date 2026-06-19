@@ -23,9 +23,9 @@ func RunTUI(cfg *config.Config, args []string) {
 	}
 	defer cleanup()
 
-	fmt.Fprintf(os.Stderr, "\n  Starting terminal interface...")
+	logDiag("\n  Starting terminal interface...")
 	time.Sleep(800 * time.Millisecond)
-	fmt.Fprintf(os.Stderr, "\n")
+	logDiag("\n")
 
 	if err := tui.RunBubbleTea(context.Background(), core.Backend, core.Languages); err != nil {
 		fmt.Fprintf(os.Stderr, "  ✖ Error: %v\n", err)

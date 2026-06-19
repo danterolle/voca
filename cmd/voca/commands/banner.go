@@ -1,11 +1,10 @@
 package commands
 
-import (
-	"fmt"
-	"os"
-)
-
 func printBanner() {
+	if Quiet {
+		return
+	}
+
 	gradient := []string{
 		"\033[38;5;255m",
 		"\033[38;5;230m",
@@ -25,17 +24,17 @@ func printBanner() {
 		"    \\/   \\____/ \\_____/_/    \\_\\",
 	}
 
-	fmt.Fprintln(os.Stderr)
+	logDiag("\n")
 	for i, line := range lines {
 		if i < len(gradient) {
-			fmt.Fprintf(os.Stderr, "%s%s%s\n", gradient[i], line, reset)
+			logDiag("%s%s%s\n", gradient[i], line, reset)
 		} else {
-			fmt.Fprintf(os.Stderr, "%s%s%s\n", gradient[len(gradient)-1], line, reset)
+			logDiag("%s%s%s\n", gradient[len(gradient)-1], line, reset)
 		}
 	}
 	if Version != "" {
-		fmt.Fprintf(os.Stderr, "\033[1;38;5;203m                    %s%s\n", Version, reset)
+		logDiag("\033[1;38;5;203m                    %s%s\n", Version, reset)
 	}
-	fmt.Fprintf(os.Stderr, "       \033[38;5;203mVersatile Offline Communication Assistant%s\n", reset)
-	fmt.Fprintln(os.Stderr)
+	logDiag("       \033[38;5;203mVersatile Offline Communication Assistant%s\n", reset)
+	logDiag("\n")
 }
