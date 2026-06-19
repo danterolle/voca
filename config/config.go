@@ -18,10 +18,12 @@ type Config struct {
 }
 
 type BackendConfig struct {
-	Type    string         `yaml:"type"`
-	Model   string         `yaml:"model"`
-	BaseURL string         `yaml:"base_url"`
-	Options map[string]any `yaml:"options"`
+	Type       string         `yaml:"type"`
+	Model      string         `yaml:"model"`
+	ModelPath  string         `yaml:"model_path"`
+	ServerArgs []string       `yaml:"server_args"`
+	BaseURL    string         `yaml:"base_url"`
+	Options    map[string]any `yaml:"options"`
 }
 
 func Default() *Config {

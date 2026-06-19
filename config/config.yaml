@@ -2,11 +2,28 @@
 # Copy to ~/.config/voca/config.yaml and adjust as needed.
 # All fields are optional — omitted values use their defaults.
 
+# Backend types: ollama (default), llamacpp
+#
+# ollama — uses http://localhost:11434
+#   model: any Ollama model tag (default: gemma4:e2b-it-qat)
+#
+# llamacpp — uses http://localhost:8080
+#   model: any model name reported by llama-server
+#   Requires llama-server to be running separately with a GGUF file.
+#   Start it with: llama-server --model <file> --host 127.0.0.1 --port 8080
+
 backend:
   type: ollama      # Backend type (default: ollama)
-  model: gemma3:1b  # Ollama model name (default: gemma4:e2b-it-qat)
+  model: gemma3:1b  # Model name (default: gemma4:e2b-it-qat)
 
-  # Ollama base URL (default: http://localhost:11434)
+  # For llamacpp: path to a GGUF model file. When set, voca auto-starts
+  # llama-server with this model. Omit if you manage llama-server yourself.
+  # model_path: /path/to/model.gguf
+  # server_args: ["--ctx-size", "8192", "--n-gpu-layers", "99"]
+
+  # Backend base URL (default depends on type)
+  #   ollama:   http://localhost:11434
+  #   llamacpp: http://localhost:8080
   base_url: http://localhost:11434
 
   # Model parameters (optional)
