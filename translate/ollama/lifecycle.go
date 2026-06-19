@@ -82,6 +82,13 @@ func PullModel(model, baseURL string) error {
 	return scanner.Err()
 }
 
+func UnloadModel(model, baseURL string) {
+	body := map[string]any{"model": model, "keep_alive": "0s"}
+	var buf strings.Builder
+	json.NewEncoder(&buf).Encode(body)
+	httpClient.Post(baseURL+"/api/generate", "application/json", strings.NewReader(buf.String()))
+}
+
 func renderPullStatus(status string, total, completed int64) {
 	if total > 0 {
 		pct := float64(completed) / float64(total) * 100

@@ -19,9 +19,12 @@ func SetupRun(cfg *config.Config, model string) (*translate.Core, func(), error)
 	var cleanup func()
 	if started && ollamaCmd != nil {
 		c := ollamaCmd
-		cleanup = func() { _ = c.Process.Kill() }
+		cleanup = func() {
+			ollama.UnloadModel(model, cfg.Backend.BaseURL)
+			_ = c.Process.Kill()
+		}
 	} else {
-		cleanup = func() {}
+		cleanup = func() { ollama.UnloadModel(model, cfg.Backend.BaseURL) }
 	}
 
 	prompt := translate.NewDefaultPrompt()
