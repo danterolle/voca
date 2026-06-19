@@ -18,24 +18,14 @@ var sentences = []string{
 	"The museum's new exhibition features over two hundred paintings and sculptures from Renaissance artists, attracting visitors from all over the world.",
 }
 
-var targets = []struct {
-	code string
-	name string
-}{
-	{"it", "Italian"},
-	{"fr", "French"},
-	{"de", "German"},
-	{"es", "Spanish"},
-	{"pt", "Portuguese"},
-	{"nl", "Dutch"},
-	{"pl", "Polish"},
-	{"ru", "Russian"},
-	{"ja", "Japanese"},
-	{"zh", "Chinese"},
-	{"ko", "Korean"},
-	{"ar", "Arabic"},
-	{"tr", "Turkish"},
-	{"hi", "Hindi"},
+var targets []translate.Language
+
+func init() {
+	for _, l := range translate.NewStaticLanguages().List() {
+		if l.Code != "auto" {
+			targets = append(targets, l)
+		}
+	}
 }
 
 func main() {
@@ -52,13 +42,13 @@ func main() {
 		fmt.Fprintf(os.Stderr, "\n=== Sentence %d/%d: %q ===\n", si+1, totalSentences, ellipsis(text, 60))
 		for _, tgt := range targets {
 			start := time.Now()
-			result, err := backend.Translate(context.Background(), text, "en", tgt.code)
+			result, err := backend.Translate(context.Background(), text, "en", tgt.Code)
 			elapsed := time.Since(start)
-			langTimes[tgt.code] = append(langTimes[tgt.code], elapsed)
+			langTimes[tgt.Code] = append(langTimes[tgt.Code], elapsed)
 			if err != nil {
-				fmt.Printf("[%-4s %-10s] S%d ERROR: %v\n", tgt.code, tgt.name, si+1, err)
+				fmt.Printf("[%-4s %-10s] S%d ERROR: %v\n", tgt.Code, tgt.Name, si+1, err)
 			} else {
-				fmt.Printf("[%-4s %-10s] S%d %v — %q\n", tgt.code, tgt.name, si+1, elapsed.Round(time.Millisecond), result)
+				fmt.Printf("[%-4s %-10s] S%d %v — %q\n", tgt.Code, tgt.Name, si+1, elapsed.Round(time.Millisecond), result)
 			}
 		}
 	}
@@ -68,7 +58,7 @@ func main() {
 	fmt.Fprintf(os.Stderr, "Total time: %v | Avg per sentence: %v\n", totalElapsed.Round(time.Millisecond), (totalElapsed / time.Duration(totalSentences)).Round(time.Millisecond))
 	fmt.Fprintf(os.Stderr, "\nLanguage averages:\n")
 	for _, tgt := range targets {
-		times := langTimes[tgt.code]
+		times := langTimes[tgt.Code]
 		if len(times) == 0 {
 			continue
 		}
@@ -77,7 +67,7 @@ func main() {
 			sum += t
 		}
 		avg := sum / time.Duration(len(times))
-		fmt.Fprintf(os.Stderr, "  %-4s %-10s avg %v\n", tgt.code, tgt.name, avg.Round(time.Millisecond))
+		fmt.Fprintf(os.Stderr, "  %-4s %-10s avg %v\n", tgt.Code, tgt.Name, avg.Round(time.Millisecond))
 	}
 }
 
