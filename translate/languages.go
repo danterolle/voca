@@ -30,31 +30,36 @@ var languages = map[string]string{
 	"hi":   "Hindi",
 }
 
-type staticLanguages struct {
-	codes []string
-	names map[string]string
-}
+var (
+	langCodes []string
+	langNames map[string]string
+)
 
-func NewStaticLanguages() *staticLanguages {
+func init() {
 	codes := make([]string, 0, len(languages))
 	for code := range languages {
 		codes = append(codes, code)
 	}
 	sort.Strings(codes)
+	langCodes = codes
+
 	names := make(map[string]string, len(languages))
 	for k, v := range languages {
 		names[k] = v
 	}
-	return &staticLanguages{
-		codes: codes,
-		names: names,
-	}
+	langNames = names
+}
+
+type staticLanguages struct{}
+
+func NewStaticLanguages() *staticLanguages {
+	return &staticLanguages{}
 }
 
 func (s *staticLanguages) List() []Language {
-	result := make([]Language, len(s.codes))
-	for i, code := range s.codes {
-		result[i] = Language{Code: code, Name: s.names[code]}
+	result := make([]Language, len(langCodes))
+	for i, code := range langCodes {
+		result[i] = Language{Code: code, Name: langNames[code]}
 	}
 	return result
 }
