@@ -19,7 +19,7 @@ backend:
   # For llamacpp: path to a GGUF model file. When set, voca auto-starts
   # llama-server with this model. Omit if you manage llama-server yourself.
   # model_path: /path/to/model.gguf
-  # server_args: ["--ctx-size", "8192", "--n-gpu-layers", "99"]
+  # server_args: ["--ctx-size", "8192", "--ngl", "99"]
 
   # Backend base URL (default depends on type)
   #   ollama:   http://localhost:11434

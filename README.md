@@ -4,7 +4,7 @@
 [![License](https://img.shields.io/badge/license-Apache%202.0-blue)](LICENSE)
 [![Go Report Card](https://goreportcard.com/badge/github.com/danterolle/voca)](https://goreportcard.com/report/github.com/danterolle/voca)
 
-Local-first translation tool for desktop and developer workflows. Translate text, files, docs, and structured content using local LLMs.
+Local-first translation tool for desktop and developer workflows. Translate text, files, docs, and structured content using local LLMs via [Ollama](https://ollama.com) or [llama.cpp](https://github.com/ggml-org/llama.cpp).
 
 **Why VOCA?** Every translation stays on your machine. No data sent to Google, DeepL or $whatever. Designed for desktop and terminal, **not** for mobile. You can script it, pipe it and integrate it into your development workflow. Replaces manual copy-pasting to DeepL/Google Translate when working on text, documentation, code or sensitive documents.
 
@@ -23,7 +23,9 @@ Local-first translation tool for desktop and developer workflows. Translate text
 
 ## Installation
 
-**Prerequisites:** [Ollama](https://ollama.com) with at least one model pulled (e.g. `ollama pull gemma3:1b`).
+**Prerequisites (choose one):**
+- [Ollama](https://ollama.com) with a model pulled (e.g. `ollama pull gemma3:1b`) — **default backend**
+- [llama.cpp](https://github.com/ggml-org/llama.cpp) `llama-server` serving a GGUF model on `http://localhost:8080`
 
 ```bash
 go install github.com/danterolle/voca@latest
@@ -75,6 +77,36 @@ voca --config ./config.yaml translate --from it --to en "Ciao mondo"
 voca --config ./config.yaml translate --model phi4:latest --from it --to en "Ciao mondo"
 ```
 
+### Backends
+
+**Ollama** (default): auto-starts `ollama serve` and pulls models on demand:
+
+```yaml
+backend:
+  type: ollama
+  model: gemma3:1b
+  base_url: http://localhost:11434
+  options:
+    temperature: 0.0
+    num_predict: 2048
+```
+
+**llama.cpp**: connect to an existing `llama-server` or auto-start with `model_path`:
+
+```yaml
+backend:
+  type: llamacpp
+  model: gemma3:1b
+  base_url: http://localhost:8080
+  model_path: /path/to/model.gguf          # auto-start llama-server
+  server_args: ["--ctx-size", "8192", "--ngl", "99"]  # extra flags
+  options:
+    temperature: 0.0
+    num_predict: 2048
+```
+
+When `model_path` is set, voca starts `llama-server --model <path> --host <host> --port <port> <server_args...>` as a subprocess and kills it on exit.
+
 See [`config/config.yaml`](config/config.yaml) for a full example with defaults.
 
 ## TUI mode
@@ -83,7 +115,7 @@ Interactive terminal interface with auto-translate as you type.
 
 **Flags:**
 ```
---model       Ollama model (default: gemma4:e2b-it-qat)
+--model       Model name (default: gemma4:e2b-it-qat)
 -h, --help    Show usage
 ```
 
@@ -111,7 +143,7 @@ echo "Hello world" | voca translate --from en --to it
 # Translate a file
 voca translate --from auto --to en ./document.md
 
-# Choose a model
+# Choose a different model
 voca translate --model phi4-mini:latest --from fr --to en "Bonjour le monde"
 
 # Test with literary text (see test_data/)
@@ -122,7 +154,7 @@ voca translate --from it --to en test_data/malavoglia.md
 ```
 --from        Source language code (default: auto)
 --to          Target language code (default: en)
---model       Ollama model (default: gemma4:e2b-it-qat)
+--model       Model name (default: gemma4:e2b-it-qat)
 -h, --help    Show usage with examples
 ```
 
@@ -147,7 +179,7 @@ Auto-detects JSON (preserves structure, translates values) vs plain text (transl
 ```
 --from        Source language code (default: auto)
 --to          Target language code (default: en)
---model       Ollama model (default: gemma4:e2b-it-qat)
+--model       Model name (default: gemma4:e2b-it-qat)
 -h, --help    Show usage with examples
 ```
 
