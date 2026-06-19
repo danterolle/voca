@@ -17,7 +17,7 @@ func RunTUI(cfg *config.Config, args []string) {
 	fs.StringVar(&model, "model", model, "translation model")
 	fs.Parse(args)
 
-	core, cleanup, err := setupRun(cfg, model)
+	core, cleanup, err := SetupRun(cfg, model)
 	if err != nil {
 		Fatal(err)
 	}

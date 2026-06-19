@@ -36,7 +36,7 @@ func RunTranslate(cfg *config.Config, args []string) error {
 		return fmt.Errorf("no input text or file provided")
 	}
 
-	core, cleanup, err := setupRun(cfg, model)
+	core, cleanup, err := SetupRun(cfg, model)
 	if err != nil {
 		return err
 	}

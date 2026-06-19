@@ -9,7 +9,7 @@ import (
 	"github.com/danterolle/voca/translate/ollama"
 )
 
-func setupRun(cfg *config.Config, model string) (*translate.Core, func(), error) {
+func SetupRun(cfg *config.Config, model string) (*translate.Core, func(), error) {
 	printBanner()
 	ollamaCmd, started, err := SetupOllama(model, cfg.Backend.BaseURL)
 	if err != nil {

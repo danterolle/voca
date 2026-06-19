@@ -36,7 +36,7 @@ func RunBatch(cfg *config.Config, args []string) error {
 		return fmt.Errorf("no input: %w", err)
 	}
 
-	core, cleanup, err := setupRun(cfg, model)
+	core, cleanup, err := SetupRun(cfg, model)
 	if err != nil {
 		return err
 	}

@@ -7,9 +7,9 @@ import (
 	"os"
 	"time"
 
+	"github.com/danterolle/voca/cmd/voca/commands"
 	"github.com/danterolle/voca/config"
 	"github.com/danterolle/voca/translate"
-	"github.com/danterolle/voca/translate/ollama"
 )
 
 var sentences = []string{
@@ -32,7 +32,17 @@ func main() {
 	model := flag.String("model", config.DefaultModel, "Ollama model")
 	flag.Parse()
 
-	backend := ollama.NewBackend("http://localhost:11434", *model, translate.NewDefaultPrompt())
+	cfg := config.Default()
+	cfg.Backend.Model = *model
+
+	setupStart := time.Now()
+	core, cleanup, err := commands.SetupRun(cfg, *model)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "setup error: %v\n", err)
+		os.Exit(1)
+	}
+	setupElapsed := time.Since(setupStart)
+	defer cleanup()
 
 	totalStart := time.Now()
 	totalSentences := len(sentences)
@@ -42,7 +52,7 @@ func main() {
 		fmt.Fprintf(os.Stderr, "\n=== Sentence %d/%d: %q ===\n", si+1, totalSentences, ellipsis(text, 60))
 		for _, tgt := range targets {
 			start := time.Now()
-			result, err := backend.Translate(context.Background(), text, "en", tgt.Code)
+			result, err := core.Translate(context.Background(), text, "en", tgt.Code)
 			elapsed := time.Since(start)
 			langTimes[tgt.Code] = append(langTimes[tgt.Code], elapsed)
 			if err != nil {
@@ -55,7 +65,8 @@ func main() {
 
 	totalElapsed := time.Since(totalStart)
 	fmt.Fprintf(os.Stderr, "\n=== Summary for %s ===\n", *model)
-	fmt.Fprintf(os.Stderr, "Total time: %v | Avg per sentence: %v\n", totalElapsed.Round(time.Millisecond), (totalElapsed / time.Duration(totalSentences)).Round(time.Millisecond))
+	fmt.Fprintf(os.Stderr, "Setup time: %v\n", setupElapsed.Round(time.Millisecond))
+	fmt.Fprintf(os.Stderr, "Total translate time: %v | Avg per sentence: %v\n", totalElapsed.Round(time.Millisecond), (totalElapsed / time.Duration(totalSentences)).Round(time.Millisecond))
 	fmt.Fprintf(os.Stderr, "\nLanguage averages:\n")
 	for _, tgt := range targets {
 		times := langTimes[tgt.Code]
