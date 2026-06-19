@@ -76,7 +76,7 @@ func resolvePaths(cfgPath string) ([]string, bool) {
 	}
 	home, err := os.UserHomeDir()
 	if err != nil {
-		return nil, true
+		return nil, false
 	}
 	return []string{filepath.Join(home, DefaultConfigDir, DefaultConfigFile)}, false
 }
