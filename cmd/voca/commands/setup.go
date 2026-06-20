@@ -5,7 +5,6 @@ import (
 
 	"github.com/danterolle/voca/config"
 	"github.com/danterolle/voca/translate"
-	"github.com/danterolle/voca/translate/backends"
 )
 
 func SetupRun(cfg *config.Config, model string) (*translate.Core, func(), error) {
@@ -31,14 +30,14 @@ func setupOllama(cfg *config.Config, model string) (*translate.Core, func(), err
 	if started && ollamaCmd != nil {
 		c := ollamaCmd
 		cleanup = func() {
-			backends.UnloadBackend("ollama", model, cfg.Backend.BaseURL)
+			translate.UnloadBackend("ollama", model, cfg.Backend.BaseURL)
 			stopProcess(c)
 		}
 	} else {
-		cleanup = func() { backends.UnloadBackend("ollama", model, cfg.Backend.BaseURL) }
+		cleanup = func() { translate.UnloadBackend("ollama", model, cfg.Backend.BaseURL) }
 	}
 
-	backend, err := backends.NewBackend("ollama", cfg.Backend.BaseURL, model, cfg.Backend.Options, translate.NewDefaultPrompt())
+	backend, err := translate.NewBackend("ollama", cfg.Backend.BaseURL, model, cfg.Backend.Options, translate.NewDefaultPrompt())
 	if err != nil {
 		return nil, nil, err
 	}
@@ -60,7 +59,7 @@ func setupLlamaCpp(cfg *config.Config, model string) (*translate.Core, func(), e
 		cleanup = func() {}
 	}
 
-	backend, err := backends.NewBackend("llamacpp", cfg.Backend.BaseURL, model, cfg.Backend.Options, translate.NewDefaultPrompt())
+	backend, err := translate.NewBackend("llamacpp", cfg.Backend.BaseURL, model, cfg.Backend.Options, translate.NewDefaultPrompt())
 	if err != nil {
 		return nil, nil, err
 	}

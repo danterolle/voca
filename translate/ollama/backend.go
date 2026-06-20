@@ -8,36 +8,41 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/danterolle/voca/translate"
+	httpclient "github.com/danterolle/voca/translate/http"
 )
+
+type promptBuilder interface {
+	System() string
+	Translate(text, source, target string) string
+}
 
 type chatRequest struct {
 	Model    string              `json:"model"`
-	Messages []translate.Message `json:"messages"`
+	Messages []httpclient.Message `json:"messages"`
 	Stream   bool                `json:"stream"`
 	Options  map[string]any      `json:"options"`
 }
 
 type chatResponse struct {
-	Message translate.Message `json:"message"`
+	Message httpclient.Message `json:"message"`
 }
 
 type Backend struct {
 	BaseURL     string
 	Model       string
-	Prompt      translate.PromptBuilder
+	Prompt      promptBuilder
 	Client      *http.Client
 	NumPredict  int
 	Temperature float64
 	TopP        float64
 }
 
-func NewBackend(baseURL, model string, prompt translate.PromptBuilder) *Backend {
+func NewBackend(baseURL, model string, prompt promptBuilder) *Backend {
 	return &Backend{
 		BaseURL: baseURL,
 		Model:   model,
 		Prompt:  prompt,
-		Client:  translate.NewHTTPClient(),
+		Client:  httpclient.NewHTTPClient(),
 	}
 }
 
@@ -54,7 +59,7 @@ func (b *Backend) Translate(ctx context.Context, text, source, target string) (s
 		return "", err
 	}
 
-	body, err := translate.DoTranslate(ctx, b.Client, req, "ollama")
+	body, err := httpclient.DoTranslate(ctx, b.Client, req, "ollama")
 	if err != nil {
 		return "", err
 	}
@@ -79,7 +84,7 @@ func (b *Backend) buildRequest(ctx context.Context, text, source, target string)
 
 	body := chatRequest{
 		Model: b.Model,
-		Messages: []translate.Message{
+		Messages: []httpclient.Message{
 			{Role: "system", Content: b.Prompt.System()},
 			{Role: "user", Content: b.Prompt.Translate(text, source, target)},
 		},

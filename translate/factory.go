@@ -1,18 +1,17 @@
-package backends
+package translate
 
 import (
 	"encoding/json"
 	"fmt"
-	"net/http"
 	"strings"
 	"time"
 
-	"github.com/danterolle/voca/translate"
+	httpclient "github.com/danterolle/voca/translate/http"
 	"github.com/danterolle/voca/translate/llamacpp"
 	"github.com/danterolle/voca/translate/ollama"
 )
 
-func NewBackend(backendType, baseURL, model string, options map[string]any, prompt translate.PromptBuilder) (translate.Backend, error) {
+func NewBackend(backendType, baseURL, model string, options map[string]any, prompt PromptBuilder) (Backend, error) {
 	switch backendType {
 	case "ollama":
 		b := ollama.NewBackend(baseURL, model, prompt)
@@ -38,7 +37,8 @@ func UnloadBackend(backendType, model, baseURL string) {
 		var buf strings.Builder
 		body := map[string]string{"model": model, "keep_alive": "0m", "unload": "true"}
 		_ = json.NewEncoder(&buf).Encode(body)
-		client := &http.Client{Timeout: 30 * time.Second}
+		client := httpclient.NewHTTPClient()
+		client.Timeout = 30 * time.Second
 		_, _ = client.Post(baseURL+"/api/generate", "application/json", strings.NewReader(buf.String()))
 	}
 }

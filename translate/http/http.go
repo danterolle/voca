@@ -1,4 +1,4 @@
-package translate
+package httpclient
 
 import (
 	"context"

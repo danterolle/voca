@@ -8,12 +8,17 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/danterolle/voca/translate"
+	httpclient "github.com/danterolle/voca/translate/http"
 )
+
+type promptBuilder interface {
+	System() string
+	Translate(text, source, target string) string
+}
 
 type chatCompletionRequest struct {
 	Model       string              `json:"model"`
-	Messages    []translate.Message `json:"messages"`
+	Messages    []httpclient.Message `json:"messages"`
 	Temperature float64             `json:"temperature,omitempty"`
 	TopP        float64             `json:"top_p,omitempty"`
 	MaxTokens   int                 `json:"max_tokens,omitempty"`
@@ -22,26 +27,26 @@ type chatCompletionRequest struct {
 
 type chatCompletionResponse struct {
 	Choices []struct {
-		Message translate.Message `json:"message"`
+		Message httpclient.Message `json:"message"`
 	} `json:"choices"`
 }
 
 type Backend struct {
 	BaseURL     string
 	Model       string
-	Prompt      translate.PromptBuilder
+	Prompt      promptBuilder
 	Client      *http.Client
 	MaxTokens   int
 	Temperature float64
 	TopP        float64
 }
 
-func NewBackend(baseURL, model string, prompt translate.PromptBuilder) *Backend {
+func NewBackend(baseURL, model string, prompt promptBuilder) *Backend {
 	return &Backend{
 		BaseURL: baseURL,
 		Model:   model,
 		Prompt:  prompt,
-		Client:  translate.NewHTTPClient(),
+		Client:  httpclient.NewHTTPClient(),
 	}
 }
 
@@ -58,7 +63,7 @@ func (b *Backend) Translate(ctx context.Context, text, source, target string) (s
 		return "", err
 	}
 
-	body, err := translate.DoTranslate(ctx, b.Client, req, "llamacpp")
+	body, err := httpclient.DoTranslate(ctx, b.Client, req, "llamacpp")
 	if err != nil {
 		return "", err
 	}
@@ -79,7 +84,7 @@ func (b *Backend) Translate(ctx context.Context, text, source, target string) (s
 func (b *Backend) buildRequest(ctx context.Context, text, source, target string) (*http.Request, error) {
 	body := chatCompletionRequest{
 		Model: b.Model,
-		Messages: []translate.Message{
+		Messages: []httpclient.Message{
 			{Role: "system", Content: b.Prompt.System()},
 			{Role: "user", Content: b.Prompt.Translate(text, source, target)},
 		},
