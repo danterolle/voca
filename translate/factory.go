@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"os"
 	"time"
 
 	httpclient "github.com/danterolle/loqi/translate/http"
@@ -36,10 +37,19 @@ func NewBackend(backendType, baseURL, model string, options map[string]any, prom
 func UnloadBackend(backendType, model, baseURL string) {
 	if backendType == "ollama" {
 		body := map[string]string{"model": model, "keep_alive": "0m", "unload": "true"}
-		data, _ := json.Marshal(body)
+		data, err := json.Marshal(body)
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "  ⚠ unload: encode: %v\n", err)
+			return
+		}
 		client := httpclient.NewHTTPClient()
 		client.Timeout = 30 * time.Second
-		_, _ = client.Post(baseURL+"/api/generate", "application/json", bytes.NewReader(data))
+		resp, err := client.Post(baseURL+"/api/generate", "application/json", bytes.NewReader(data))
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "  ⚠ unload: %v\n", err)
+			return
+		}
+		resp.Body.Close()
 	}
 }
 
