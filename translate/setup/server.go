@@ -1,6 +1,7 @@
 package setup
 
 import (
+	"context"
 	"fmt"
 	"net/url"
 	"os/exec"
@@ -16,7 +17,7 @@ func SetupOllama(model, baseURL string, diag DiagFunc) (cmd *exec.Cmd, started b
 		return nil, false, fmt.Errorf("ollama not found — install from https://ollama.com")
 	}
 
-	if !ollama.Reachable(baseURL) {
+	if !ollama.Reachable(context.Background(), baseURL) {
 		diag("  ◆ Starting Ollama... ")
 		cmd = exec.Command("ollama", "serve")
 		if err := cmd.Start(); err != nil {

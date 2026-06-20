@@ -14,8 +14,12 @@ import (
 
 var httpClient = &http.Client{Timeout: 2 * time.Second}
 
-func Reachable(baseURL string) bool {
-	resp, err := httpClient.Get(baseURL + "/api/tags")
+func Reachable(ctx context.Context, baseURL string) bool {
+	req, err := http.NewRequestWithContext(ctx, http.MethodGet, baseURL+"/api/tags", nil)
+	if err != nil {
+		return false
+	}
+	resp, err := httpClient.Do(req)
 	if err != nil {
 		return false
 	}
@@ -28,7 +32,7 @@ func WaitForReady(seconds int, baseURL string) bool {
 	defer cancel()
 
 	for {
-		if reachable(ctx, baseURL) {
+		if Reachable(ctx, baseURL) {
 			return true
 		}
 		select {
@@ -37,19 +41,6 @@ func WaitForReady(seconds int, baseURL string) bool {
 		case <-time.After(time.Second):
 		}
 	}
-}
-
-func reachable(ctx context.Context, baseURL string) bool {
-	req, err := http.NewRequestWithContext(ctx, http.MethodGet, baseURL+"/api/tags", nil)
-	if err != nil {
-		return false
-	}
-	resp, err := httpClient.Do(req)
-	if err != nil {
-		return false
-	}
-	resp.Body.Close()
-	return true
 }
 
 func ModelExists(model, baseURL string) bool {
