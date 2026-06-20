@@ -3,25 +3,21 @@ package tui
 import (
 	"context"
 	"fmt"
-	"os"
 
 	tea "github.com/charmbracelet/bubbletea"
 
 	"github.com/danterolle/loqi/translate"
 )
 
-func RunBubbleTea(ctx context.Context, backend translate.Backend, langs translate.LanguageProvider) error {
+func RunBubbleTea(ctx context.Context, backend translate.Backend, langs translate.LanguageProvider) (err error) {
 	defer func() {
 		if r := recover(); r != nil {
-			fmt.Fprintf(os.Stderr, "  ✖ panic: %v\n", r)
-			os.Exit(1)
+			err = fmt.Errorf("panic: %v", r)
 		}
 	}()
 
 	m := newModel(ctx, backend, langs)
 	p := tea.NewProgram(m, tea.WithAltScreen())
-	if _, err := p.Run(); err != nil {
-		return err
-	}
-	return nil
+	_, err = p.Run()
+	return
 }
