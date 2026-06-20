@@ -2,6 +2,7 @@ package ollama
 
 import (
 	"bufio"
+	"context"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -22,13 +23,32 @@ func Reachable(baseURL string) bool {
 }
 
 func WaitForReady(seconds int, baseURL string) bool {
-	for i := 0; i < seconds; i++ {
-		if Reachable(baseURL) {
+	ctx, cancel := context.WithTimeout(context.Background(), time.Duration(seconds)*time.Second)
+	defer cancel()
+
+	for {
+		if reachable(ctx, baseURL) {
 			return true
 		}
-		time.Sleep(time.Second)
+		select {
+		case <-ctx.Done():
+			return false
+		case <-time.After(time.Second):
+		}
 	}
-	return false
+}
+
+func reachable(ctx context.Context, baseURL string) bool {
+	req, err := http.NewRequestWithContext(ctx, http.MethodGet, baseURL+"/api/tags", nil)
+	if err != nil {
+		return false
+	}
+	resp, err := httpClient.Do(req)
+	if err != nil {
+		return false
+	}
+	resp.Body.Close()
+	return true
 }
 
 func ModelExists(model, baseURL string) bool {
