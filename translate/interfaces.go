@@ -6,11 +6,6 @@ type Backend interface {
 	Translate(ctx context.Context, text, source, target string) (string, error)
 }
 
-type PromptBuilder interface {
-	System() string
-	Translate(text, source, target string) string
-}
-
 type Language struct {
 	Code string
 	Name string

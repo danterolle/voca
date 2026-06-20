@@ -7,7 +7,6 @@ import (
 
 var (
 	_ Backend          = (*MockBackend)(nil)
-	_ PromptBuilder    = (*defaultPrompt)(nil)
 	_ LanguageProvider = (*staticLanguages)(nil)
 )
 
