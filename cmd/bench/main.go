@@ -7,9 +7,9 @@ import (
 	"os"
 	"time"
 
-	"github.com/danterolle/loqi/cmd/loqi/commands"
 	"github.com/danterolle/loqi/config"
 	"github.com/danterolle/loqi/translate"
+	"github.com/danterolle/loqi/translate/setup"
 )
 
 var sentences = []string{
@@ -36,7 +36,7 @@ func main() {
 	cfg.Backend.Model = *model
 
 	setupStart := time.Now()
-	core, cleanup, err := commands.SetupRun(cfg, *model)
+	core, cleanup, err := setup.SetupRun(cfg, *model, logDiag, nil)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "setup error: %v\n", err)
 		os.Exit(1)
@@ -80,6 +80,10 @@ func main() {
 		avg := sum / time.Duration(len(times))
 		fmt.Fprintf(os.Stderr, "  %-4s %-10s avg %v\n", tgt.Code, tgt.Name, avg.Round(time.Millisecond))
 	}
+}
+
+func logDiag(format string, args ...any) {
+	fmt.Fprintf(os.Stderr, format, args...)
 }
 
 func ellipsis(s string, max int) string {
