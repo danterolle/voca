@@ -29,6 +29,10 @@ func init() {
 }
 
 func main() {
+	os.Exit(run())
+}
+
+func run() int {
 	model := flag.String("model", config.DefaultModel, "Ollama model")
 	flag.Parse()
 
@@ -39,7 +43,7 @@ func main() {
 	core, cleanup, err := setup.SetupRun(cfg, *model, logDiag, nil)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "setup error: %v\n", err)
-		os.Exit(1)
+		return 1
 	}
 	setupElapsed := time.Since(setupStart)
 	defer cleanup()
@@ -80,6 +84,7 @@ func main() {
 		avg := sum / time.Duration(len(times))
 		fmt.Fprintf(os.Stderr, "  %-4s %-10s avg %v\n", tgt.Code, tgt.Name, avg.Round(time.Millisecond))
 	}
+	return 0
 }
 
 func logDiag(format string, args ...any) {
