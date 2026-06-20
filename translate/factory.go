@@ -12,21 +12,22 @@ import (
 )
 
 func NewBackend(backendType, baseURL, model string, options map[string]any, prompt *chatPrompt) (Backend, error) {
+	config := httpclient.BackendConfig{
+		BaseURL:     baseURL,
+		Model:       model,
+		Prompt:      prompt,
+		Client:      httpclient.NewHTTPClient(),
+		MaxTokens:   intOption(options, "num_predict", 2048),
+		Temperature: floatOption(options, "temperature", 0.0),
+		TopP:        floatOption(options, "top_p", 1.0),
+	}
+	config.Client.Timeout = durationOption(options, "timeout", 2*time.Minute)
+
 	switch backendType {
 	case "ollama":
-		b := ollama.NewBackend(baseURL, model, prompt)
-		b.NumPredict = intOption(options, "num_predict", 2048)
-		b.Client.Timeout = durationOption(options, "timeout", 2*time.Minute)
-		b.Temperature = floatOption(options, "temperature", 0.0)
-		b.TopP = floatOption(options, "top_p", 1.0)
-		return b, nil
+		return ollama.NewBackend(config), nil
 	case "llamacpp":
-		b := llamacpp.NewBackend(baseURL, model, prompt)
-		b.MaxTokens = intOption(options, "num_predict", 2048)
-		b.Client.Timeout = durationOption(options, "timeout", 2*time.Minute)
-		b.Temperature = floatOption(options, "temperature", 0.0)
-		b.TopP = floatOption(options, "top_p", 1.0)
-		return b, nil
+		return llamacpp.NewBackend(config), nil
 	default:
 		return nil, fmt.Errorf("unsupported backend type: %q", backendType)
 	}

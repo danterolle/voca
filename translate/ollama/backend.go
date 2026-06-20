@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"net/http"
 	"strings"
 
 	httpclient "github.com/danterolle/loqi/translate/http"
@@ -18,22 +17,14 @@ type chatRequest struct {
 }
 
 type Backend struct {
-	BaseURL     string
-	Model       string
-	Prompt      httpclient.PromptBuilder
-	Client      *http.Client
-	NumPredict  int
-	Temperature float64
-	TopP        float64
+	Config httpclient.BackendConfig
 }
 
-func NewBackend(baseURL, model string, prompt httpclient.PromptBuilder) *Backend {
-	return &Backend{
-		BaseURL: baseURL,
-		Model:   model,
-		Prompt:  prompt,
-		Client:  httpclient.NewHTTPClient(),
+func NewBackend(config httpclient.BackendConfig) *Backend {
+	if config.Client == nil {
+		config.Client = httpclient.NewHTTPClient()
 	}
+	return &Backend{Config: config}
 }
 
 func (b *Backend) Translate(ctx context.Context, text, source, target string) (string, error) {
@@ -44,7 +35,7 @@ func (b *Backend) Translate(ctx context.Context, text, source, target string) (s
 		return text, nil
 	}
 
-	return httpclient.PostJSON(ctx, b.Client, b.BaseURL+"/api/chat", "ollama",
+	return httpclient.PostJSON(ctx, b.Config.Client, b.Config.BaseURL+"/api/chat", "ollama",
 		b.buildRequestBody(text, source, target),
 		func(data []byte) (string, error) {
 			var cr struct {
@@ -59,18 +50,18 @@ func (b *Backend) Translate(ctx context.Context, text, source, target string) (s
 
 func (b *Backend) buildRequestBody(text, source, target string) chatRequest {
 	options := map[string]any{
-		"temperature": b.Temperature,
-		"top_p":       b.TopP,
+		"temperature": b.Config.Temperature,
+		"top_p":       b.Config.TopP,
 	}
-	if b.NumPredict > 0 {
-		options["num_predict"] = b.NumPredict
+	if b.Config.MaxTokens > 0 {
+		options["num_predict"] = b.Config.MaxTokens
 	}
 
 	return chatRequest{
-		Model: b.Model,
+		Model: b.Config.Model,
 		Messages: []httpclient.Message{
-			{Role: "system", Content: b.Prompt.System()},
-			{Role: "user", Content: b.Prompt.Translate(text, source, target)},
+			{Role: "system", Content: b.Config.Prompt.System()},
+			{Role: "user", Content: b.Config.Prompt.Translate(text, source, target)},
 		},
 		Stream:  false,
 		Options: options,

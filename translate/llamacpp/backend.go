@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"net/http"
 	"strings"
 
 	httpclient "github.com/danterolle/loqi/translate/http"
@@ -20,22 +19,14 @@ type chatCompletionRequest struct {
 }
 
 type Backend struct {
-	BaseURL     string
-	Model       string
-	Prompt      httpclient.PromptBuilder
-	Client      *http.Client
-	MaxTokens   int
-	Temperature float64
-	TopP        float64
+	Config httpclient.BackendConfig
 }
 
-func NewBackend(baseURL, model string, prompt httpclient.PromptBuilder) *Backend {
-	return &Backend{
-		BaseURL: baseURL,
-		Model:   model,
-		Prompt:  prompt,
-		Client:  httpclient.NewHTTPClient(),
+func NewBackend(config httpclient.BackendConfig) *Backend {
+	if config.Client == nil {
+		config.Client = httpclient.NewHTTPClient()
 	}
+	return &Backend{Config: config}
 }
 
 func (b *Backend) Translate(ctx context.Context, text, source, target string) (string, error) {
@@ -46,7 +37,7 @@ func (b *Backend) Translate(ctx context.Context, text, source, target string) (s
 		return text, nil
 	}
 
-	return httpclient.PostJSON(ctx, b.Client, b.BaseURL+"/v1/chat/completions", "llamacpp",
+	return httpclient.PostJSON(ctx, b.Config.Client, b.Config.BaseURL+"/v1/chat/completions", "llamacpp",
 		b.buildRequestBody(text, source, target),
 		func(data []byte) (string, error) {
 			var cr struct {
@@ -66,14 +57,14 @@ func (b *Backend) Translate(ctx context.Context, text, source, target string) (s
 
 func (b *Backend) buildRequestBody(text, source, target string) chatCompletionRequest {
 	return chatCompletionRequest{
-		Model: b.Model,
+		Model: b.Config.Model,
 		Messages: []httpclient.Message{
-			{Role: "system", Content: b.Prompt.System()},
-			{Role: "user", Content: b.Prompt.Translate(text, source, target)},
+			{Role: "system", Content: b.Config.Prompt.System()},
+			{Role: "user", Content: b.Config.Prompt.Translate(text, source, target)},
 		},
-		Temperature: b.Temperature,
-		TopP:        b.TopP,
-		MaxTokens:   b.MaxTokens,
+		Temperature: b.Config.Temperature,
+		TopP:        b.Config.TopP,
+		MaxTokens:   b.Config.MaxTokens,
 		Stream:      false,
 	}
 }

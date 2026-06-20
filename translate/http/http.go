@@ -21,6 +21,16 @@ type PromptBuilder interface {
 	Translate(text, source, target string) string
 }
 
+type BackendConfig struct {
+	BaseURL     string
+	Model       string
+	Prompt      PromptBuilder
+	Client      *http.Client
+	MaxTokens   int
+	Temperature float64
+	TopP        float64
+}
+
 func NewHTTPClient() *http.Client {
 	return &http.Client{
 		Timeout: 2 * time.Minute,
