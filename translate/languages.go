@@ -33,16 +33,14 @@ var languages = map[string]string{
 	"hi":   "Hindi",
 }
 
-var langCodes []string
-
-func init() {
+var langCodes = func() []string {
 	codes := make([]string, 0, len(languages))
 	for code := range languages {
 		codes = append(codes, code)
 	}
 	sort.Strings(codes)
-	langCodes = codes
-}
+	return codes
+}()
 
 type staticLanguages struct{}
 

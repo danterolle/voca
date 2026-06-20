@@ -18,21 +18,13 @@ var sentences = []string{
 	"The museum's new exhibition features over two hundred paintings and sculptures from Renaissance artists, attracting visitors from all over the world.",
 }
 
-var targets []translate.Language
-
-func init() {
-	for _, l := range translate.NewStaticLanguages().List() {
-		if l.Code != "auto" {
-			targets = append(targets, l)
-		}
-	}
-}
-
 func main() {
 	os.Exit(run())
 }
 
 func run() int {
+	targets := listTargets()
+
 	model := flag.String("model", config.DefaultModel, "Ollama model")
 	flag.Parse()
 
@@ -89,6 +81,16 @@ func run() int {
 
 func logDiag(format string, args ...any) {
 	fmt.Fprintf(os.Stderr, format, args...)
+}
+
+func listTargets() []translate.Language {
+	var targets []translate.Language
+	for _, l := range translate.NewStaticLanguages().List() {
+		if l.Code != "auto" {
+			targets = append(targets, l)
+		}
+	}
+	return targets
 }
 
 func ellipsis(s string, max int) string {
