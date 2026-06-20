@@ -27,5 +27,5 @@ func RunTUI(cfg *config.Config, args []string) error {
 
 	ctx, stop := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM)
 	defer stop()
-	return tui.RunBubbleTea(ctx, core.Backend, core.Languages)
+	return tui.RunBubbleTea(ctx, core.Backend(), core.Languages())
 }
