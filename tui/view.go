@@ -33,7 +33,7 @@ func (m Model) headerView() string {
 	srcName := m.langNames[m.langCodes[m.srcIdx]]
 	tgtName := m.langNames[m.langCodes[m.tgtIdx]]
 
-	b.WriteString(headerStyle.Render("voca"))
+	b.WriteString(headerStyle.Render("loqi"))
 	b.WriteString("  ")
 	if m.focused == focusSrcLang {
 		b.WriteString(subtleStyle.Render("From:"))

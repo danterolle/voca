@@ -1,4 +1,4 @@
-module github.com/danterolle/voca
+module github.com/danterolle/loqi
 
 go 1.26.4
 

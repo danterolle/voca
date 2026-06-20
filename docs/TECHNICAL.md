@@ -1,6 +1,6 @@
 ## What It Is
 
-Voca is a terminal-based translator that runs locally through LLMs. It supports two backends: **Ollama** (default) and **llama.cpp**. It works in three modes: an interactive TUI built with bubbletea, a `voca translate` command for one-shot translations, and `voca batch` for bulk-translating JSON or plain text files.
+Loqi is a terminal-based translator that runs locally through LLMs. It supports two backends: **Ollama** (default) and **llama.cpp**. It works in three modes: an interactive TUI built with bubbletea, a `loqi translate` command for one-shot translations, and `loqi batch` for bulk-translating JSON or plain text files.
 
 The entire codebase is Go with only five external dependencies (bubbletea, bubbles, lipgloss, yaml, atotto/clipboard).
 
@@ -9,8 +9,8 @@ The entire codebase is Go with only five external dependencies (bubbletea, bubbl
 Eight packages (plus `cmd/bench`) with a linear dependency graph — no cycles:
 
 ```
-cmd/voca/main.go
-  └─ cmd/voca/commands/     ── orchestrates everything
+cmd/loqi/main.go
+  └─ cmd/loqi/commands/     ── orchestrates everything
        ├─ app.go            ── dispatch, usage, flag parsing
        ├─ translate.go      ── RunTranslate, RunCLI
        ├─ batch.go          ── RunBatch
@@ -50,7 +50,7 @@ Domain code lives in `translate` with its interfaces; `commands` handles setup a
 SetupRun dispatches based on `cfg.Backend.Type`:
 
 - **`ollama`** — calls `SetupOllama` (starts `ollama serve` if not running, pulls model if missing, calls `UnloadModel` on cleanup)
-- **`llamacpp`** — calls `SetupLlamaCpp` (starts `llama-server --model <path>` if `model_path` is set, or connects to an existing server; no auto-pull; kills subprocess on cleanup if Voca started it)
+- **`llamacpp`** — calls `SetupLlamaCpp` (starts `llama-server --model <path>` if `model_path` is set, or connects to an existing server; no auto-pull; kills subprocess on cleanup if Loqi started it)
 
 Both paths return a `*translate.Core` wrapping a backend that satisfies `translate.Backend`, plus a `func()` cleanup closure.
 
@@ -62,7 +62,7 @@ type Backend interface {
 
 ## TUI Mode
 
-When the user launches `voca` with no arguments, `Run()` falls through to `RunTUI`, which calls `SetupRun` to initialize the backend and then passes `core.Backend` and `core.Languages` directly to `RunBubbleTea` — the TUI has no dependency on `Core` itself.
+When the user launches `loqi` with no arguments, `Run()` falls through to `RunTUI`, which calls `SetupRun` to initialize the backend and then passes `core.Backend` and `core.Languages` directly to `RunBubbleTea` — the TUI has no dependency on `Core` itself.
 
 The TUI follows bubbletea's Model-View-Update pattern. Here is the flow from keystroke to rendered translation:
 
@@ -98,7 +98,7 @@ handleTranslateResult
     │
     ▼
 View() renders:
-    headerView    ──► "voca  From: Italian  ->  To: English"
+    headerView    ──► "loqi  From: Italian  ->  To: English"
     textarea.View ──► input area
     outputView    ──► wrapped translation
     statusView    ──► "Ready.  ctrl+y:copy  ctrl+l:clear  ..."
@@ -110,7 +110,7 @@ The `lastInput` field exists to solve a subtle bug: without it, the debounce han
 
 ## CLI Mode
 
-`voca translate --from it --to en "Ciao mondo"` takes a simpler path:
+`loqi translate --from it --to en "Ciao mondo"` takes a simpler path:
 
 ```
 parseTranslateFlags ──► ReadInput (text, file or stdin)
@@ -145,11 +145,11 @@ parseTranslateFlags ──► ReadInput (text, file or stdin)
                          fmt.Println(result)
 ```
 
-The signal context ensures that if the user presses CTRL+C while translating, the deferred `cleanup()` runs — which kills the subprocess only if Voca started it. This distinction matters: if the backend was already running when Voca launched, cleanup is a no-op.
+The signal context ensures that if the user presses CTRL+C while translating, the deferred `cleanup()` runs — which kills the subprocess only if Loqi started it. This distinction matters: if the backend was already running when Loqi launched, cleanup is a no-op.
 
 ## Batch Mode
 
-`voca batch --from en --to it < locales/en.json` handles JSON and plain text differently:
+`loqi batch --from en --to it < locales/en.json` handles JSON and plain text differently:
 
 ```
 Input bytes
@@ -220,8 +220,8 @@ Config resolution is a cascade with two classes of paths:
 
 ```
 --config <path>  ──► explicit  ──► must exist, error if missing
-VOCA_CONFIG      ──► explicit  ──► must exist, error if missing
-~/.config/voca/config.yaml ──► optional ──► silently skip if missing
+LOQI_CONFIG      ──► explicit  ──► must exist, error if missing
+~/.config/loqi/config.yaml ──► optional ──► silently skip if missing
 ```
 
 The `resolvePaths` function returns `(paths []string, explicit bool)`. If the caller specified a path (via flag or env var), `explicit` is `true` and `Load` errors on `ENOENT`. If using the default home-directory path, `explicit` is `false` and missing files are skipped.
@@ -300,10 +300,10 @@ Both Makefile and goreleaser target the same symbol:
 
 ```makefile
 # Makefile
-LDFLAGS = -ldflags="-X github.com/danterolle/voca/cmd/voca/commands.Version=$(VERSION)"
+LDFLAGS = -ldflags="-X github.com/danterolle/loqi/cmd/loqi/commands.Version=$(VERSION)"
 
 # goreleaser
-# -X github.com/danterolle/voca/cmd/voca/commands.Version={{ .Version }}
+# -X github.com/danterolle/loqi/cmd/loqi/commands.Version={{ .Version }}
 ```
 
 There is no runtime `git describe` call — it would fail in distributed binaries and was redundant given the Makefile and goreleaser both inject the tag at build time. On tag push (`v*.*.*`), the CI workflow runs goreleaser to produce platform binaries, then checks out `main`, runs `sed` to update the version badge in `docs/index.html`, and commits the change.

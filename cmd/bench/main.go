@@ -7,9 +7,9 @@ import (
 	"os"
 	"time"
 
-	"github.com/danterolle/voca/cmd/voca/commands"
-	"github.com/danterolle/voca/config"
-	"github.com/danterolle/voca/translate"
+	"github.com/danterolle/loqi/cmd/loqi/commands"
+	"github.com/danterolle/loqi/config"
+	"github.com/danterolle/loqi/translate"
 )
 
 var sentences = []string{

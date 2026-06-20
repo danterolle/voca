@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/danterolle/voca/config"
-	"github.com/danterolle/voca/translate"
+	"github.com/danterolle/loqi/config"
+	"github.com/danterolle/loqi/translate"
 )
 
 var Version string
@@ -41,11 +41,11 @@ func PrintUsage() {
 	cfg := config.Default()
 
 	fmt.Println("━━━ Usage ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
-	fmt.Println("  voca                                     Start the terminal UI")
-	fmt.Println("  voca translate [flags] <text|file>       One-shot translation")
-	fmt.Println("  voca batch     [flags] <file|stdin>      Batch translate JSON or text")
-	fmt.Println("  voca languages                           List supported language codes")
-	fmt.Println("  voca --help                              Show this help message")
+	fmt.Println("  loqi                                     Start the terminal UI")
+	fmt.Println("  loqi translate [flags] <text|file>       One-shot translation")
+	fmt.Println("  loqi batch     [flags] <file|stdin>      Batch translate JSON or text")
+	fmt.Println("  loqi languages                           List supported language codes")
+	fmt.Println("  loqi --help                              Show this help message")
 	fmt.Println()
 	fmt.Println("━━━ Global flags ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
 	fmt.Println("  --config <path>    Path to config file")
@@ -61,9 +61,9 @@ func PrintUsage() {
 	fmt.Println("  --quiet           Suppress diagnostic output (banner, progress)")
 	fmt.Println()
 	fmt.Println("━━━ Examples ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
-	fmt.Println(`  voca translate --from it --to en "Ciao mondo!"`)
-	fmt.Println("  voca batch --from en --to it < locales/en.json")
-	fmt.Println(`  voca --config config.yaml translate --from en --to it "Hello"`)
+	fmt.Println(`  loqi translate --from it --to en "Ciao mondo!"`)
+	fmt.Println("  loqi batch --from en --to it < locales/en.json")
+	fmt.Println(`  loqi --config config.yaml translate --from en --to it "Hello"`)
 	fmt.Println()
 	fmt.Println("  # See config.yaml for llama.cpp backend setup (type: llamacpp)")
 }

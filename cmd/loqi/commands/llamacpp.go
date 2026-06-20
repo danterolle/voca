@@ -5,7 +5,7 @@ import (
 	"net/url"
 	"os/exec"
 
-	"github.com/danterolle/voca/translate/llamacpp"
+	"github.com/danterolle/loqi/translate/llamacpp"
 )
 
 func SetupLlamaCpp(model, baseURL, modelPath string, serverArgs []string) (cmd *exec.Cmd, started bool, err error) {

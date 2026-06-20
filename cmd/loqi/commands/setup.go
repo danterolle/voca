@@ -3,8 +3,8 @@ package commands
 import (
 	"fmt"
 
-	"github.com/danterolle/voca/config"
-	"github.com/danterolle/voca/translate"
+	"github.com/danterolle/loqi/config"
+	"github.com/danterolle/loqi/translate"
 )
 
 func SetupRun(cfg *config.Config, model string) (*translate.Core, func(), error) {

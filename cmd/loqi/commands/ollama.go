@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os/exec"
 
-	"github.com/danterolle/voca/translate/ollama"
+	"github.com/danterolle/loqi/translate/ollama"
 )
 
 func SetupOllama(model, baseURL string) (cmd *exec.Cmd, started bool, err error) {

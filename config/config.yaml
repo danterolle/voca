@@ -1,5 +1,5 @@
-# voca configuration
-# Copy to ~/.config/voca/config.yaml and adjust as needed.
+# loqi configuration
+# Copy to ~/.config/loqi/config.yaml and adjust as needed.
 # All fields are optional — omitted values use their defaults.
 
 # Backend types: ollama (default), llamacpp
@@ -16,7 +16,7 @@ backend:
   type: ollama      # Backend type (default: ollama)
   model: gemma3:1b  # Model name (default: gemma4:e2b-it-qat)
 
-  # For llamacpp: path to a GGUF model file. When set, voca auto-starts
+  # For llamacpp: path to a GGUF model file. When set, loqi auto-starts
   # llama-server with this model. Omit if you manage llama-server yourself.
   # model_path: /path/to/model.gguf
   # server_args: ["--ctx-size", "8192", "--ngl", "99"]

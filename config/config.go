@@ -8,7 +8,7 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
-const DefaultConfigDir = ".config/voca"
+const DefaultConfigDir = ".config/loqi"
 const DefaultConfigFile = "config.yaml"
 const DefaultModel = "gemma4:e2b-it-qat"
 const DefaultBaseURL = "http://localhost:11434"
@@ -73,7 +73,7 @@ func resolvePaths(cfgPath string) ([]string, bool) {
 	if cfgPath != "" {
 		return []string{cfgPath}, true
 	}
-	if env := os.Getenv("VOCA_CONFIG"); env != "" {
+	if env := os.Getenv("LOQI_CONFIG"); env != "" {
 		return []string{env}, true
 	}
 	home, err := os.UserHomeDir()

@@ -5,8 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description"
-        content="VOCA produce local translation drafts using LLMs. Translate text, files, docs and JSON on your machine with Ollama or llama.cpp. Quality depends on the model.">
-    <title>VOCA — Versatile Offline Communication Assistant</title>
+        content="Loqi produce local translation drafts using LLMs. Translate text, files, docs and JSON on your machine with Ollama or llama.cpp. Quality depends on the model.">
+    <title>Loqi — LOcal Quiet Interpreter</title>
     <style>
         *,
         *::before,
@@ -681,7 +681,7 @@
 <body>
 
     <nav>
-        <span class="logo">VOCA</span>
+        <span class="logo">LOQI</span>
 
         <input type="checkbox" id="menu-toggle" class="menu-toggle">
         <label for="menu-toggle" class="hamburger">
@@ -691,12 +691,12 @@
         </label>
 
         <ul class="nav-links">
-            <li><a href="#why" onclick="document.getElementById('menu-toggle').checked=false">Why VOCA</a></li>
+            <li><a href="#why" onclick="document.getElementById('menu-toggle').checked=false">Why Loqi</a></li>
             <li><a href="#modes" onclick="document.getElementById('menu-toggle').checked=false">Usage</a></li>
             <li><a href="#config" onclick="document.getElementById('menu-toggle').checked=false">Config</a></li>
             <li><a href="#install" onclick="document.getElementById('menu-toggle').checked=false">Install</a></li>
             <li>
-                <a href="https://github.com/danterolle/voca" target="_blank" rel="noopener">
+                <a href="https://github.com/danterolle/loqi" target="_blank" rel="noopener">
                     <button class="btn btn-ghost">
                         <svg height="14" width="14" viewBox="0 0 16 16" fill="currentColor">
                             <path
@@ -723,11 +723,11 @@
         </div>
 
         <h1>Translation that stays<br><em>on your machine.</em></h1>
-        <p class="hero-sub"><strong>voca</strong> helps you produce local translation drafts using LLMs via Ollama or
+        <p class="hero-sub"><strong>loqi</strong> helps you produce local translation drafts using LLMs via Ollama or
             llama.cpp. All data stays on your machine.</p>
         <div class="hero-actions">
             <a href="#install"><button class="btn btn-primary">Get started</button></a>
-            <a href="https://github.com/danterolle/voca" target="_blank" rel="noopener">
+            <a href="https://github.com/danterolle/loqi" target="_blank" rel="noopener">
                 <button class="btn btn-ghost">
                     <svg height="14" width="14" viewBox="0 0 16 16" fill="currentColor">
                         <path
@@ -738,7 +738,7 @@
             </a>
         </div>
         <div class="install-cmd">
-            <span><span class="pfx">$</span> go install github.com/danterolle/voca@latest</span>
+            <span><span class="pfx">$</span> go install github.com/danterolle/loqi@latest</span>
             <button class="copy-btn" onclick="doCopy(this)" title="Copy to clipboard">
                 <svg id="copy-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                     stroke-width="2">
@@ -753,7 +753,7 @@
 
     <section id="why">
         <div class="container">
-            <p class="sec-label">Why VOCA</p>
+            <p class="sec-label">Why Loqi</p>
             <h2>No cloud or third-party provider. Just translate.</h2>
             <p class="sec-sub">Built for people who work with text, docs and code without pasting sensitive content into
                 third-party services.</p>
@@ -786,7 +786,7 @@
                     <div class="card-icon">⚙️</div>
                     <h3>Configurable</h3>
                     <p>Flexible settings resolved dynamically from YAML config, environment variables, or CLI flags.
-                        Check ~/.config/voca/config.yaml</p>
+                        Check ~/.config/loqi/config.yaml</p>
                 </div>
                 <div class="card">
                     <div class="card-icon">🤖</div>
@@ -818,7 +818,7 @@
                         <div class="code-block">
                             <div class="code-hdr"><span>shell</span></div>
                             <div class="code-body">
-                                <pre><span class="cp">$</span> voca</pre>
+                                <pre><span class="cp">$</span> loqi</pre>
                             </div>
                         </div>
                     </div>
@@ -872,16 +872,16 @@
                     <div class="code-hdr"><span>shell</span></div>
                     <div class="code-body">
                         <pre><span class="cm"># Translate a string</span>
-<span class="cp">$</span> voca translate <span class="fl">--from</span> <span class="sv">en</span> <span class="fl">--to</span> <span class="sv">fr</span> <span class="sv">"Hello world"</span>
+<span class="cp">$</span> loqi translate <span class="fl">--from</span> <span class="sv">en</span> <span class="fl">--to</span> <span class="sv">fr</span> <span class="sv">"Hello world"</span>
 
 <span class="cm"># Pipe from stdin</span>
-<span class="cp">$</span> echo <span class="sv">"Hello world"</span> | voca translate <span class="fl">--from</span> <span class="sv">en</span> <span class="fl">--to</span> <span class="sv">fr</span>
+<span class="cp">$</span> echo <span class="sv">"Hello world"</span> | loqi translate <span class="fl">--from</span> <span class="sv">en</span> <span class="fl">--to</span> <span class="sv">fr</span>
 
 <span class="cm"># Translate a file</span>
-<span class="cp">$</span> voca translate <span class="fl">--from</span> <span class="sv">auto</span> <span class="fl">--to</span> <span class="sv">en</span> ./document.md
+<span class="cp">$</span> loqi translate <span class="fl">--from</span> <span class="sv">auto</span> <span class="fl">--to</span> <span class="sv">en</span> ./document.md
 
 <span class="cm"># Choose a specific model</span>
-<span class="cp">$</span> voca translate <span class="fl">--model</span> <span class="sv">phi4-mini:latest</span> <span class="fl">--from</span> <span class="sv">fr</span> <span class="fl">--to</span> <span class="sv">en</span> <span class="sv">"Bonjour le monde"</span></pre>
+<span class="cp">$</span> loqi translate <span class="fl">--model</span> <span class="sv">phi4-mini:latest</span> <span class="fl">--from</span> <span class="sv">fr</span> <span class="fl">--to</span> <span class="sv">en</span> <span class="sv">"Bonjour le monde"</span></pre>
                     </div>
                 </div>
             </div>
@@ -892,13 +892,13 @@
                     <div class="code-hdr"><span>shell</span></div>
                     <div class="code-body">
                         <pre><span class="cm"># Translate all string values in a JSON file</span>
-<span class="cp">$</span> voca batch <span class="fl">--from</span> <span class="sv">en</span> <span class="fl">--to</span> <span class="sv">es</span> locales/en.json > locales/es.json
+<span class="cp">$</span> loqi batch <span class="fl">--from</span> <span class="sv">en</span> <span class="fl">--to</span> <span class="sv">es</span> locales/en.json > locales/es.json
 
 <span class="cm"># Translate a markdown file</span>
-<span class="cp">$</span> voca batch <span class="fl">--from</span> <span class="sv">en</span> <span class="fl">--to</span> <span class="sv">fr</span> README.md
+<span class="cp">$</span> loqi batch <span class="fl">--from</span> <span class="sv">en</span> <span class="fl">--to</span> <span class="sv">fr</span> README.md
 
 <span class="cm"># Pipe JSON from stdin</span>
-<span class="cp">$</span> echo <span class="sv">'{"msg": "Hello"}'</span> | voca batch <span class="fl">--from</span> <span class="sv">en</span> <span class="fl">--to</span> <span class="sv">es</span></pre>
+<span class="cp">$</span> echo <span class="sv">'{"msg": "Hello"}'</span> | loqi batch <span class="fl">--from</span> <span class="sv">en</span> <span class="fl">--to</span> <span class="sv">es</span></pre>
                     </div>
                 </div>
             </div>
@@ -916,13 +916,13 @@
                     <ul class="priority-list">
                         <li><span class="num num-dim">A</span><code>--config &lt;path&gt;</code> flag</li>
                         <li><span class="num num-dim">B</span><code>VOCA_CONFIG</code> environment variable</li>
-                        <li><span class="num num-dim">C</span><code>~/.config/voca/config.yaml</code> (default path)
+                        <li><span class="num num-dim">C</span><code>~/.config/loqi/config.yaml</code> (default path)
                         </li>
                     </ul>
                 </div>
                 <div>
                     <div class="code-block">
-                        <div class="code-hdr"><span>~/.config/voca/config.yaml</span></div>
+                        <div class="code-hdr"><span>~/.config/loqi/config.yaml</span></div>
                         <div class="code-body">
                             <pre><span class="cm"># Ollama (default)</span>
 <span class="yk">backend</span>:
@@ -962,14 +962,14 @@
                     <div class="code-block">
                         <div class="code-hdr"><span>shell</span></div>
                         <div class="code-body">
-                            <pre><span class="cm"># Pull a model first or let voca download a model</span>
+                            <pre><span class="cm"># Pull a model first or let loqi download a model</span>
 <span class="cp">$</span> ollama pull gemma3:1b
 
-<span class="cm"># Install VOCA</span>
-<span class="cp">$</span> go install github.com/danterolle/voca@latest
+<span class="cm"># Install Loqi</span>
+<span class="cp">$</span> go install github.com/danterolle/loqi@latest
 
 <span class="cm"># Launch</span>
-<span class="cp">$</span> voca</pre>
+<span class="cp">$</span> loqi</pre>
                         </div>
                     </div>
                 </div>
@@ -978,8 +978,8 @@
                     <div class="code-block">
                         <div class="code-hdr"><span>shell</span></div>
                         <div class="code-body">
-                            <pre><span class="cp">$</span> git clone https://github.com/danterolle/voca
-<span class="cp">$</span> cd voca
+                            <pre><span class="cp">$</span> git clone https://github.com/danterolle/loqi
+<span class="cp">$</span> cd loqi
 <span class="cp">$</span> make build
 <span class="cp">$</span> make run <span class="fl">ARGS</span>=<span class="sv">"--model phi4-mini:latest"</span></pre>
                         </div>
@@ -990,10 +990,10 @@
     </section>
 
     <footer>
-        <div class="foot-logo">voca</div>
-        <p style="color:var(--mut);font-size:.875rem">A versatile offline communication assistant</p>
+        <div class="foot-logo">loqi</div>
+        <p style="color:var(--mut);font-size:.875rem">A local quiet interpreter</p>
         <div class="foot-links">
-            <a href="https://github.com/danterolle/voca" target="_blank"
+            <a href="https://github.com/danterolle/loqi" target="_blank"
                 style="display: inline-flex; align-items: center; gap: 0.35rem;">
                 <svg height="14" width="14" viewBox="0 0 16 16" fill="currentColor">
                     <path
@@ -1001,8 +1001,8 @@
                 </svg>
                 GitHub
             </a>
-            <a href="https://github.com/danterolle/voca/blob/main/docs/BENCHMARKS.md" target="_blank">Benchmarks</a>
-            <a href="https://github.com/danterolle/voca/blob/main/LICENSE" target="_blank">Apache 2.0</a>
+            <a href="https://github.com/danterolle/loqi/blob/main/docs/BENCHMARKS.md" target="_blank">Benchmarks</a>
+            <a href="https://github.com/danterolle/loqi/blob/main/LICENSE" target="_blank">Apache 2.0</a>
             <a href="https://ollama.com" target="_blank">Ollama</a>
             <a href="https://github.com/ggml-org/llama.cpp" target="_blank">llama.cpp</a>
         </div>
@@ -1017,7 +1017,7 @@
             document.getElementById('tab-' + id).classList.add('active');
         }
         function doCopy(btn) {
-            navigator.clipboard.writeText('go install github.com/danterolle/voca@latest').then(() => {
+            navigator.clipboard.writeText('go install github.com/danterolle/loqi@latest').then(() => {
                 btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#ff5f5f" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>';
                 setTimeout(() => {
                     btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v0.5.3"/></svg>';

@@ -7,7 +7,7 @@ import (
 	"github.com/charmbracelet/bubbles/textarea"
 	tea "github.com/charmbracelet/bubbletea"
 
-	"github.com/danterolle/voca/translate"
+	"github.com/danterolle/loqi/translate"
 )
 
 type focusField int

@@ -7,8 +7,8 @@ import (
 	"os/signal"
 	"syscall"
 
-	"github.com/danterolle/voca/config"
-	"github.com/danterolle/voca/translate"
+	"github.com/danterolle/loqi/config"
+	"github.com/danterolle/loqi/translate"
 )
 
 func RunBatch(cfg *config.Config, args []string) error {
@@ -16,15 +16,15 @@ func RunBatch(cfg *config.Config, args []string) error {
 
 	if *h || *help {
 		printBanner()
-		fmt.Println("Usage: voca batch [flags] [file]")
+		fmt.Println("Usage: loqi batch [flags] [file]")
 		fmt.Println()
 		fs.PrintDefaults()
 		fmt.Println()
 		fmt.Println("Examples:")
-		fmt.Println(`  voca batch --from en --to it < locales/en.json`)
-		fmt.Println(`  voca batch --from en --to it locales/en.json`)
-		fmt.Println(`  voca batch --from en --to fr README.md`)
-		fmt.Println(`  echo "Hello world" | voca batch --from en --to it`)
+		fmt.Println(`  loqi batch --from en --to it < locales/en.json`)
+		fmt.Println(`  loqi batch --from en --to it locales/en.json`)
+		fmt.Println(`  loqi batch --from en --to fr README.md`)
+		fmt.Println(`  echo "Hello world" | loqi batch --from en --to it`)
 		return nil
 	}
 
@@ -37,7 +37,7 @@ func RunBatch(cfg *config.Config, args []string) error {
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "  ✖ Error: %v\n", err)
 		}
-		fmt.Fprintf(os.Stderr, "Usage: voca batch --from <lang> --to <lang> [file]\n")
+		fmt.Fprintf(os.Stderr, "Usage: loqi batch --from <lang> --to <lang> [file]\n")
 		fs.PrintDefaults()
 		return fmt.Errorf("no input: specify a file or pipe data to stdin")
 	}

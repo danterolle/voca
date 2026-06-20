@@ -2,7 +2,7 @@
 
 Run on Apple M2 (16 GB RAM) with Ollama 0.30.8. Times are per-sentence averages across 3 sentences.
 
-Measured end-to-end through Voca's pipeline (`commands.SetupRun` → `core.Translate`), which includes config loading, Ollama connectivity check, prompt construction, and HTTP call setup. One-time setup time is reported separately.
+Measured end-to-end through Loqi's pipeline (`commands.SetupRun` → `core.Translate`), which includes config loading, Ollama connectivity check, prompt construction, and HTTP call setup. One-time setup time is reported separately.
 
 > **S1 (Booking):** "I would like to book a table for two at seven o'clock this evening, preferably near the window with a view of the garden."
 >

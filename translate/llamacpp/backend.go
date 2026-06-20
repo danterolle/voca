@@ -8,7 +8,7 @@ import (
 	"net/http"
 	"strings"
 
-	httpclient "github.com/danterolle/voca/translate/http"
+	httpclient "github.com/danterolle/loqi/translate/http"
 )
 
 type promptBuilder interface {

@@ -7,7 +7,7 @@ import (
 
 	tea "github.com/charmbracelet/bubbletea"
 
-	"github.com/danterolle/voca/translate"
+	"github.com/danterolle/loqi/translate"
 )
 
 func RunBubbleTea(ctx context.Context, backend translate.Backend, langs translate.LanguageProvider) error {

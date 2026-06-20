@@ -7,8 +7,8 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/danterolle/voca/config"
-	"github.com/danterolle/voca/tui"
+	"github.com/danterolle/loqi/config"
+	"github.com/danterolle/loqi/tui"
 )
 
 func RunTUI(cfg *config.Config, args []string) error {
@@ -23,7 +23,7 @@ func RunTUI(cfg *config.Config, args []string) error {
 	}
 	defer cleanup()
 
-	logDiag("\n  Starting terminal interface...")
+	logDiag("\n  Starting TUI...")
 	if !Quiet {
 		time.Sleep(800 * time.Millisecond)
 	}

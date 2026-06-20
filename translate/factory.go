@@ -6,9 +6,9 @@ import (
 	"strings"
 	"time"
 
-	httpclient "github.com/danterolle/voca/translate/http"
-	"github.com/danterolle/voca/translate/llamacpp"
-	"github.com/danterolle/voca/translate/ollama"
+	httpclient "github.com/danterolle/loqi/translate/http"
+	"github.com/danterolle/loqi/translate/llamacpp"
+	"github.com/danterolle/loqi/translate/ollama"
 )
 
 func NewBackend(backendType, baseURL, model string, options map[string]any, prompt PromptBuilder) (Backend, error) {

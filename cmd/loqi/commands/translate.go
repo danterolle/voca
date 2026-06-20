@@ -7,8 +7,8 @@ import (
 	"os/signal"
 	"syscall"
 
-	"github.com/danterolle/voca/config"
-	"github.com/danterolle/voca/translate"
+	"github.com/danterolle/loqi/config"
+	"github.com/danterolle/loqi/translate"
 )
 
 func RunTranslate(cfg *config.Config, args []string) error {
@@ -16,13 +16,13 @@ func RunTranslate(cfg *config.Config, args []string) error {
 
 	if *h || *help {
 		printBanner()
-		fmt.Println("Usage: voca translate [flags] <text|file>")
+		fmt.Println("Usage: loqi translate [flags] <text|file>")
 		fmt.Println()
 		fs.PrintDefaults()
 		fmt.Println()
 		fmt.Println("Examples:")
-		fmt.Println(`  voca translate --from it --to en "Ciao mondo!"`)
-		fmt.Println("  voca translate --from en --to fr < README.md")
+		fmt.Println(`  loqi translate --from it --to en "Ciao mondo!"`)
+		fmt.Println("  loqi translate --from en --to fr < README.md")
 		return nil
 	}
 
@@ -35,7 +35,7 @@ func RunTranslate(cfg *config.Config, args []string) error {
 		return err
 	}
 	if text == "" {
-		fmt.Fprintf(os.Stderr, "Usage: voca translate --from <lang> --to <lang> [text|file|stdin]\n")
+		fmt.Fprintf(os.Stderr, "Usage: loqi translate --from <lang> --to <lang> [text|file|stdin]\n")
 		fs.PrintDefaults()
 		return fmt.Errorf("no input text or file provided")
 	}
