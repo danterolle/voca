@@ -10,12 +10,12 @@ import (
 )
 
 type chatCompletionRequest struct {
-	Model       string                 `json:"model"`
-	Messages    []httpclient.Message   `json:"messages"`
-	Temperature float64                `json:"temperature,omitempty"`
-	TopP        float64                `json:"top_p,omitempty"`
-	MaxTokens   int                    `json:"max_tokens,omitempty"`
-	Stream      bool                   `json:"stream"`
+	Model       string               `json:"model"`
+	Messages    []httpclient.Message `json:"messages"`
+	Temperature float64              `json:"temperature,omitempty"`
+	TopP        float64              `json:"top_p,omitempty"`
+	MaxTokens   int                  `json:"max_tokens,omitempty"`
+	Stream      bool                 `json:"stream"`
 }
 
 type Backend struct {

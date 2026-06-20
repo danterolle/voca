@@ -10,10 +10,10 @@ import (
 )
 
 type chatRequest struct {
-	Model    string                 `json:"model"`
-	Messages []httpclient.Message   `json:"messages"`
-	Stream   bool                   `json:"stream"`
-	Options  map[string]any         `json:"options"`
+	Model    string               `json:"model"`
+	Messages []httpclient.Message `json:"messages"`
+	Stream   bool                 `json:"stream"`
+	Options  map[string]any       `json:"options"`
 }
 
 type Backend struct {

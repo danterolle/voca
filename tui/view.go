@@ -170,5 +170,3 @@ func wrap(s string, width int) string {
 	}
 	return strings.TrimRight(result.String(), "\n")
 }
-
-
