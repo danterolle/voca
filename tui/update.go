@@ -40,17 +40,17 @@ func (m Model) handleWindowSize(msg tea.WindowSizeMsg) (Model, tea.Cmd) {
 }
 
 func (m Model) handleDebounce(msg debounceMsg) (Model, tea.Cmd) {
-	if msg.seq != m.translateSeq {
+	if msg.seq != m.translateSequence {
 		return m, nil
 	}
-	m.leadingDone = false
+	m.leadingInProgress = false
 	text := m.textarea.Value()
 	if text == "" || text == m.lastInput {
 		return m, nil
 	}
 	m.lastInput = text
-	src := m.langCodes[m.srcIdx]
-	tgt := m.langCodes[m.tgtIdx]
+	src := m.langCodes[m.sourceIdx]
+	tgt := m.langCodes[m.targetIdx]
 	m.status = fmt.Sprintf("Translating... (%s -> %s)", m.langNames[src], m.langNames[tgt])
 	return m, m.doTranslate(text, src, tgt)
 }
@@ -96,14 +96,14 @@ func (m Model) handleLangKey(msg tea.KeyMsg) (tea.Model, tea.Cmd) {
 func (m Model) adjustLangIndex(delta int) Model {
 	switch m.focused {
 	case focusSrcLang:
-		idx := m.srcIdx + delta
+		idx := m.sourceIdx + delta
 		if idx >= 0 && idx < len(m.langCodes) {
-			m.srcIdx = idx
+			m.sourceIdx = idx
 		}
 	case focusTgtLang:
-		idx := m.tgtIdx + delta
+		idx := m.targetIdx + delta
 		if idx >= 0 && idx < len(m.langCodes) {
-			m.tgtIdx = idx
+			m.targetIdx = idx
 		}
 	}
 	return m
@@ -128,13 +128,13 @@ func (m Model) handleInputKey(msg tea.KeyMsg) (tea.Model, tea.Cmd) {
 		m.textarea.Reset()
 		m.output = ""
 		m.lastInput = ""
-		m.translateSeq++
-		m.leadingDone = false
+		m.translateSequence++
+		m.leadingInProgress = false
 		m.status = "Cleared."
 		return m, nil
 	case "ctrl+t":
-		if m.langCodes[m.srcIdx] != "auto" {
-			m.srcIdx, m.tgtIdx = m.tgtIdx, m.srcIdx
+		if m.langCodes[m.sourceIdx] != "auto" {
+			m.sourceIdx, m.targetIdx = m.targetIdx, m.sourceIdx
 			m.status = "Languages swapped."
 		}
 		return m, nil
@@ -150,8 +150,8 @@ func (m Model) handleTextChange(msg tea.KeyMsg) (Model, tea.Cmd) {
 	before := m.textarea.Value()
 	m.textarea, cmd = m.textarea.Update(msg)
 	if m.textarea.Value() != before {
-		m.translateSeq++
-		if m.leadingDone {
+		m.translateSequence++
+		if m.leadingInProgress {
 			cmd = tea.Batch(cmd, m.scheduleDebounce())
 		} else {
 			m, cmd = m.startLeadingTranslate(cmd)
@@ -162,16 +162,16 @@ func (m Model) handleTextChange(msg tea.KeyMsg) (Model, tea.Cmd) {
 
 func (m Model) scheduleDebounce() tea.Cmd {
 	return tea.Tick(debounceDuration, func(t time.Time) tea.Msg {
-		return debounceMsg{seq: m.translateSeq}
+		return debounceMsg{seq: m.translateSequence}
 	})
 }
 
 func (m Model) startLeadingTranslate(prevCmd tea.Cmd) (Model, tea.Cmd) {
-	m.leadingDone = true
+	m.leadingInProgress = true
 	text := m.textarea.Value()
 	m.lastInput = text
-	src := m.langCodes[m.srcIdx]
-	tgt := m.langCodes[m.tgtIdx]
+	src := m.langCodes[m.sourceIdx]
+	tgt := m.langCodes[m.targetIdx]
 	m.status = fmt.Sprintf("Translating... (%s -> %s)", m.langNames[src], m.langNames[tgt])
 	return m, tea.Batch(prevCmd, m.doTranslate(text, src, tgt))
 }

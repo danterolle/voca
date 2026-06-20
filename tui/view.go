@@ -30,8 +30,8 @@ func (m Model) View() string {
 
 func (m Model) headerView() string {
 	var b strings.Builder
-	srcName := m.langNames[m.langCodes[m.srcIdx]]
-	tgtName := m.langNames[m.langCodes[m.tgtIdx]]
+	srcName := m.langNames[m.langCodes[m.sourceIdx]]
+	tgtName := m.langNames[m.langCodes[m.targetIdx]]
 
 	b.WriteString(headerStyle.Render("loqi"))
 	b.WriteString("  ")
@@ -81,10 +81,10 @@ func (m Model) languageListView() string {
 	var b strings.Builder
 
 	label := "Source"
-	idx := m.srcIdx
+	idx := m.sourceIdx
 	if m.focused == focusTgtLang {
 		label = "Target"
-		idx = m.tgtIdx
+		idx = m.targetIdx
 	}
 
 	b.WriteString(fmt.Sprintf("  %s language (↑↓ to navigate, Tab to confirm)\n\n", label))

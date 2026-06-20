@@ -37,19 +37,19 @@ type Model struct {
 	backend   translate.Backend
 	langCodes []string
 	langNames map[string]string
-	srcIdx    int
-	tgtIdx    int
+	sourceIdx int
+	targetIdx int
 
 	textarea  textarea.Model
 	output    string
 	lastInput string
 
-	focused      focusField
-	status       string
-	ready        bool
-	width        int
-	translateSeq int
-	leadingDone  bool
+	focused           focusField
+	status            string
+	ready             bool
+	width             int
+	translateSequence int
+	leadingInProgress bool
 }
 
 func newModel(ctx context.Context, backend translate.Backend, langs translate.LanguageProvider) Model {
@@ -62,15 +62,15 @@ func newModel(ctx context.Context, backend translate.Backend, langs translate.La
 	list := langs.List()
 	codes := make([]string, len(list))
 	names := make(map[string]string, len(list))
-	srcIdx, tgtIdx := 0, 1
+	sourceIdx, targetIdx := 0, 1
 	for i, l := range list {
 		codes[i] = l.Code
 		names[l.Code] = l.Name
 		if l.Code == "auto" {
-			srcIdx = i
+			sourceIdx = i
 		}
 		if l.Code == "en" {
-			tgtIdx = i
+			targetIdx = i
 		}
 	}
 
@@ -79,8 +79,8 @@ func newModel(ctx context.Context, backend translate.Backend, langs translate.La
 		backend:   backend,
 		langCodes: codes,
 		langNames: names,
-		srcIdx:    srcIdx,
-		tgtIdx:    tgtIdx,
+		sourceIdx: sourceIdx,
+		targetIdx: targetIdx,
 		textarea:  ta,
 		focused:   focusInput,
 		status:    "Ready. Select languages and start typing.",

@@ -73,7 +73,7 @@ func TestViewClearResetsOutputAndInput(t *testing.T) {
 	m := newTestModel(t)
 	m.textarea.SetValue("hello")
 	m.output = "ciao"
-	m.leadingDone = true
+	m.leadingInProgress = true
 
 	mm, _ := m.Update(tea.KeyMsg{Type: tea.KeyCtrlL})
 	m = mm.(Model)
