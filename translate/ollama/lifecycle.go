@@ -2,6 +2,7 @@ package ollama
 
 import (
 	"bufio"
+	"bytes"
 	"context"
 	"encoding/json"
 	"fmt"
@@ -75,13 +76,13 @@ func ModelExists(model, baseURL string) bool {
 
 func PullModel(model, baseURL string) error {
 	body := map[string]any{"name": model, "stream": true}
-	var buf strings.Builder
-	if err := json.NewEncoder(&buf).Encode(body); err != nil {
+	data, err := json.Marshal(body)
+	if err != nil {
 		return fmt.Errorf("ollama pull: encode body: %w", err)
 	}
 
 	pullClient := &http.Client{Timeout: 30 * time.Minute}
-	resp, err := pullClient.Post(baseURL+"/api/pull", "application/json", strings.NewReader(buf.String()))
+	resp, err := pullClient.Post(baseURL+"/api/pull", "application/json", bytes.NewReader(data))
 	if err != nil {
 		return fmt.Errorf("ollama pull: %w", err)
 	}
