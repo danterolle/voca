@@ -43,7 +43,7 @@ func UnloadBackend(backendType, model, baseURL string) {
 	}
 }
 
-func readFloatOption(options map[string]any, key string) (float64, bool) {
+func optionAsFloat64(options map[string]any, key string) (float64, bool) {
 	v, ok := options[key]
 	if !ok {
 		return 0, false
@@ -58,7 +58,7 @@ func readFloatOption(options map[string]any, key string) (float64, bool) {
 }
 
 func intOption(options map[string]any, key string, defaultVal int) int {
-	v, ok := readFloatOption(options, key)
+	v, ok := optionAsFloat64(options, key)
 	if !ok {
 		return defaultVal
 	}
@@ -66,7 +66,7 @@ func intOption(options map[string]any, key string, defaultVal int) int {
 }
 
 func floatOption(options map[string]any, key string, defaultVal float64) float64 {
-	v, ok := readFloatOption(options, key)
+	v, ok := optionAsFloat64(options, key)
 	if !ok {
 		return defaultVal
 	}
@@ -74,7 +74,7 @@ func floatOption(options map[string]any, key string, defaultVal float64) float64
 }
 
 func durationOption(options map[string]any, key string, defaultVal time.Duration) time.Duration {
-	v, ok := readFloatOption(options, key)
+	v, ok := optionAsFloat64(options, key)
 	if !ok {
 		return defaultVal
 	}
