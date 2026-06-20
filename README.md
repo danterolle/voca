@@ -38,7 +38,7 @@ This tool is also a way to learn: to see whether a small model (Gemma 1b/2b/4b/o
 ## Installation
 
 **Prerequisites (choose one):**
-- [Ollama](https://ollama.com) with a model pulled (e.g. `ollama pull gemma3:1b`) — **default backend**
+- [Ollama](https://ollama.com) with a model pulled (e.g. `ollama pull phi4-mini`) — **default backend**
 - [llama.cpp](https://github.com/ggml-org/llama.cpp) `llama-server` serving a GGUF model on `http://localhost:8080`
 
 ```bash
@@ -74,7 +74,7 @@ Loqi loads settings from a YAML config file with the following priority (each le
 
 ```yaml
 backend:
-  model: gemma3:1b
+  model: phi4-mini
   base_url: http://localhost:11434
   options:
     temperature: 0.0
@@ -98,7 +98,7 @@ loqi --config ./config.yaml translate --model phi4:latest --from it --to en "Cia
 ```yaml
 backend:
   type: ollama
-  model: gemma3:1b
+  model: phi4-mini
   base_url: http://localhost:11434
   options:
     temperature: 0.0
@@ -110,7 +110,7 @@ backend:
 ```yaml
 backend:
   type: llamacpp
-  model: gemma3:1b
+  model: phi4-mini
   base_url: http://localhost:8080
   model_path: /path/to/model.gguf          # auto-start llama-server
   server_args: ["--ctx-size", "8192", "--ngl", "99"]  # extra flags
