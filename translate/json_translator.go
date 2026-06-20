@@ -8,7 +8,7 @@ import (
 const batchWorkers = 3
 
 type jsonTranslator struct {
-	core   *Core
+	tr     *Translator
 	from   string
 	to     string
 	errCh  chan error
@@ -16,12 +16,12 @@ type jsonTranslator struct {
 	sem    chan struct{}
 }
 
-func translateJSON(ctx context.Context, core *Core, data *any, from, to string) error {
+func translateJSON(ctx context.Context, tr *Translator, data *any, from, to string) error {
 	ctx, cancel := context.WithCancel(ctx)
 	defer cancel()
 
 	t := &jsonTranslator{
-		core:   core,
+		tr:     tr,
 		from:   from,
 		to:     to,
 		errCh:  make(chan error, 1),
@@ -124,7 +124,7 @@ func (t *jsonTranslator) translateString(ctx context.Context, val *any) {
 	}
 
 	v := (*val).(string)
-	result, err := t.core.Translate(ctx, v, t.from, t.to)
+	result, err := t.tr.Translate(ctx, v, t.from, t.to)
 	<-t.sem
 
 	if err != nil {

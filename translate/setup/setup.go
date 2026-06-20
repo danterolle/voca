@@ -8,9 +8,9 @@ import (
 	"github.com/danterolle/loqi/translate"
 )
 
-type LogFunc func(format string, args ...any)
+type DiagFunc func(format string, args ...any)
 
-func SetupRun(cfg *config.Config, model string, log LogFunc, banner func()) (*translate.Core, func(), error) {
+func SetupRun(cfg *config.Config, model string, diag DiagFunc, banner func()) (*translate.Translator, func(), error) {
 	if banner != nil {
 		banner()
 	}
@@ -24,13 +24,13 @@ func SetupRun(cfg *config.Config, model string, log LogFunc, banner func()) (*tr
 	switch cfg.Backend.Type {
 	case "ollama":
 		serverStarter = func() (*exec.Cmd, bool, error) {
-			return SetupOllama(model, cfg.Backend.BaseURL, log)
+			return SetupOllama(model, cfg.Backend.BaseURL, diag)
 		}
 		backendType = "ollama"
 		unloadOnClose = true
 	case "llamacpp":
 		serverStarter = func() (*exec.Cmd, bool, error) {
-			return SetupLlamaCpp(model, cfg.Backend.BaseURL, cfg.Backend.ModelPath, cfg.Backend.ServerArgs, log)
+			return SetupLlamaCpp(model, cfg.Backend.BaseURL, cfg.Backend.ModelPath, cfg.Backend.ServerArgs, diag)
 		}
 		backendType = "llamacpp"
 		unloadOnClose = false
@@ -58,10 +58,10 @@ func SetupRun(cfg *config.Config, model string, log LogFunc, banner func()) (*tr
 		cleanup = func() {}
 	}
 
-	backend, err := translate.NewBackend(backendType, cfg.Backend.BaseURL, model, cfg.Backend.Options, translate.NewDefaultPrompt())
+	backend, err := translate.NewBackend(backendType, cfg.Backend.BaseURL, model, cfg.Backend.Options, translate.NewChatPrompt())
 	if err != nil {
 		return nil, nil, err
 	}
 
-	return translate.NewCore(backend, translate.NewStaticLanguages()), cleanup, nil
+	return translate.NewTranslator(backend, translate.NewStaticLanguages()), cleanup, nil
 }

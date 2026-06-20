@@ -2,18 +2,18 @@ package translate
 
 import "context"
 
-type Core struct {
+type Translator struct {
 	Backend   Backend
 	Languages LanguageProvider
 }
 
-func NewCore(backend Backend, langs LanguageProvider) *Core {
-	return &Core{
+func NewTranslator(backend Backend, langs LanguageProvider) *Translator {
+	return &Translator{
 		Backend:   backend,
 		Languages: langs,
 	}
 }
 
-func (c *Core) Translate(ctx context.Context, text, source, target string) (string, error) {
-	return c.Backend.Translate(ctx, text, source, target)
+func (t *Translator) Translate(ctx context.Context, text, source, target string) (string, error) {
+	return t.Backend.Translate(ctx, text, source, target)
 }

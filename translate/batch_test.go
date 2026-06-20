@@ -9,7 +9,7 @@ import (
 )
 
 func TestBatch_PlainText(t *testing.T) {
-	core := NewCore(NewMockBackend(), NewStaticLanguages())
+	core := NewTranslator(NewMockBackend(), NewStaticLanguages())
 	result, err := Batch(context.Background(), core, []byte("hello"), "en", "it")
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
@@ -48,7 +48,7 @@ func assertJSONResult(t *testing.T, got []byte, want any) {
 }
 
 func TestBatch_FromFixture(t *testing.T) {
-	core := NewCore(NewMockBackend(), NewStaticLanguages())
+	core := NewTranslator(NewMockBackend(), NewStaticLanguages())
 	input, err := os.ReadFile("../test_data/i18n.json")
 	if err != nil {
 		t.Fatalf("failed to read fixture: %v", err)
@@ -89,7 +89,7 @@ func TestBatch_FromFixture(t *testing.T) {
 }
 
 func TestBatch_FlatJSON(t *testing.T) {
-	core := NewCore(NewMockBackend(), NewStaticLanguages())
+	core := NewTranslator(NewMockBackend(), NewStaticLanguages())
 	input := []byte(`{"a": "hello", "b": "world"}`)
 	result, err := Batch(context.Background(), core, input, "en", "it")
 	if err != nil {
@@ -102,7 +102,7 @@ func TestBatch_FlatJSON(t *testing.T) {
 }
 
 func TestBatch_NestedJSON(t *testing.T) {
-	core := NewCore(NewMockBackend(), NewStaticLanguages())
+	core := NewTranslator(NewMockBackend(), NewStaticLanguages())
 	input := []byte(`{"greeting": {"en": "hello", "fr": "bonjour"}, "count": 42}`)
 	result, err := Batch(context.Background(), core, input, "en", "it")
 	if err != nil {
@@ -118,7 +118,7 @@ func TestBatch_NestedJSON(t *testing.T) {
 }
 
 func TestBatch_JSONPreservesNonString(t *testing.T) {
-	core := NewCore(NewMockBackend(), NewStaticLanguages())
+	core := NewTranslator(NewMockBackend(), NewStaticLanguages())
 	input := []byte(`{"name": "hello", "count": 42, "active": true, "tags": null}`)
 	result, err := Batch(context.Background(), core, input, "en", "it")
 	if err != nil {
@@ -140,7 +140,7 @@ func TestBatch_JSONErrorPropagation(t *testing.T) {
 		}
 		return "[" + source + "->" + target + "] " + text, nil
 	}
-	core := NewCore(mock, NewStaticLanguages())
+	core := NewTranslator(mock, NewStaticLanguages())
 	input := []byte(`{"ok": "hello", "bad": "fail"}`)
 	_, err := Batch(context.Background(), core, input, "en", "it")
 	if err == nil {

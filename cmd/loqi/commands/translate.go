@@ -64,7 +64,7 @@ func RunTranslate(cfg *config.Config, args []string) error {
 	return nil
 }
 
-func RunCLI(ctx context.Context, core *translate.Core, source, target, text string) error {
+func RunCLI(ctx context.Context, core *translate.Translator, source, target, text string) error {
 	result, err := core.Translate(ctx, text, source, target)
 	if err != nil {
 		return err

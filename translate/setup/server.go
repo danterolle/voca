@@ -11,13 +11,13 @@ import (
 	"github.com/danterolle/loqi/translate/ollama"
 )
 
-func SetupOllama(model, baseURL string, log LogFunc) (cmd *exec.Cmd, started bool, err error) {
+func SetupOllama(model, baseURL string, diag DiagFunc) (cmd *exec.Cmd, started bool, err error) {
 	if _, err := exec.LookPath("ollama"); err != nil {
 		return nil, false, fmt.Errorf("ollama not found — install from https://ollama.com")
 	}
 
 	if !ollama.Reachable(baseURL) {
-		log("  ◆ Starting Ollama... ")
+		diag("  ◆ Starting Ollama... ")
 		cmd = exec.Command("ollama", "serve")
 		if err := cmd.Start(); err != nil {
 			return nil, false, fmt.Errorf("failed to start Ollama: %w", err)
@@ -27,24 +27,24 @@ func SetupOllama(model, baseURL string, log LogFunc) (cmd *exec.Cmd, started boo
 			StopProcess(cmd)
 			return nil, started, fmt.Errorf("timeout waiting for Ollama to start")
 		}
-		log("online\n")
+		diag("online\n")
 	}
 
 	if !ollama.ModelExists(model, baseURL) {
-		log("  ◆ Pulling %s...\n", model)
+		diag("  ◆ Pulling %s...\n", model)
 		if err := ollama.PullModel(model, baseURL); err != nil {
 			StopProcess(cmd)
 			return nil, started, fmt.Errorf("pull failed: %w", err)
 		}
-		log("  ◆ Model ready\n")
+		diag("  ◆ Model ready\n")
 	}
 
 	return cmd, started, nil
 }
 
-func SetupLlamaCpp(model, baseURL, modelPath string, serverArgs []string, log LogFunc) (cmd *exec.Cmd, started bool, err error) {
+func SetupLlamaCpp(model, baseURL, modelPath string, serverArgs []string, diag DiagFunc) (cmd *exec.Cmd, started bool, err error) {
 	if llamacpp.ServerRunning(baseURL) {
-		log("  ◆ Waiting for model to load...\n")
+		diag("  ◆ Waiting for model to load...\n")
 		if !llamacpp.WaitForModelReady(60, baseURL) {
 			return nil, false, fmt.Errorf("model not ready at %s", baseURL)
 		}
@@ -70,7 +70,7 @@ func SetupLlamaCpp(model, baseURL, modelPath string, serverArgs []string, log Lo
 	}
 	args = append(args, serverArgs...)
 
-	log("  ◆ Starting llama-server on %s...\n", u.Host)
+	diag("  ◆ Starting llama-server on %s...\n", u.Host)
 	cmd = exec.Command("llama-server", args...)
 	if err := cmd.Start(); err != nil {
 		return nil, false, fmt.Errorf("failed to start llama-server: %w", err)
@@ -82,7 +82,7 @@ func SetupLlamaCpp(model, baseURL, modelPath string, serverArgs []string, log Lo
 		return cmd, started, fmt.Errorf("timeout waiting for llama-server to load model")
 	}
 
-	log("  ◆ Online\n")
+	diag("  ◆ Online\n")
 	return cmd, started, nil
 }
 

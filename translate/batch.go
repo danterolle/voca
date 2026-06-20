@@ -7,7 +7,7 @@ import (
 	"strings"
 )
 
-func Batch(ctx context.Context, core *Core, input []byte, from, to string) ([]byte, error) {
+func Batch(ctx context.Context, core *Translator, input []byte, from, to string) ([]byte, error) {
 	if json.Valid(input) {
 		var data any
 		if err := json.Unmarshal(input, &data); err != nil {

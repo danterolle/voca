@@ -2,17 +2,17 @@ package translate
 
 import "fmt"
 
-type defaultPrompt struct{}
+type chatPrompt struct{}
 
-func NewDefaultPrompt() *defaultPrompt {
-	return &defaultPrompt{}
+func NewChatPrompt() *chatPrompt {
+	return &chatPrompt{}
 }
 
-func (p *defaultPrompt) System() string {
+func (p *chatPrompt) System() string {
 	return "You are a translator. Translate the user's text accurately. Preserve meaning, tone, and sentence structure. Output only the translation — no greetings, explanations, or commentary."
 }
 
-func (p *defaultPrompt) Translate(text, source, target string) string {
+func (p *chatPrompt) Translate(text, source, target string) string {
 	src := languages[source]
 	if source == "auto" {
 		src = "Auto detect"

@@ -11,7 +11,7 @@ import (
 	"github.com/danterolle/loqi/translate/ollama"
 )
 
-func NewBackend(backendType, baseURL, model string, options map[string]any, prompt *defaultPrompt) (Backend, error) {
+func NewBackend(backendType, baseURL, model string, options map[string]any, prompt *chatPrompt) (Backend, error) {
 	switch backendType {
 	case "ollama":
 		b := ollama.NewBackend(baseURL, model, prompt)
