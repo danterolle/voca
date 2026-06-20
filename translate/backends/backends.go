@@ -37,9 +37,9 @@ func UnloadBackend(backendType, model, baseURL string) {
 	if backendType == "ollama" {
 		var buf strings.Builder
 		body := map[string]string{"model": model, "keep_alive": "0m", "unload": "true"}
-		json.NewEncoder(&buf).Encode(body)
+		_ = json.NewEncoder(&buf).Encode(body)
 		client := &http.Client{Timeout: 30 * time.Second}
-		client.Post(baseURL+"/api/generate", "application/json", strings.NewReader(buf.String()))
+		_, _ = client.Post(baseURL+"/api/generate", "application/json", strings.NewReader(buf.String()))
 	}
 }
 

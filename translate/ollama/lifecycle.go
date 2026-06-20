@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"os"
 	"strings"
 	"time"
 )
@@ -75,6 +76,7 @@ func PullModel(model, baseURL string) error {
 			Completed int64  `json:"completed,omitempty"`
 		}
 		if err := json.Unmarshal(scanner.Bytes(), &s); err != nil {
+			fmt.Fprintf(os.Stderr, "  ⚠ ollama pull: skip malformed line: %v\n", err)
 			continue
 		}
 		renderPullStatus(s.Status, s.Total, s.Completed)
@@ -82,9 +84,3 @@ func PullModel(model, baseURL string) error {
 	return scanner.Err()
 }
 
-func UnloadModel(model, baseURL string) {
-	body := map[string]any{"model": model, "keep_alive": "0s"}
-	var buf strings.Builder
-	json.NewEncoder(&buf).Encode(body)
-	httpClient.Post(baseURL+"/api/generate", "application/json", strings.NewReader(buf.String()))
-}
