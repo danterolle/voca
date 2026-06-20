@@ -126,7 +126,6 @@ func (m Model) languageListView() string {
 	return b.String()
 }
 
-// FIXME: strings.Fields splits on whitespace. CJK text without spaces will not wrap.
 func wrap(s string, width int) string {
 	if width <= 0 {
 		return s
@@ -140,18 +139,36 @@ func wrap(s string, width int) string {
 		}
 		n := 0
 		for _, w := range words {
-			if n+len(w) > width {
+			wLen := len([]rune(w))
+			if n > 0 && n+1+wLen > width {
 				result.WriteByte('\n')
 				n = 0
+			}
+			if wLen > width {
+				if n > 0 {
+					result.WriteByte('\n')
+					n = 0
+				}
+				for _, r := range w {
+					if n >= width {
+						result.WriteByte('\n')
+						n = 0
+					}
+					result.WriteRune(r)
+					n++
+				}
+				continue
 			}
 			if n > 0 {
 				result.WriteByte(' ')
 				n++
 			}
 			result.WriteString(w)
-			n += len(w)
+			n += wLen
 		}
 		result.WriteByte('\n')
 	}
 	return strings.TrimRight(result.String(), "\n")
 }
+
+
