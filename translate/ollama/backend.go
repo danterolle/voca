@@ -10,29 +10,24 @@ import (
 	httpclient "github.com/danterolle/loqi/translate/http"
 )
 
-type promptBuilder interface {
-	System() string
-	Translate(text, source, target string) string
-}
-
 type chatRequest struct {
-	Model    string               `json:"model"`
-	Messages []httpclient.Message `json:"messages"`
-	Stream   bool                 `json:"stream"`
-	Options  map[string]any       `json:"options"`
+	Model    string                 `json:"model"`
+	Messages []httpclient.Message   `json:"messages"`
+	Stream   bool                   `json:"stream"`
+	Options  map[string]any         `json:"options"`
 }
 
 type Backend struct {
 	BaseURL     string
 	Model       string
-	Prompt      promptBuilder
+	Prompt      httpclient.PromptBuilder
 	Client      *http.Client
 	NumPredict  int
 	Temperature float64
 	TopP        float64
 }
 
-func NewBackend(baseURL, model string, prompt promptBuilder) *Backend {
+func NewBackend(baseURL, model string, prompt httpclient.PromptBuilder) *Backend {
 	return &Backend{
 		BaseURL: baseURL,
 		Model:   model,

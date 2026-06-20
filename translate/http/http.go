@@ -16,6 +16,11 @@ type Message struct {
 	Content string `json:"content"`
 }
 
+type PromptBuilder interface {
+	System() string
+	Translate(text, source, target string) string
+}
+
 func NewHTTPClient() *http.Client {
 	return &http.Client{
 		Timeout: 2 * time.Minute,
