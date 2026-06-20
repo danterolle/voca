@@ -10,24 +10,27 @@ Eight packages (plus `cmd/bench`) with a linear dependency graph — no cycles:
 
 ```
 cmd/loqi/main.go
-  └─ cmd/loqi/commands/     ── orchestrates everything
-       ├─ app.go            ── dispatch, usage, flag parsing
-       ├─ translate.go      ── RunTranslate, RunCLI
-       ├─ batch.go          ── RunBatch
-       ├─ tui.go            ── RunTUI
-       ├─ setup.go          ── SetupRun (backend routing), option helpers
-       ├─ ollama.go         ── Ollama lifecycle (start, wait, pull)
-       ├─ llamacpp.go       ── llama.cpp lifecycle (start, wait)
-       ├─ io.go             ── input reading (args, file, stdin)
-       └─ banner.go         ── ANSI logo
+  ├─ cmd/loqi/commands/     ── CLI dispatch, flag parsing, I/O
+  │   ├─ app.go             ── Run, PrintUsage, flag parsing, Fatal
+  │   ├─ translate.go       ── RunTranslate, RunCLI
+  │   ├─ batch.go           ── RunBatch
+  │   ├─ tui.go             ── RunTUI
+  │   ├─ io.go              ── input reading (args, file, stdin)
+  │   └─ banner.go          ── ANSI logo
   ├─ translate/             ── domain logic
-  │   ├─ interfaces.go      ── Backend, PromptBuilder, LanguageProvider
+  │   ├─ interfaces.go      ── Backend, LanguageProvider
   │   ├─ core.go            ── thin Backend + LanguageProvider wrapper
   │   ├─ languages.go       ── language map + sorted codes (init-time)
   │   ├─ default_prompt.go  ── system + user prompt templates
+  │   ├─ factory.go         ── NewBackend, option helpers, UnloadBackend
   │   ├─ batch.go           ── batch entry point (JSON dispatch)
   │   ├─ json_translator.go ── recursive JSON walker + worker pool
-  │   ├─ mock_backend.go    
+  │   ├─ mock_backend.go
+  │   ├─ setup/             ── backend lifecycle orchestration
+  │   │   ├─ setup.go       ── SetupRun, unified backend dispatch
+  │   │   └─ server.go      ── SetupOllama, SetupLlamaCpp, StopProcess
+  │   ├─ http/              ── shared HTTP client
+  │   │   └─ http.go
   │   ├─ ollama/
   │   │   ├─ backend.go     ── HTTP /api/chat client
   │   │   ├─ lifecycle.go   ── health checks, model pull/unload
@@ -43,16 +46,17 @@ cmd/loqi/main.go
   └─ cmd/bench/             ── multi-language benchmark
 ```
 
-Domain code lives in `translate` with its interfaces; `commands` handles setup and dispatch; `tui` owns the UI; `config` loads and merges YAML.
+Domain code lives in `translate` with its interfaces; `commands` handles CLI dispatch and flag parsing; `translate/setup` owns backend lifecycle and subprocess management; `tui` owns the UI; `config` loads and merges YAML.
 
 ## Backend Selection
 
-SetupRun dispatches based on `cfg.Backend.Type`:
+`translate/setup.SetupRun` dispatches based on `cfg.Backend.Type`, parameterising three variables per backend:
 
-- **`ollama`** — calls `SetupOllama` (starts `ollama serve` if not running, pulls model if missing, calls `UnloadModel` on cleanup)
-- **`llamacpp`** — calls `SetupLlamaCpp` (starts `llama-server --model <path>` if `model_path` is set, or connects to an existing server; no auto-pull; kills subprocess on cleanup if Loqi started it)
+- **Server starter** — the function to call (`SetupOllama` or `SetupLlamaCpp` from `setup/server.go`)
+- **Backend type string** — `"ollama"` or `"llamacpp"` passed to `translate.NewBackend`
+- **Unload on close** — whether to call `UnloadBackend` during cleanup (ollama only)
 
-Both paths return a `*translate.Core` wrapping a backend that satisfies `translate.Backend`, plus a `func()` cleanup closure.
+Every backend returns a `*translate.Core` wrapping a struct that satisfies `translate.Backend`, plus a `func()` cleanup closure.
 
 ```go
 type Backend interface {
@@ -116,21 +120,21 @@ The `lastInput` field exists to solve a subtle bug: without it, the debounce han
 parseTranslateFlags ──► ReadInput (text, file or stdin)
                              │
                              ▼
-                         SetupRun(cfg, model)
-                             │
-                             ├── printBanner()
-                             ├── switch cfg.Backend.Type:
-                             │     ollama  ──► SetupOllama()
-                             │                   ├── Reachable? ──► no ──► start ollama serve
-                             │                   │                      ──► WaitForReady(30s)
-                             │                   ├── ModelExists? ──► no ──► PullModel
-                             │                   └── return cmd handle
-                             │     llamacpp ──► SetupLlamaCpp()
-                             │                    ├── ServerRunning? ──► yes ──► wait for model
-                             │                    ├── no + model_path? ──► start llama-server
-                             │                    └── return cmd handle
-                             ├── build backend with config options
-                             └── return *Core + cleanup()
+                          setup.SetupRun(cfg, model, logDiag, printBanner)
+                              │
+                              ├── printBanner()
+                              ├── switch cfg.Backend.Type:
+                              │     ollama  ──► setup.SetupOllama()
+                              │                   ├── Reachable? ──► no ──► start ollama serve
+                              │                   │                      ──► WaitForReady(30s)
+                              │                   ├── ModelExists? ──► no ──► PullModel
+                              │                   └── return cmd handle
+                              │     llamacpp ──► setup.SetupLlamaCpp()
+                              │                    ├── ServerRunning? ──► yes ──► wait for model
+                              │                    ├── no + model_path? ──► start llama-server
+                              │                    └── return cmd handle
+                              ├── build backend with config options
+                              └── return *Core + cleanup()
                              │
                              ▼
                     signal.NotifyContext(SIGINT, SIGTERM)
@@ -239,7 +243,7 @@ Options from `backend.options` are read as `map[string]any` and applied to the b
 
 ## Ollama Lifecycle Management
 
-`SetupOllama` in `commands/ollama.go` coordinates three checks:
+`SetupOllama` in `translate/setup/server.go` coordinates three checks:
 
 ```
 exec.LookPath("ollama")           ──► error if not installed
@@ -268,7 +272,7 @@ On cleanup, `UnloadModel` sends `POST /api/generate` with `keep_alive=0` to forc
 
 ## llama.cpp Lifecycle Management
 
-`SetupLlamaCpp` in `commands/llamacpp.go`:
+`SetupLlamaCpp` in `translate/setup/server.go`:
 
 ```
 llamacpp.ServerRunning(baseURL)   ──► GET /v1/models
@@ -314,7 +318,9 @@ There is no runtime `git describe` call — it would fail in distributed binarie
 
 Config tests verify defaults, file loading, partial overrides, and YAML parse errors. Interface compliance is checked at compile time with package-level `var _ Backend = (*MockBackend)(nil)` assertions.
 
-There is no test coverage for the `tui` or `commands` packages.
+The `tui` package has View-based tests that verify user-observable behavior: translation result appears in output, stale results do not overwrite newer output, errors preserve output and show error status, Ctrl+L clears input and output, and Tab switches focus to language list. All tests go through Bubble Tea's `Update()` message loop rather than calling internal methods.
+
+There is no test coverage for the `commands` package.
 
 ## Known Limitations
 
