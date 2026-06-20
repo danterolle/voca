@@ -91,19 +91,19 @@ func validateLangs(from, to string) error {
 	return nil
 }
 
-func parseTranslateFlags(name string, args []string, defaultModel string) (model, from, to string, fs *flag.FlagSet, h, help *bool) {
+func parseTranslateFlags(name string, args []string, defaultModel string) (model, from, to string, fs *flag.FlagSet, h, help *bool, err error) {
 	model = defaultModel
 	from = defaultFrom
 	to = defaultTo
 	Quiet = false
 
-	fs = flag.NewFlagSet(name, flag.ExitOnError)
+	fs = flag.NewFlagSet(name, flag.ContinueOnError)
 	fs.StringVar(&model, "model", model, "translation model")
 	fs.StringVar(&from, "from", from, "source language code")
 	fs.StringVar(&to, "to", to, "target language code")
 	fs.BoolVar(&Quiet, "quiet", false, "suppress diagnostic output")
 	h = fs.Bool("h", false, "show help")
 	help = fs.Bool("help", false, "show help")
-	fs.Parse(args)
+	err = fs.Parse(args)
 	return
 }

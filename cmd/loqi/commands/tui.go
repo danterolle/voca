@@ -14,9 +14,11 @@ import (
 
 func RunTUI(cfg *config.Config, args []string) error {
 	model := cfg.Backend.Model
-	fs := flag.NewFlagSet("tui", flag.ExitOnError)
+	fs := flag.NewFlagSet("tui", flag.ContinueOnError)
 	fs.StringVar(&model, "model", model, "translation model")
-	fs.Parse(args)
+	if err := fs.Parse(args); err != nil {
+		return err
+	}
 
 	core, cleanup, err := setup.SetupRun(cfg, model, logDiag, printBanner)
 	if err != nil {

@@ -13,7 +13,10 @@ import (
 )
 
 func RunTranslate(cfg *config.Config, args []string) error {
-	model, from, to, fs, h, help := parseTranslateFlags("translate", args, cfg.Backend.Model)
+	model, from, to, fs, h, help, err := parseTranslateFlags("translate", args, cfg.Backend.Model)
+	if err != nil {
+		return err
+	}
 
 	if *h || *help {
 		printBanner()
