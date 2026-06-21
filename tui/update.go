@@ -84,9 +84,11 @@ func (m Model) handleLangKey(msg tea.KeyMsg) (tea.Model, tea.Cmd) {
 	case "shift+tab":
 		return m.retreatFocus(), nil
 	case "up":
-		return m.adjustLangIndex(-1), nil
+		m = m.adjustLangIndex(-1)
+		return m, m.translateOnLangChange()
 	case "down":
-		return m.adjustLangIndex(1), nil
+		m = m.adjustLangIndex(1)
+		return m, m.translateOnLangChange()
 	case "ctrl+c", "esc":
 		return m, tea.Quit
 	}
@@ -136,6 +138,7 @@ func (m Model) handleInputKey(msg tea.KeyMsg) (tea.Model, tea.Cmd) {
 		if m.langCodes[m.sourceIdx] != "auto" {
 			m.sourceIdx, m.targetIdx = m.targetIdx, m.sourceIdx
 			m.status = "Languages swapped."
+			return m, m.translateOnLangChange()
 		}
 		return m, nil
 	case "ctrl+c", "esc":
@@ -164,6 +167,17 @@ func (m Model) scheduleDebounce() tea.Cmd {
 	return tea.Tick(debounceDuration, func(t time.Time) tea.Msg {
 		return debounceMsg{seq: m.translateSequence}
 	})
+}
+
+func (m Model) translateOnLangChange() tea.Cmd {
+	text := m.textarea.Value()
+	if text == "" {
+		return nil
+	}
+	sourceCode := m.langCodes[m.sourceIdx]
+	targetCode := m.langCodes[m.targetIdx]
+	m.status = fmt.Sprintf("Translating... (%s -> %s)", m.langNames[sourceCode], m.langNames[targetCode])
+	return m.doTranslate(text, sourceCode, targetCode)
 }
 
 func (m Model) startLeadingTranslate(prevCmd tea.Cmd) (Model, tea.Cmd) {
