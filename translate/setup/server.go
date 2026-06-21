@@ -13,11 +13,10 @@ import (
 )
 
 func SetupOllama(model, baseURL string, diag DiagFunc) (cmd *exec.Cmd, started bool, err error) {
-	if _, err := exec.LookPath("ollama"); err != nil {
-		return nil, false, fmt.Errorf("ollama not found — install from https://ollama.com")
-	}
-
 	if !ollama.Reachable(context.Background(), baseURL) {
+		if _, err := exec.LookPath("ollama"); err != nil {
+			return nil, false, fmt.Errorf("ollama not found — install from https://ollama.com")
+		}
 		diag("  ◆ Starting Ollama... ")
 		cmd = exec.Command("ollama", "serve")
 		if err := cmd.Start(); err != nil {
