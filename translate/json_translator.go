@@ -13,7 +13,6 @@ type jsonTranslator struct {
 	to     string
 	errCh  chan error
 	cancel context.CancelFunc
-	sem    chan struct{}
 }
 
 func translateJSON(ctx context.Context, tr *Translator, data *any, from, to string) error {
@@ -26,7 +25,6 @@ func translateJSON(ctx context.Context, tr *Translator, data *any, from, to stri
 		to:     to,
 		errCh:  make(chan error, 1),
 		cancel: cancel,
-		sem:    make(chan struct{}, batchWorkers),
 	}
 
 	t.processNode(ctx, data)
@@ -35,6 +33,9 @@ func translateJSON(ctx context.Context, tr *Translator, data *any, from, to stri
 	case err := <-t.errCh:
 		return err
 	default:
+		if err := ctx.Err(); err != nil {
+			return err
+		}
 		return nil
 	}
 }
@@ -71,8 +72,9 @@ func (t *jsonTranslator) processItems(ctx context.Context, n int, fn func(i int)
 	}
 	close(ch)
 
+	workers := min(batchWorkers, n)
 	var wg sync.WaitGroup
-	for w := 0; w < batchWorkers; w++ {
+	for w := 0; w < workers; w++ {
 		wg.Add(1)
 		go func() {
 			defer wg.Done()
@@ -109,23 +111,19 @@ func (t *jsonTranslator) processMapNode(ctx context.Context, v map[string]any) {
 }
 
 func (t *jsonTranslator) processSliceNode(ctx context.Context, v []any) {
+	var mu sync.Mutex
 	t.processItems(ctx, len(v), func(i int) {
 		childCopy := v[i]
 		t.processNode(ctx, &childCopy)
+		mu.Lock()
 		v[i] = childCopy
+		mu.Unlock()
 	})
 }
 
 func (t *jsonTranslator) translateString(ctx context.Context, val *any) {
-	select {
-	case t.sem <- struct{}{}:
-	case <-ctx.Done():
-		return
-	}
-
 	v := (*val).(string)
 	result, err := t.tr.Translate(ctx, v, t.from, t.to)
-	<-t.sem
 
 	if err != nil {
 		select {
