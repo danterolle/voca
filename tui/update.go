@@ -167,8 +167,11 @@ func (m Model) scheduleDebounce() tea.Cmd {
 }
 
 func (m Model) startLeadingTranslate(prevCmd tea.Cmd) (Model, tea.Cmd) {
-	m.leadingInProgress = true
 	text := m.textarea.Value()
+	if text == "" {
+		return m, prevCmd
+	}
+	m.leadingInProgress = true
 	m.lastInput = text
 	src := m.langCodes[m.sourceIdx]
 	tgt := m.langCodes[m.targetIdx]
