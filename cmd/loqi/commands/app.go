@@ -104,6 +104,8 @@ func Fatal(err error) {
 }
 
 func validateLangs(from, to string) error {
+	from = strings.ToLower(from)
+	to = strings.ToLower(to)
 	if from != "auto" && !translate.IsValidLang(from) {
 		return fmt.Errorf("unsupported source language %q; %s", from, translate.ListSupported())
 	}

@@ -59,7 +59,7 @@ func (s *staticLanguages) List() []Language {
 }
 
 func IsValidLang(code string) bool {
-	_, ok := languages[code]
+	_, ok := languages[strings.ToLower(code)]
 	return ok
 }
 
