@@ -49,10 +49,10 @@ func (m Model) handleDebounce(msg debounceMsg) (Model, tea.Cmd) {
 		return m, nil
 	}
 	m.lastInput = text
-	src := m.langCodes[m.sourceIdx]
-	tgt := m.langCodes[m.targetIdx]
-	m.status = fmt.Sprintf("Translating... (%s -> %s)", m.langNames[src], m.langNames[tgt])
-	return m, m.doTranslate(text, src, tgt)
+	sourceCode := m.langCodes[m.sourceIdx]
+	targetCode := m.langCodes[m.targetIdx]
+	m.status = fmt.Sprintf("Translating... (%s -> %s)", m.langNames[sourceCode], m.langNames[targetCode])
+	return m, m.doTranslate(text, sourceCode, targetCode)
 }
 
 func (m Model) handleTranslateResult(msg translateResultMsg) (Model, tea.Cmd) {
@@ -173,10 +173,10 @@ func (m Model) startLeadingTranslate(prevCmd tea.Cmd) (Model, tea.Cmd) {
 	}
 	m.leadingInProgress = true
 	m.lastInput = text
-	src := m.langCodes[m.sourceIdx]
-	tgt := m.langCodes[m.targetIdx]
-	m.status = fmt.Sprintf("Translating... (%s -> %s)", m.langNames[src], m.langNames[tgt])
-	return m, tea.Batch(prevCmd, m.doTranslate(text, src, tgt))
+	sourceCode := m.langCodes[m.sourceIdx]
+	targetCode := m.langCodes[m.targetIdx]
+	m.status = fmt.Sprintf("Translating... (%s -> %s)", m.langNames[sourceCode], m.langNames[targetCode])
+	return m, tea.Batch(prevCmd, m.doTranslate(text, sourceCode, targetCode))
 }
 
 func (m Model) advanceFocus() Model {

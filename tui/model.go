@@ -53,11 +53,11 @@ type Model struct {
 }
 
 func newModel(ctx context.Context, backend translate.Backend, langs translate.LanguageProvider) Model {
-	ta := textarea.New()
-	ta.Placeholder = "Type text to translate..."
-	ta.Prompt = ""
-	ta.CharLimit = 0
-	ta.Focus()
+	inputArea := textarea.New()
+	inputArea.Placeholder = "Type text to translate..."
+	inputArea.Prompt = ""
+	inputArea.CharLimit = 0
+	inputArea.Focus()
 
 	list := langs.List()
 	codes := make([]string, len(list))
@@ -84,7 +84,7 @@ func newModel(ctx context.Context, backend translate.Backend, langs translate.La
 		langNames: names,
 		sourceIdx: sourceIdx,
 		targetIdx: targetIdx,
-		textarea:  ta,
+		textarea:  inputArea,
 		focused:   focusInput,
 		status:    "Ready. Select languages and start typing.",
 	}
