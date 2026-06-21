@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"strings"
 
 	httpclient "github.com/danterolle/loqi/translate/http"
 )
@@ -70,6 +71,10 @@ func (b *Backend) Translate(ctx context.Context, text, source, target string) (s
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return "", fmt.Errorf("argos: read: %w", err)
+	}
+
+	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
+		return "", fmt.Errorf("argos: %s %s", resp.Status, strings.TrimSpace(string(body)))
 	}
 
 	var tr translateResponse
