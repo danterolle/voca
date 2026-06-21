@@ -50,9 +50,11 @@ type Model struct {
 	width             int
 	translateSequence int
 	leadingInProgress bool
+	version           string
+	commit            string
 }
 
-func newModel(ctx context.Context, backend translate.Backend, langs translate.LanguageProvider) Model {
+func newModel(ctx context.Context, backend translate.Backend, langs translate.LanguageProvider, version, commit string) Model {
 	inputArea := textarea.New()
 	inputArea.Placeholder = "Type text to translate..."
 	inputArea.Prompt = ""
@@ -87,6 +89,8 @@ func newModel(ctx context.Context, backend translate.Backend, langs translate.La
 		textarea:  inputArea,
 		focused:   focusInput,
 		status:    "Ready. Select languages and start typing.",
+		version:   version,
+		commit:    commit,
 	}
 }
 

@@ -30,11 +30,11 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 func (m Model) handleWindowSize(msg tea.WindowSizeMsg) (Model, tea.Cmd) {
 	m.ready = true
 	m.width = msg.Width
-	contentH := msg.Height - 6
+	contentH := msg.Height - 12
 	if contentH < 4 {
 		contentH = 4
 	}
-	m.textarea.SetWidth(msg.Width - 4)
+	m.textarea.SetWidth(msg.Width - 6)
 	m.textarea.SetHeight(contentH / 2)
 	return m, nil
 }

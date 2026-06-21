@@ -38,7 +38,11 @@ func printBanner(quiet bool) {
 	}
 	fmt.Fprintln(os.Stderr)
 	if Version != "" {
-		fmt.Fprintln(os.Stderr, "       "+accent.Bold(true).Render(Version))
+		ver := Version
+		if rev := buildCommit(); rev != "" {
+			ver += " " + rev[:min(7, len(rev))]
+		}
+		fmt.Fprintln(os.Stderr, "       "+accent.Bold(true).Render(ver))
 	}
 	fmt.Fprintln(os.Stderr, "   "+accent.Render("LOcal Quiet Interpreter"))
 	fmt.Fprintln(os.Stderr)

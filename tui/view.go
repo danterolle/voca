@@ -17,15 +17,27 @@ func (m Model) View() string {
 	if m.focused == focusSrcLang || m.focused == focusTgtLang {
 		b.WriteString(m.languageListView())
 	} else {
-		b.WriteString(inputStyle.Render("Input"))
-		b.WriteString("\n")
-		b.WriteString(m.textarea.View())
+		b.WriteString(inputBoxStyle.Render(m.inputContentView()))
 		b.WriteString("\n\n")
-		b.WriteString(m.outputView())
+		b.WriteString(outputBoxStyle.Render(m.outputContentView()))
 	}
 
+	b.WriteString("\n")
 	b.WriteString(m.statusView())
+	b.WriteString("\n")
+	b.WriteString(m.helpView())
 	return b.String()
+}
+
+func (m Model) inputContentView() string {
+	return inputLabelStyle.Render("Input") + "\n" + m.textarea.View()
+}
+
+func (m Model) outputContentView() string {
+	if m.output != "" {
+		return outputLabelStyle.Render("Output") + "\n" + wrap(m.output, m.width-4)
+	}
+	return outputLabelStyle.Render("Output") + "\n" + subtleStyle.Render("Translation will appear here...")
 }
 
 func (m Model) headerView() string {
@@ -33,12 +45,19 @@ func (m Model) headerView() string {
 	srcName := m.langNames[m.langCodes[m.sourceIdx]]
 	tgtName := m.langNames[m.langCodes[m.targetIdx]]
 
-	b.WriteString(headerStyle.Render("loqi"))
+	title := "loqi"
+	if m.version != "" {
+		title += " " + m.version
+		if m.commit != "" {
+			title += " " + m.commit[:min(7, len(m.commit))]
+		}
+	}
+	b.WriteString(headerStyle.Render(title))
 	b.WriteString("  ")
 	if m.focused == focusSrcLang {
 		b.WriteString(subtleStyle.Render("From:"))
 		b.WriteString(" ")
-		b.WriteString(inputStyle.Bold(true).Render(srcName))
+		b.WriteString(inputLabelStyle.Bold(true).Render(srcName))
 	} else {
 		b.WriteString(fmt.Sprintf("From: %s", srcName))
 	}
@@ -46,34 +65,10 @@ func (m Model) headerView() string {
 	if m.focused == focusTgtLang {
 		b.WriteString(subtleStyle.Render("To:"))
 		b.WriteString(" ")
-		b.WriteString(outputStyle.Bold(true).Render(tgtName))
+		b.WriteString(outputLabelStyle.Bold(true).Render(tgtName))
 	} else {
 		b.WriteString(fmt.Sprintf("To: %s", tgtName))
 	}
-	return b.String()
-}
-
-func (m Model) outputView() string {
-	var b strings.Builder
-	b.WriteString(outputStyle.Render("Output"))
-	b.WriteString("\n")
-	if m.output != "" {
-		b.WriteString(wrap(m.output, m.width-4))
-		b.WriteString("\n")
-	} else {
-		b.WriteString(subtleStyle.Render("Translation will appear here..."))
-		b.WriteString("\n")
-	}
-	return b.String()
-}
-
-func (m Model) statusView() string {
-	var b strings.Builder
-	b.WriteString(strings.Repeat("─", max(m.width-2, 0)))
-	b.WriteString("\n")
-	b.WriteString(m.status)
-	b.WriteString("  ")
-	b.WriteString(helpStyle.Render("ctrl+y:copy  ctrl+l:clear  ctrl+t:swap  ctrl+c:quit  tab:next"))
 	return b.String()
 }
 
@@ -90,20 +85,8 @@ func (m Model) languageListView() string {
 	b.WriteString(fmt.Sprintf("  %s language (↑↓ to navigate, Tab to confirm)\n\n", label))
 
 	total := len(m.langCodes)
-	start := idx - langListVisible/2
-	if start < 0 {
-		start = 0
-	}
-	if start+langListVisible > total {
-		start = total - langListVisible
-	}
-	if start < 0 {
-		start = 0
-	}
-	end := start + langListVisible
-	if end > total {
-		end = total
-	}
+	start := max(0, min(idx-langListVisible/2, total-langListVisible))
+	end := min(start+langListVisible, total)
 
 	if start > 0 {
 		b.WriteString("    ...\n")
@@ -113,7 +96,7 @@ func (m Model) languageListView() string {
 		style := subtleStyle.Render
 		if i == idx {
 			cursor = " >"
-			style = inputStyle.Bold(true).Render
+			style = inputLabelStyle.Bold(true).Render
 		}
 		code := m.langCodes[i]
 		name := m.langNames[code]
@@ -124,6 +107,14 @@ func (m Model) languageListView() string {
 	}
 
 	return b.String()
+}
+
+func (m Model) statusView() string {
+	return strings.Repeat("─", max(m.width-2, 0)) + "\n" + m.status
+}
+
+func (m Model) helpView() string {
+	return helpStyle.Render("ctrl+y:copy  ctrl+l:clear  ctrl+t:swap  tab:next  ctrl+c:quit")
 }
 
 func wrap(s string, width int) string {

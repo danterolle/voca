@@ -13,7 +13,7 @@ import (
 
 func newTestModel(t *testing.T) Model {
 	t.Helper()
-	m := newModel(context.Background(), translate.NewMockBackend(), translate.NewStaticLanguages())
+	m := newModel(context.Background(), translate.NewMockBackend(), translate.NewStaticLanguages(), "", "")
 	mm, _ := m.Update(tea.WindowSizeMsg{Width: 80, Height: 24})
 	return mm.(Model)
 }

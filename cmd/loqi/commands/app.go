@@ -4,13 +4,31 @@ import (
 	"flag"
 	"fmt"
 	"os"
+	"runtime/debug"
 	"strings"
 
 	"github.com/danterolle/loqi/config"
 	"github.com/danterolle/loqi/translate"
 )
 
-var Version string
+var (
+	Version string
+	Commit  string
+)
+
+func buildCommit() string {
+	if Commit != "" {
+		return Commit
+	}
+	if info, ok := debug.ReadBuildInfo(); ok {
+		for _, s := range info.Settings {
+			if s.Key == "vcs.revision" {
+				return s.Value
+			}
+		}
+	}
+	return ""
+}
 
 const defaultFrom = "auto"
 const defaultTo = "en"

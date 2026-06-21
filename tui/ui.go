@@ -11,7 +11,7 @@ import (
 	"github.com/danterolle/loqi/translate"
 )
 
-func RunBubbleTea(ctx context.Context, backend translate.Backend, langs translate.LanguageProvider) (err error) {
+func RunBubbleTea(ctx context.Context, backend translate.Backend, langs translate.LanguageProvider, version, commit string) (err error) {
 	defer func() {
 		if r := recover(); r != nil {
 			fmt.Fprintf(os.Stderr, "panic: %v\n%s\n", r, debug.Stack())
@@ -19,7 +19,7 @@ func RunBubbleTea(ctx context.Context, backend translate.Backend, langs translat
 		}
 	}()
 
-	m := newModel(ctx, backend, langs)
+	m := newModel(ctx, backend, langs, version, commit)
 	p := tea.NewProgram(m, tea.WithAltScreen())
 	_, err = p.Run()
 	return
