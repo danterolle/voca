@@ -155,7 +155,7 @@ func (m Model) handleTextChange(msg tea.KeyMsg) (Model, tea.Cmd) {
 	if m.textarea.Value() != before {
 		m.translateSequence++
 		if m.leadingInProgress {
-			cmd = tea.Batch(cmd, m.scheduleDebounce())
+			cmd = tea.Batch(cmd, m.scheduleDebounce(m.translateSequence))
 		} else {
 			m, cmd = m.startLeadingTranslate(cmd)
 		}
@@ -163,9 +163,9 @@ func (m Model) handleTextChange(msg tea.KeyMsg) (Model, tea.Cmd) {
 	return m, cmd
 }
 
-func (m Model) scheduleDebounce() tea.Cmd {
+func (m Model) scheduleDebounce(seq int) tea.Cmd {
 	return tea.Tick(debounceDuration, func(t time.Time) tea.Msg {
-		return debounceMsg{seq: m.translateSequence}
+		return debounceMsg{seq: seq}
 	})
 }
 
