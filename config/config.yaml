@@ -14,7 +14,7 @@
 
 backend:
   type: ollama      # Backend type (default: ollama)
-  model: gemma3:1b  # Model name (default: gemma4:e2b-it-qat)
+  model: gemma4:e2b-it-qat  # Model name (default: gemma4:e2b-it-qat)
 
   # For llamacpp: path to a GGUF model file. When set, loqi auto-starts
   # llama-server with this model. Omit if you manage llama-server yourself.

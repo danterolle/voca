@@ -53,6 +53,6 @@ test_data/          — test fixtures
 Version is injected at build time:
 
 ```sh
-make build        # uses git describe --tags
-goreleaser build  # used for releases
+make build        # uses git describe --tags via ldflags
+make release      # builds for linux/darwin/windows + checksums
 ```
