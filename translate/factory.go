@@ -42,7 +42,7 @@ func NewBackend(cfg *NewBackendConfig) (Backend, error) {
 	case "llamacpp":
 		return llamacpp.NewBackend(config), nil
 	case "argos":
-		return argos.NewBackend(cfg.BaseURL), nil
+		return argos.NewBackend(config), nil
 	default:
 		return nil, fmt.Errorf("unsupported backend type: %q", cfg.Type)
 	}

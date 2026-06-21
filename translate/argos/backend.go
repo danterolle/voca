@@ -7,7 +7,8 @@ import (
 	"fmt"
 	"io"
 	"net/http"
-	"time"
+
+	httpclient "github.com/danterolle/loqi/translate/http"
 )
 
 type Backend struct {
@@ -15,10 +16,10 @@ type Backend struct {
 	Client  *http.Client
 }
 
-func NewBackend(baseURL string) *Backend {
+func NewBackend(cfg httpclient.BackendConfig) *Backend {
 	return &Backend{
-		BaseURL: baseURL,
-		Client:  &http.Client{Timeout: 2 * time.Minute},
+		BaseURL: cfg.BaseURL,
+		Client:  cfg.Client,
 	}
 }
 

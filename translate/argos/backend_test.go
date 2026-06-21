@@ -5,7 +5,13 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"testing"
+
+	httpclient "github.com/danterolle/loqi/translate/http"
 )
+
+func testBackend(baseURL string) *Backend {
+	return NewBackend(httpclient.BackendConfig{BaseURL: baseURL, Client: httpclient.NewHTTPClient()})
+}
 
 func TestBackend_Translate(t *testing.T) {
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -13,7 +19,7 @@ func TestBackend_Translate(t *testing.T) {
 	}))
 	defer srv.Close()
 
-	b := NewBackend(srv.URL)
+	b := testBackend(srv.URL)
 	result, err := b.Translate(context.Background(), "Hello world", "en", "it")
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
@@ -24,7 +30,7 @@ func TestBackend_Translate(t *testing.T) {
 }
 
 func TestBackend_EmptyInput(t *testing.T) {
-	b := NewBackend("http://localhost:9999")
+	b := testBackend("http://localhost:9999")
 	result, err := b.Translate(context.Background(), "", "en", "it")
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
@@ -35,7 +41,7 @@ func TestBackend_EmptyInput(t *testing.T) {
 }
 
 func TestBackend_SameLang(t *testing.T) {
-	b := NewBackend("http://localhost:9999")
+	b := testBackend("http://localhost:9999")
 	result, err := b.Translate(context.Background(), "hello", "en", "en")
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
@@ -52,7 +58,7 @@ func TestBackend_ServerError(t *testing.T) {
 	}))
 	defer srv.Close()
 
-	b := NewBackend(srv.URL)
+	b := testBackend(srv.URL)
 	_, err := b.Translate(context.Background(), "hello", "en", "it")
 	if err == nil {
 		t.Fatal("expected error")
@@ -65,7 +71,7 @@ func TestBackend_InvalidJSON(t *testing.T) {
 	}))
 	defer srv.Close()
 
-	b := NewBackend(srv.URL)
+	b := testBackend(srv.URL)
 	_, err := b.Translate(context.Background(), "hello", "en", "it")
 	if err == nil {
 		t.Fatal("expected decode error")
