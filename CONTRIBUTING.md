@@ -17,9 +17,10 @@ Before pushing please use:
 
 ```sh
 go build ./...
-go test ./...
+go test -race ./...
 gofmt -l .
 go vet ./...
+golangci-lint run
 ```
 
 CI runs the same checks.
@@ -42,9 +43,11 @@ translate/          — core domain (interfaces, languages, factory)
 translate/http/     — shared HTTP client and backend config
 translate/ollama/   — Ollama backend
 translate/llamacpp/ — llama.cpp backend
+translate/argos/    — argos-translate backend (embedded Python server)
 translate/setup/    — backend lifecycle (start, health, cleanup)
 tui/                — Bubble Tea TUI (model, update, view, styles)
 config/             — YAML config loading
+docs/               — technical docs, benchmarks, landing page
 test_data/          — test fixtures
 ```
 
