@@ -179,6 +179,9 @@ loqi translate --from auto --to en ./document.md
 # Choose a different model
 loqi translate --model phi4-mini:latest --from fr --to en "Bonjour le monde"
 
+# Suppress banner and progress messages
+loqi translate --quiet --from en --to it "Hello world"
+
 # Test with literary text (see test_data/)
 loqi translate --from it --to en test_data/malavoglia.md
 ```
@@ -188,6 +191,7 @@ loqi translate --from it --to en test_data/malavoglia.md
 --from        Source language code (default: auto)
 --to          Target language code (default: en)
 --model       Model name (default: gemma4:e2b-it-qat)
+--quiet       Suppress banner and diagnostic messages
 -h, --help    Show usage with examples
 ```
 
@@ -225,6 +229,7 @@ Auto-detects JSON (preserves structure, translates values) vs plain text (transl
 --from        Source language code (default: auto)
 --to          Target language code (default: en)
 --model       Model name (default: gemma4:e2b-it-qat)
+--quiet       Suppress banner and diagnostic messages
 -h, --help    Show usage with examples
 ```
 
